@@ -18,12 +18,14 @@
             $result = $conn->query($sql);
 
             if($result === TRUE){
-                $_SESSION['success'] = "User registered successfully";
-                header("Location: login.php");
+                echo "<script>
+                alert('You have successfully registered!');
+                window.location.href='login.php';
+                </script>";
             }else{
                 $_SESSION['error'] = "Error: " . $sql . "<br>" . $conn->error;
             }
-        }else{
+        } else {
             $_SESSION['error'] = "Password does not match";
         }
     }
@@ -72,14 +74,29 @@
                         </div>
                         <div class="form-group">
                             <label for="course">Course</label>
-                            <input type="text" id="course" name="course" required>
+                            <select id="course" name="course" required>
+                                <option value="">Select Course</option>
+                                <option value="BSIT">BSIT</option>
+                                <option value="BSIS">BSIS</option>
+                                <option value="BSCS">BSCS</option>
+                                <option value="BSCE">BSCE</option>
+                                <option value="ACT">ACT</option>
+                                <!-- Add more options as needed -->
+                            </select>
                         </div>
                     </div>               
                     <!-- Row 4: Year Level and Username -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="year">Year Level</label>
-                            <input type="text" id="year" name="year" required>
+                            <select id="year" name="year" required>
+                                <option value="">Select Year</option>
+                                <option value="FIRST">1st-Year</option>
+                                <option value="SECOND">2nd-Year</option>
+                                <option value="THIRD">3rd-Year</option>
+                                <option value="FOURTH">4th-Year</option>
+                                <!-- Add more options as needed -->
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="username">Username</label>
@@ -95,6 +112,16 @@
                         <div class="form-group">
                             <label for="confirm_password">Confirm Password</label>
                             <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <?php
+                            if(isset($_SESSION['error'])){
+                                echo "<p style='color:red;'>" . $_SESSION['error'] . "</p>";
+                                unset($_SESSION['error']);
+                            }
+                            ?>
                         </div>
                     </div>               
                     <button type="submit" class="btn" name="register">Register</button>

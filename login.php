@@ -23,8 +23,11 @@
             $_SESSION['id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
 
-            // Redirect to the dashboard
-            header('Location: dashboard.php');
+            // Redirect to the dashboard with a success message
+            echo "<script>
+                    alert('You have successfully logged in!');
+                    window.location.href='dashboard.php';
+                  </script>";
         } else {
             $error = "Invalid username or password";
         }
@@ -32,7 +35,6 @@
         // Close the statement
         $stmt->close();
     }
-
 ?>
 
 <!DOCTYPE html>
