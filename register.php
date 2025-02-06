@@ -1,90 +1,107 @@
 <?php
+    session_start();
+    require_once('db.php');
 
-include 'db.php';
+    if(isset($_POST['register'])){
+        $idno = $_POST['idno'];
+        $lastname = $_POST['lastname'];
+        $firstname = $_POST['firstname'];
+        $midname = $_POST['midname'];
+        $course = $_POST['course'];
+        $year = $_POST['year'];
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
 
-if(isset($_POST['register'])){
-    $idno = $_POST['idno'];
-    $lastname = $_POST['lastname'];
-    $firstname = $_POST['firstname'];
-    $midname = $_POST['midname'];
-    $course = $_POST['course'];
-    $year = $_POST['year'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+        if($password == $confirm_password){
+            $sql = "INSERT INTO users (idno, lastname, firstname, midname, course, year, username, password) VALUES ('$idno', '$lastname', '$firstname', '$midname', '$course', '$year', '$username', '$password')";
+            $result = $conn->query($sql);
 
-    // Prepare an SQL statement to prevent SQL injection
-    $stmt = $conn->prepare("INSERT INTO users (idno, lastname, firstname, midname, course, year, username, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssss", $idno, $lastname, $firstname, $midname, $course, $year, $username, $password);
-
-    if($stmt->execute()){
-        echo "<script>alert('New record created successfully'); window.location.href='login.html';</script>";
-    } else {
-        echo "Error: " . $stmt->error;
+            if($result === TRUE){
+                $_SESSION['success'] = "User registered successfully";
+                header("Location: login.php");
+            }else{
+                $_SESSION['error'] = "Error: " . $sql . "<br>" . $conn->error;
+            }
+        }else{
+            $_SESSION['error'] = "Password does not match";
+        }
     }
-
-    $stmt->close();
-    $conn->close();
-}
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCSSMS REGISTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <title>CCSSMS REGISTER</title>
 </head>
 <body>
-    <div class="wrapper">
-        <form action="register.php" method="POST">
-          <h2>CCS Sitin Management System</h2>
-        <div class="input-field">
-            <input type="text" id="idno" name="idno" required>
-            <label>IDNO</label>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>REGISTRATION</h2>
+            </div>
+            <form class="form" action="register.php" method="post">
+                <div class="form">
+                    <!-- Row 1: ID Number -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="idno">ID Number</label>
+                            <input type="text" id="idno" name="idno" required>
+                        </div>
+                    </div>          
+                    <!-- Row 2: Last Name and First Name -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" id="lastname" name="lastname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstname">First Name</label>
+                            <input type="text" id="firstname" name="firstname" required>
+                        </div>
+                    </div>               
+                    <!-- Row 3: Middle Name and Course -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="midname">Middle Name</label>
+                            <input type="text" id="midname" name="midname">
+                        </div>
+                        <div class="form-group">
+                            <label for="course">Course</label>
+                            <input type="text" id="course" name="course" required>
+                        </div>
+                    </div>               
+                    <!-- Row 4: Year Level and Username -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="year">Year Level</label>
+                            <input type="text" id="year" name="year" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" required>
+                        </div>
+                    </div>               
+                    <!-- Row 5: Password and Confirm Password -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                    </div>               
+                    <button type="submit" class="btn" name="register">Register</button>
+                    <p>Already have an account? <a href="login.php">Login</a></p>
+                </div>                
+            </form>
         </div>
-        <div class="input-field">
-            <input type="text" id="lastname" name="lastname" required>
-            <label>Lastname</label>
-        </div>
-        <div class="input-field">
-            <input type="text" id="firstname" name="firstname" required>
-            <label>Firstname</label>
-        </div>
-        <div class="input-field">
-            <input type="text" id="midname" name="midname" required>
-            <label>Midname</label>
-        </div>
-        <div class="input-field">
-            <input type="text" id="course" name="course" required>
-            <label>Course</label>
-        </div>
-        <div class="input-field">
-            <input type="text" id="year" name="year" required>
-            <label>Year</label>
-        </div>
-        <div class="input-field">
-            <input type="text" id="username" name="username" required>
-            <label>Username</label>
-        </div>
-        <div class="input-field">
-            <input type="password" id="password" name="password" required>
-            <label>Enter your password</label>
-        </div>
-        <div class="forget">
-            <label for="remember">
-              <input type="checkbox" id="remember">
-              <p>Remember me</p>
-            </label>
-            <a href="#">Forgot password?</a>
-        </div>
-          <button type="submit" name="register">Register</button>
-          <div class="register">
-            <p>Already have an account? <a href="login.html">Login</a></p>
-          </div>
-        </form>
     </div>
 </body>
 </html>

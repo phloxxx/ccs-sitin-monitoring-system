@@ -1,61 +1,78 @@
 <?php
-include 'db.php';
+ session_start();
+ require_once('db.php');
 
-session_start();    
+    if(isset($_POST['login'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
 
-if(isset($_POST['login'])){
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+        // Prepare and bind
+        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+        $stmt->bind_param("ss", $username, $password);
 
-    $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-    $result = $conn->query($sql);
+        // Execute the statement
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if($result->num_rows > 0){
-        $row = $result->fetch_assoc();
-        $_SESSION['username'] = $row['username'];
-        $_SESSION['id'] = $row['id'];
-        header('Location: index.php');
-    }else{
-        echo "Invalid username or password";
+        // Check if the user exists
+        if ($result->num_rows > 0) {
+            // Fetch the user data
+            $user = $result->fetch_assoc();
+
+            // Set the session variables
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+
+            // Redirect to the dashboard
+            header('Location: dashboard.php');
+        } else {
+            $error = "Invalid username or password";
+        }
+
+        // Close the statement
+        $stmt->close();
     }
-}
 
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCSSMS REGISTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <title>CCSSMS LOGIN</title>
 </head>
 <body>
-  <div class="wrapper">
-    <form action="login.php" method="POST">
-      <h2>CCS Sitin Management System</h2>
-        <div class="input-field">
-        <input type="text" id="username" name="username" required>
-        <label for="username">Username</label>
-      </div>
-      <div class="input-field">
-        <input type="password" id="password" name="password" required>
-        <label for="password">Password</label>
-      </div>
-      <div class="forget">
-        <label for="remember">
-          <input type="checkbox" id="remember">
-          <p>Remember me</p>
-        </label>
-        <a href="#">Forgot password?</a>
-      </div>
-      <button type="submit">Log In</button>
-      <div class="register">
-        <p>Don't have an account? <a href="register.html">Register</a></p>
-      </div>
-    </form>
-  </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="logos">
+                    <img src="src/images/ccs_logo.png" alt="Logo 1" class="logo">
+                    <img src="src/images/uc_logo.jpg" alt="Logo 2" class="logo">
+                </div>
+                <h2>CCS SITIN MONITORING SYSTEM</h2>
+            </div>
+            <form class="form" action="login.php" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <!-- Error messages -->
+                <?php if (!empty($error)): ?>
+                    <p style="color: red;"><?php echo $error; ?></p>
+                <?php endif; ?>
+
+                <button type="submit" class="btn" name="login">Login</button>
+                <p>Don't have an account? <a href="register.php">Register</a></p>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
