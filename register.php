@@ -79,7 +79,6 @@
                                 <option value="BSIT">BSIT</option>
                                 <option value="BSIS">BSIS</option>
                                 <option value="BSCS">BSCS</option>
-                                <option value="BSCE">BSCE</option>
                                 <option value="ACT">ACT</option>
                                 <!-- Add more options as needed -->
                             </select>
@@ -91,10 +90,10 @@
                             <label for="year">Year Level</label>
                             <select id="year" name="year" required>
                                 <option value="">Select Year</option>
-                                <option value="FIRST">1st-Year</option>
-                                <option value="SECOND">2nd-Year</option>
-                                <option value="THIRD">3rd-Year</option>
-                                <option value="FOURTH">4th-Year</option>
+                                <option value="FIRST">1st Year</option>
+                                <option value="SECOND">2nd Year</option>
+                                <option value="THIRD">3rd Year</option>
+                                <option value="FOURTH">4th Year</option>
                                 <!-- Add more options as needed -->
                             </select>
                         </div>

@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
     <title>DASHBOARD</title>
-    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Dashboard</h1>
-            <a href="logout.php">Logout</a>
-        </div>
-        <div class="content">
-            <div class="menu">
-                <ul>
-                    <li><a href="dashboard.php">Dashboard</a></li>
-                    <li><a href="profile.php">Profile</a></li>
-                    <li><a href="change-password.php">Change Password</a></li>
-                    <li><a href="users.php">Users</a></li>
-                </ul>
-            </div>
-            <div class="main">
-                <h2>Welcome to Dashboard</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam, quod, voluptate, quae, quia quos quibusdam voluptatum quas quidem doloremque nemo autem ipsam. Quisquam, quod, voluptate, quae, quia quos quibusdam voluptatum quas quidem doloremque nemo autem ipsam.</p>
-            </div>
-        </div>
-        <div class="footer">
-            <p>&copy; 2025 All Rights Reserved</p>
-        </div>
-    </div>
+
+    <!-- Header -->
+    <header>
+        <!-- Left Side: Logo or Image -->
+        <img class="logo" src="your-logo.png" alt="Logo">
+        <?php
+            // Assuming you have the ID stored in a session or a variable
+            session_start();
+            if (isset($_SESSION['id'])) {
+            echo '<span class="user-id">ID: ' . htmlspecialchars($_SESSION['id']) . '</span>';
+            }
+        ?>
+
+        <!-- Right Side: Navigation Links -->
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/history">History</a></li>
+                <li><a href="/reservation">Reservation</a></li>
+            </ul>
+        </nav>
+            <a class="logout" href="/logout"><button>Logout</button></a>         
+    </header>
+</body>
 </html>
