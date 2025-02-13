@@ -12,23 +12,40 @@
     <!-- Header -->
     <header>
         <!-- Left Side: Logo or Image -->
-        <img class="logo" src="your-logo.png" alt="Logo">
-        <?php
-            // Assuming you have the ID stored in a session or a variable
-            session_start();
-            if (isset($_SESSION['id'])) {
-            echo '<span class="user-id">ID: ' . htmlspecialchars($_SESSION['id']) . '</span>';
-            }
-        ?>
+        <div class="logo">
+            <img src="images/ccs_logo.png" alt="Logo">
+        </div>
+
 
         <!-- Right Side: Navigation Links -->
         <nav>
             <ul class="nav-links">
+                <li><a href="/dashboard.php" style="color: #FFF2AF;">Home</a></li>
+                <li><a href="/notification">Notification</a></li>
                 <li><a href="/history">History</a></li>
                 <li><a href="/reservation">Reservation</a></li>
             </ul>
         </nav>
-            <a class="logout" href="/logout"><button>Logout</button></a>         
+            <a class="logout" href="#" onclick="confirmLogout(event)"><button>Logout</button></a>         
     </header>
+
+    <!-- Main Content -->
+     <main>
+        <div class="card">
+            
+    </main>
+    <!-- ...existing code... -->
+
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            var userConfirmed = confirm("Are you sure you want to logout?");
+            if (userConfirmed) {
+                window.location.href = "login.php";
+            } else {
+                window.location.href = "dashboard.php";
+            }
+        }
+    </script>
 </body>
 </html>
