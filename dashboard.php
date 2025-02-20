@@ -13,14 +13,14 @@
     <header>
         <!-- Left Side: Logo or Image -->
         <div class="logo">
-            <img src="images/ccs_logo.png" alt="Logo">
+            <img src="images/snoopy.jpg" alt="Logo">
         </div>
 
 
         <!-- Right Side: Navigation Links -->
         <nav>
             <ul class="nav-links">
-                <li><a href="/dashboard.php" style="color: #FFF2AF;">Home</a></li>
+                <li><a href="/dashboard.php">Home</a></li>
                 <li><a href="/notification">Notification</a></li>
                 <li><a href="/history">History</a></li>
                 <li><a href="/reservation">Reservation</a></li>
