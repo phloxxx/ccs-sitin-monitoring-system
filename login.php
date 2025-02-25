@@ -1,40 +1,43 @@
 <?php
- session_start();
- require_once('db.php');
+session_start();
+require_once('db.php'); // Ensure this correctly connects to your database
 
-    if(isset($_POST['login'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+if(isset($_POST['login'])) {
+    $username = trim($_POST['username']); // Trim to remove spaces
+    $password = trim($_POST['password']);
 
-        // Prepare and bind
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
-        $stmt->bind_param("ss", $username, $password);
+    // Prepare query without password in WHERE clause
+    $stmt = $conn->prepare("SELECT USER_ID, USERNAME, PASSWORD FROM USERS WHERE USERNAME = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        // Execute the statement
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Check if user exists
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
 
-        // Check if the user exists
-        if ($result->num_rows > 0) {
-            // Fetch the user data
-            $user = $result->fetch_assoc();
+        // Since you don't want to use password_verify yet, direct match lang usa
+        if ($password === $user['PASSWORD']) {
+            // Set session variables
+            $_SESSION['user_id'] = $user['USER_ID'];
+            $_SESSION['username'] = $user['USERNAME'];
 
-            // Set the session variables
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-
-            // Redirect to the dashboard with a success message
+            // Redirect to dashboard with success message
             echo "<script>
                     alert('You have successfully logged in!');
                     window.location.href='dashboard.php';
                   </script>";
+            exit();
         } else {
-            $error = "Invalid username or password";
+            $error = "Invalid username or password"; // Error message
         }
-
-        // Close the statement
-        $stmt->close();
+    } else {
+        $error = "Invalid username or password"; // Error message
     }
+
+    // Close the statement
+    $stmt->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +55,7 @@
             <div class="card-header">
                 <div class="logos">
                     <img src="src/images/ccs_logo.png" alt="Logo 1" class="logo">
-                    <img src="src/images/uc_logo.jpg" alt="Logo 2" class="logo">
+                    <img src="src/images/uc_logo.png" alt="Logo 2" class="logo">
                 </div>
                 <h2>CCS SITIN MONITORING SYSTEM</h2>
             </div>

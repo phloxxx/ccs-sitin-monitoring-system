@@ -76,10 +76,10 @@
                             <label for="course">Course</label>
                             <select id="course" name="course" required>
                                 <option value="">Select Course</option>
-                                <option value="BSIT">BSIT</option>
-                                <option value="BSIS">BSIS</option>
-                                <option value="BSCS">BSCS</option>
-                                <option value="ACT">ACT</option>
+                                <option value="Bachelor of Science in Information Technology">BSIT</option>
+                                <option value="Bachelor of Science in Information Systems">BSIS</option>
+                                <option value="Bachelor of Science in Computer Science">BSCS</option>
+                                <option value="Associate in Computer Technology">ACT</option>
                                 <!-- Add more options as needed -->
                             </select>
                         </div>
@@ -90,10 +90,10 @@
                             <label for="year">Year Level</label>
                             <select id="year" name="year" required>
                                 <option value="">Select Year</option>
-                                <option value="FIRST">1st Year</option>
-                                <option value="SECOND">2nd Year</option>
-                                <option value="THIRD">3rd Year</option>
-                                <option value="FOURTH">4th Year</option>
+                                <option value="Freshman">1st Year</option>
+                                <option value="Sophomore">2nd Year</option>
+                                <option value="Junior">3rd Year</option>
+                                <option value="Senior">4th Year</option>
                                 <!-- Add more options as needed -->
                             </select>
                         </div>
