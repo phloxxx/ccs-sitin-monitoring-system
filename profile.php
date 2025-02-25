@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $course = $_POST['course'];
     $year = $_POST['year'];
+    $profile_pic = $user['PROFILE_PIC']; // Default to current profile picture
 
     // Profile Picture Upload
     if (!empty($_FILES['profile_pic']['name'])) {
@@ -40,45 +41,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Generate a unique filename
-        $file_extension = pathinfo($_FILES["profile_pic"]["name"], PATHINFO_EXTENSION);
+        $file_extension = strtolower(pathinfo($_FILES["profile_pic"]["name"], PATHINFO_EXTENSION));
         $new_filename = "profile_" . time() . "." . $file_extension;
-        $profile_pic = $target_dir . $new_filename;
+        $profile_pic_path = $target_dir . $new_filename;
 
         // Validate file type
         $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
-        if (!in_array(strtolower($file_extension), $allowed_types)) {
+        if (!in_array($file_extension, $allowed_types)) {
             $error_message = "Invalid file type! Only JPG, JPEG, PNG, and GIF are allowed.";
         } else {
-            move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $profile_pic);
+            if (move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $profile_pic_path)) {
+                $profile_pic = $profile_pic_path; // Update profile picture if upload succeeds
+            } else {
+                $error_message = "Error uploading profile picture.";
+            }
         }
-    } else {
-        $profile_pic = $user['PROFILE_PIC'];
     }
 
-    // Check for unique ID Number & Username
-    $check_stmt = $conn->prepare("SELECT USER_ID FROM USERS WHERE (IDNO = ? OR USERNAME = ?) AND USER_ID != ?");
-    $check_stmt->bind_param("ssi", $idno, $username, $user_id);
-    $check_stmt->execute();
-    $check_result = $check_stmt->get_result();
-
-    if ($check_result->num_rows > 0) {
-        $error_message = "ID Number or Username is already taken!";
+    // Stop execution if there is an error
+    if (!empty($error_message)) {
+        echo "<script>alert('$error_message');</script>";
     } else {
-        // Update user details
-        $update_stmt = $conn->prepare("UPDATE USERS SET IDNO = ?, LASTNAME = ?, FIRSTNAME = ?, USERNAME = ?, COURSE = ?, YEAR = ?, PROFILE_PIC = ? WHERE USER_ID = ?");
-        $update_stmt->bind_param("sssssssi", $idno, $lastname, $firstname, $username, $course, $year, $profile_pic, $user_id);
-        
-        if ($update_stmt->execute()) {
-            header("Location: profile.php");
-            exit();
+        // Check for unique ID Number & Username
+        $check_stmt = $conn->prepare("SELECT USER_ID FROM USERS WHERE (IDNO = ? OR USERNAME = ?) AND USER_ID != ?");
+        $check_stmt->bind_param("ssi", $idno, $username, $user_id);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+
+        if ($check_result->num_rows > 0) {
+            $error_message = "ID Number or Username is already taken!";
         } else {
-            $error_message = "Error updating profile.";
+            // Update user details
+            $update_stmt = $conn->prepare("UPDATE USERS SET IDNO = ?, LASTNAME = ?, FIRSTNAME = ?, USERNAME = ?, COURSE = ?, YEAR = ?, PROFILE_PIC = ? WHERE USER_ID = ?");
+            $update_stmt->bind_param("sssssssi", $idno, $lastname, $firstname, $username, $course, $year, $profile_pic, $user_id);
+            
+            if ($update_stmt->execute()) {
+                header("Location: profile.php");
+                exit();
+            } else {
+                $error_message = "Error updating profile.";
+            }
+            $update_stmt->close();
         }
-        $update_stmt->close();
+        $check_stmt->close();
     }
-    $check_stmt->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -138,22 +147,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-row">
                         <div class="form-group">
                             <label for="idno">ID Number</label>
-                            <input type="text" id="idno" name="idno" value="<?php echo htmlspecialchars($user['IDNO']); ?>" required>
+                            <input type="text" id="idno" name="idno" value="<?php echo htmlspecialchars($user['IDNO']); ?>">
                         </div>
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['USERNAME']); ?>" required>
+                            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['USERNAME']); ?>">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="lastname">Last Name</label>
-                            <input type="text" id="lastname" name="lastname" value="<?php echo htmlspecialchars($user['LASTNAME']); ?>" required>
+                            <input type="text" id="lastname" name="lastname" value="<?php echo htmlspecialchars($user['LASTNAME']); ?>">
                         </div>
                         <div class="form-group">
                             <label for="firstname">First Name</label>
-                            <input type="text" id="firstname" name="firstname" value="<?php echo htmlspecialchars($user['FIRSTNAME']); ?>" required>
+                            <input type="text" id="firstname" name="firstname" value="<?php echo htmlspecialchars($user['FIRSTNAME']); ?>">
                         </div>
                     </div>
 
@@ -161,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="form-group">
                             <label for="course">Course</label>
                             <select id="course" name="course">
-                                <option value="">Select Course</option>
+                                <option value="<?php echo htmlspecialchars($user['COURSE']); ?>">Change Course</option>
                                 <option value="Bachelor of Science in Information Technology">BSIT</option>
                                 <option value="Bachelor of Science in Information Systems">BSIS</option>
                                 <option value="Bachelor of Science in Computer Science">BSCS</option>
@@ -171,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="form-group">
                             <label for="year">Year Level</label>
                             <select id="year" name="year">
-                                <option value="">Select Year</option>
+                                <option value="<?php echo htmlspecialchars($user['YEAR']); ?>">Change Year</option>
                                 <option value="Freshman">1st Year</option>
                                 <option value="Sophomore">2nd Year</option>
                                 <option value="Junior">3rd Year</option>

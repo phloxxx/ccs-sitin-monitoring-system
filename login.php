@@ -6,7 +6,7 @@ if(isset($_POST['login'])) {
     $username = trim($_POST['username']); // Trim to remove spaces
     $password = trim($_POST['password']);
 
-    // Prepare query without password in WHERE clause
+    // Prepare query
     $stmt = $conn->prepare("SELECT USER_ID, USERNAME, PASSWORD FROM USERS WHERE USERNAME = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -16,26 +16,25 @@ if(isset($_POST['login'])) {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // Since you don't want to use password_verify yet, direct match lang usa
+        // Direct match (if password is not hashed)
         if ($password === $user['PASSWORD']) {
             // Set session variables
-            $_SESSION['user_id'] = $user['USER_ID'];
+            $_SESSION['user_id'] = $user['USER_ID']; // IMPORTANT: Ensure this is set
             $_SESSION['username'] = $user['USERNAME'];
 
-            // Redirect to dashboard with success message
-            echo "<script>
-                    alert('You have successfully logged in!');
-                    window.location.href='dashboard.php';
-                  </script>";
+            // Debugging: Check if session is set
+            // var_dump($_SESSION); exit();
+
+            // Redirect properly
+            header("Location: dashboard.php");
             exit();
         } else {
-            $error = "Invalid username or password"; // Error message
+            $error = "Invalid username or password";
         }
     } else {
-        $error = "Invalid username or password"; // Error message
+        $error = "Invalid username or password";
     }
 
-    // Close the statement
     $stmt->close();
 }
 ?>

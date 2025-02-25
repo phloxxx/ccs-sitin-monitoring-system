@@ -133,29 +133,56 @@ main {
   justify-content: center;
   gap: 20px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 2000px;
 }
 
 /* Card Styling */
 .card {
-  width: 45%;
-  min-height: 450px;
+  width: 600px;
+  height: 400px; /* Fixed height */
   background: #FFF2AF;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 30px;
-  text-align: center;
+  text-align: left; /* Ensures left-aligned content */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevents card from expanding */
 }
 
+/* Title Styling */
 .card h2 {
   font-size: 2rem;
   margin-bottom: 15px;
   color: #007bff;
+  text-align: center;
 }
 
+/* Scrollable Content with Justify Alignment */
 .card p {
-  font-size: 1.2rem;
-  color: #555;
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 10px;
+  white-space: pre-line; /* Maintains line breaks */
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+  text-align: justify; /* Justify text alignment */
+}
+
+/* Custom Scrollbar (Optional) */
+.card p::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card p::-webkit-scrollbar-thumb {
+  background-color: #493D9E;
+  border-radius: 3px;
+}
+
+.card p::-webkit-scrollbar-track {
+  background-color: #FFF2AF;
 }
 
 /* Responsive Design */
@@ -183,3 +210,37 @@ main {
     width: 90%;
   }
 }
+/* Full-width Card Styling */
+.full-width-card {
+  width: 100%;
+  background: #FFF2AF;
+  color: #493D9E;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Title Container */
+.title-container {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.full-width-card h2, .full-width-card h3 {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+}
+
+/* Logo Styling */
+.logo-img {
+  width: 80px; /* Adjust size as needed */
+  height: 80px;
+  object-fit: contain;
+  margin: 0px 20px; /* Moves logos away from text */
+}
+
