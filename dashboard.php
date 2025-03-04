@@ -96,12 +96,12 @@ $profile_pic = !empty($user['PROFILE_PIC']) ? $user['PROFILE_PIC'] : "src/images
                     6. Observe computer time usage carefully. A fifteen-minute allowance is given for each use. Otherwise, the unit will be given to those who wish to "sit-in".
 
                     7. Observe proper decorum while inside the laboratory.
+                    a. Do not get inside the lab unless the instructor is present.
+                    b. All bags, knapsacks, and the likes must be deposited at the counter.
+                    c. Follow the seating arrangement of your instructor.
+                    d. At the end of class, all software programs must be closed.
+                    e. Return all chairs to their proper places after using.
 
-                    Do not get inside the lab unless the instructor is present.
-                    All bags, knapsacks, and the likes must be deposited at the counter.
-                    Follow the seating arrangement of your instructor.
-                    At the end of class, all software programs must be closed.
-                    Return all chairs to their proper places after using.
                     8. Chewing gum, eating, drinking, smoking, and other forms of vandalism are prohibited inside the lab.
 
                     9. Anyone causing a continual disturbance will be asked to leave the lab. Acts or gestures offensive to the members of the community, including public display of physical intimacy, are not tolerated.
@@ -112,11 +112,10 @@ $profile_pic = !empty($user['PROFILE_PIC']) ? $user['PROFILE_PIC'] : "src/images
 
                     12. Any technical problem or difficulty must be addressed to the laboratory supervisor, student assistant or instructor immediately.
 
+                    <b>DISCIPLINARY ACTION</b>
 
-                    DISCIPLINARY ACTION
-
-                    First Offense - The Head or the Dean or OIC recommends to the Guidance Center for a suspension from classes for each offender.
-                    Second and Subsequent Offenses - A recommendation for a heavier sanction will be endorsed to the Guidance Center.</p>
+                    <b>First Offense</b> - The Head or the Dean or OIC recommends to the Guidance Center for a suspension from classes for each offender.
+                    <b>Second and Subsequent Offenses</b> - A recommendation for a heavier sanction will be endorsed to the Guidance Center.</p>
             </div>
             <div class="card">
                 <h2>Announcements</h2>
