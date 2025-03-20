@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('../db.php'); // Updated path to correctly point to db.php in parent directory
+require_once('../config/db.php'); // Updated path to correctly point to db.php in parent directory
 
 // Clear form data when page loads directly (not from a form submission)
 if(!isset($_POST['register'])) {

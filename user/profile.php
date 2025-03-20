@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once('../db.php'); // Updated path to the database file
+require_once('../config/db.php'); // Updated path to the database file
 
 // Ensure user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -41,10 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
     $password_changed = false;
 
-    // Profile Picture Upload - Update to use consistent path
+    // Profile Picture Upload - Update to use uploads directory in user folder
     if (!empty($_FILES['profile_pic']['name'])) {
-        $upload_dir = "../user/images/";  // Physical directory path for saving
-        $db_path = "images/";  // Database path (relative to user directory)
+        $upload_dir = "uploads/";  // Physical directory path for saving (in user folder)
+        $db_path = "uploads/";  // Database path (relative to user directory)
         
         // Ensure the directory exists
         if (!is_dir($upload_dir)) {

@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once('../db.php'); // Updated path to the database file
+require_once('../config/db.php'); // Updated path to the database file
 
 // Ensure user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -25,9 +25,64 @@ if (!$user) {
 
 $username = $user['USERNAME'];
 
-// Set up profile picture path handling - simplified and consistent approach
+// Set up profile picture path handling - simplified approach
 $default_pic = "images/snoopy.jpg";
 $profile_pic = !empty($user['PROFILE_PIC']) ? $user['PROFILE_PIC'] : $default_pic;
+
+// Fetch announcements from the database table
+$announcements = [];
+try {
+    // Use the same table that the admin uses for announcements
+    $stmt = $conn->prepare("SELECT a.*, admin.username FROM ANNOUNCEMENT a 
+                           JOIN ADMIN admin ON a.ADMIN_ID = admin.ADMIN_ID 
+                           ORDER BY a.CREATED_AT DESC LIMIT 10");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $announcements[] = $row;
+    }
+    $stmt->close();
+} catch (Exception $e) {
+    // If there's an error or the table doesn't exist yet, use sample data
+    $announcements = [
+        [
+            'ANNOUNCE_ID' => 1,
+            'TITLE' => 'System Maintenance Notice',
+            'CONTENT' => 'The sit-in monitoring system will be undergoing maintenance this weekend. Please expect some downtime from Saturday 10 PM to Sunday 2 AM.',
+            'CREATED_AT' => '2023-10-15 09:30:00',
+            'username' => 'System Administrator'
+        ],
+        [
+            'ANNOUNCE_ID' => 2,
+            'TITLE' => 'New Programming Lab Rules',
+            'CONTENT' => 'Starting next week, all students must register their sit-in requests at least 24 hours in advance. This is to ensure better resource allocation and lab availability.',
+            'CREATED_AT' => '2023-10-12 14:45:00',
+            'username' => 'Lab Coordinator'
+        ],
+        [
+            'ANNOUNCE_ID' => 3,
+            'TITLE' => 'UC did it again.',
+            'CONTENT' => 'The College of Computer Studies will open the registration of students for the Sit-in privilege starting tomorrow. Thank you! Lab Supervisor',
+            'CREATED_AT' => '2023-10-03 14:30:00',
+            'username' => 'CCS Admin'
+        ]
+    ];
+}
+
+// Format date helper function
+function formatAnnouncementDate($datetime) {
+    $timestamp = strtotime($datetime);
+    $now = time();
+    $diff = $now - $timestamp;
+    
+    if ($diff < 86400) { // Less than 24 hours
+        return date('g:i A', $timestamp); // Show only time
+    } elseif ($diff < 604800) { // Less than 7 days
+        return date('l', $timestamp); // Show day name
+    } else {
+        return date('Y-M-d', $timestamp); // Show full date
+    }
+}
 
 // Use Poppins font consistently
 $pageTitle = "Dashboard";
@@ -130,21 +185,33 @@ include('includes/header.php');
                 <div class="bg-blue-50 rounded-lg shadow-sm p-6 h-[600px] border border-gray-200">
                     <h2 class="text-secondary text-xl font-bold mb-4 text-center">Announcements</h2>
                     <div class="overflow-y-auto h-[500px] pr-4" style="scrollbar-width: thin;">
-                        <div class="space-y-6">
-                            <div class="bg-primary bg-opacity-20 p-4 rounded-lg shadow-sm">
-                                <p class="text-sm text-gray-500 mb-2">CCS Admin | 2025-Feb-25</p>
-                                <p class="text-gray-800">UC did it again.</p>
-                            </div>
-                            
-                            <div class="bg-white p-4 rounded-lg shadow">
-                                <p class="text-sm text-gray-500 mb-2">CCS Admin | 2025-Feb-03</p>
-                                <p class="text-gray-800">The College of Computer Studies will open the registration of students for the Sit-in privilege starting tomorrow. Thank you! Lab Supervisor</p>
-                            </div>
-                            
-                            <div class="bg-white p-4 rounded-lg shadow">
-                                <p class="text-sm text-gray-500 mb-2">CCS Admin | 2024-May-08</p>
-                                <p class="text-gray-800">Important Announcement We are excited to announce the launch of our new website! 🎉 Explore our latest products and services now!</p>
-                            </div>
+                        <div class="space-y-6" id="announcements-container">
+                            <?php if (empty($announcements)): ?>
+                                <div class="bg-white p-4 rounded-lg shadow text-center">
+                                    <p class="text-gray-500">No announcements available at this time.</p>
+                                </div>
+                            <?php else: ?>
+                                <?php foreach ($announcements as $index => $announcement): ?>
+                                    <?php 
+                                    // Check if announcement is recent (less than 24 hours old)
+                                    $isRecent = (time() - strtotime($announcement['CREATED_AT']) < 86400);
+                                    $bgClass = $index === 0 ? "bg-primary bg-opacity-20" : "bg-white";
+                                    ?>
+                                    <div class="<?php echo $bgClass; ?> p-4 rounded-lg shadow-sm" data-id="<?php echo $announcement['ANNOUNCE_ID']; ?>">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <p class="text-sm text-gray-500">
+                                                <?php echo htmlspecialchars($announcement['username']); ?> | 
+                                                <?php echo date('Y-M-d', strtotime($announcement['CREATED_AT'])); ?>
+                                            </p>
+                                            <?php if($isRecent): ?>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">New</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <h3 class="font-medium text-gray-800 mb-1"><?php echo htmlspecialchars($announcement['TITLE']); ?></h3>
+                                        <p class="text-gray-800"><?php echo htmlspecialchars($announcement['CONTENT']); ?></p>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -161,6 +228,93 @@ include('includes/header.php');
             window.location.href = "logout.php";
         }
     }
+    
+    // Add real-time announcement updates using Ajax
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to periodically check for new announcements
+        function checkForNewAnnouncements() {
+            // Get the highest announcement ID currently displayed
+            const announcements = document.querySelectorAll('#announcements-container > div[data-id]');
+            let highestId = 0;
+            
+            if (announcements.length > 0) {
+                announcements.forEach(announcement => {
+                    const id = parseInt(announcement.getAttribute('data-id'));
+                    if (id > highestId) highestId = id;
+                });
+            }
+            
+            // Make an AJAX request to check for new announcements
+            fetch('ajax/get_announcements.php?last_id=' + highestId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.announcements && data.announcements.length > 0) {
+                        // Handle new announcements
+                        updateAnnouncementsDisplay(data.announcements);
+                    }
+                })
+                .catch(error => console.error('Error checking for announcements:', error));
+        }
+        
+        // Update the announcements display
+        function updateAnnouncementsDisplay(newAnnouncements) {
+            const container = document.getElementById('announcements-container');
+            
+            // Remove any "no announcements" message
+            const emptyMessage = container.querySelector('.text-center');
+            if (emptyMessage) {
+                container.innerHTML = '';
+            }
+            
+            // Add new announcements at the top
+            newAnnouncements.forEach(announcement => {
+                const newElement = document.createElement('div');
+                newElement.className = 'bg-primary bg-opacity-20 p-4 rounded-lg shadow-sm';
+                newElement.setAttribute('data-id', announcement.ANNOUNCE_ID);
+                
+                const date = new Date(announcement.CREATED_AT);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                newElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-sm text-gray-500">
+                            ${announcement.username} | 
+                            ${formattedDate}
+                        </p>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">New</span>
+                    </div>
+                    <h3 class="font-medium text-gray-800 mb-1">${announcement.TITLE}</h3>
+                    <p class="text-gray-800">${announcement.CONTENT}</p>
+                `;
+                
+                // Add with fade-in animation
+                newElement.style.opacity = '0';
+                if (container.firstChild) {
+                    container.insertBefore(newElement, container.firstChild);
+                } else {
+                    container.appendChild(newElement);
+                }
+                
+                // Fade in with faster transition (5ms instead of 10ms)
+                setTimeout(() => {
+                    newElement.style.transition = 'opacity 0.3s ease';
+                    newElement.style.opacity = '1';
+                }, 5);
+                
+                // Change other announcements to white background
+                document.querySelectorAll('#announcements-container > div:not(:first-child)').forEach(div => {
+                    div.className = 'bg-white p-4 rounded-lg shadow-sm';
+                });
+            });
+        }
+        
+        // Check for new announcements more frequently (every 15 seconds instead of 60)
+        setInterval(checkForNewAnnouncements, 15000);
+    });
 </script>
 
 <?php include('includes/footer.php'); ?>

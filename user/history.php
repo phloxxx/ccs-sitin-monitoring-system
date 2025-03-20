@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once('../db.php'); // Updated path to the database file
+require_once('../config/db.php'); // Updated path to the database file
 
 // Ensure user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -24,7 +24,7 @@ if (!$user) {
 }
 
 $username = $user['USERNAME'];
-// Set up profile picture path handling - simplified and consistent approach
+// Set up profile picture path handling - simplified approach
 $default_pic = "images/snoopy.jpg";
 $profile_pic = !empty($user['PROFILE_PIC']) ? $user['PROFILE_PIC'] : $default_pic;
 

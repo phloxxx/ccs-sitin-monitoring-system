@@ -45,13 +45,37 @@ if ($table_check->num_rows == 0) {
         USERNAME VARCHAR(50) UNIQUE NOT NULL,
         PASSWORD VARCHAR(255) NOT NULL,
         SESSION INT(11) DEFAULT 30,
-        PROFILE_PIC VARCHAR(255) DEFAULT 'images/snoopy.jpg'
+        PROFILE_PIC VARCHAR(255) DEFAULT 'images/snoopy.jpg',
+        CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     
     if ($conn->query($sql) === TRUE) {
         echo "<script>console.log('Users table created successfully');</script>";
+        
+        // Create uploads directory if it doesn't exist
+        $upload_dir = __DIR__ . '/user/uploads/';
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0777, true)) {
+                echo "<script>console.log('Failed to create uploads directory');</script>";
+            } else {
+                echo "<script>console.log('Uploads directory created successfully');</script>";
+            }
+        }
     } else {
         die("Error creating users table: " . $conn->error);
+    }
+}
+
+// Check if CREATED_AT column exists in USERS table, if not add it
+$column_check = $conn->query("SHOW COLUMNS FROM USERS LIKE 'CREATED_AT'");
+if ($column_check->num_rows == 0) {
+    // CREATED_AT column doesn't exist, add it
+    $sql = "ALTER TABLE USERS ADD COLUMN CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP";
+    try {
+        $conn->query($sql);
+    } catch (Exception $e) {
+        // Silently handle error to prevent breaking the application
+        error_log("Failed to add CREATED_AT column to USERS table: " . $e->getMessage());
     }
 }
 

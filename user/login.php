@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('../db.php');
+require_once('../config/db.php');
 
 if(isset($_POST['login'])) {
     $username = trim($_POST['username']);
