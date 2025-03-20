@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once('../../db.php');
+require_once('../../config/db.php');
 
 // Set the content type to JSON
 header('Content-Type: application/json');
 
 // Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    echo json_encode(['success' => false, 'message' => 'Not authorized']);
     exit();
 }
 
@@ -24,8 +24,8 @@ if (empty($_POST['title']) || empty($_POST['content'])) {
 }
 
 // Sanitize input
-$title = htmlspecialchars(trim($_POST['title']));
-$content = htmlspecialchars(trim($_POST['content']));
+$title = trim($_POST['title']);
+$content = trim($_POST['content']);
 $admin_id = $_SESSION['admin_id'];
 
 // Insert into database
@@ -34,12 +34,12 @@ try {
     $stmt->bind_param("iss", $admin_id, $title, $content);
     
     if ($stmt->execute()) {
-        $stmt->close();
-        echo json_encode(['success' => true, 'message' => 'Announcement posted successfully']);
+        echo json_encode(['success' => true, 'message' => 'Announcement created successfully']);
     } else {
-        throw new Exception("Database error: " . $stmt->error);
+        echo json_encode(['success' => false, 'message' => 'Failed to create announcement']);
     }
+    $stmt->close();
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Failed to post announcement: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 }
 ?>

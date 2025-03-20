@@ -247,9 +247,14 @@ include('includes/header.php');
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-secondary">Active Sit-In Sessions</h2>
-                    <a href="search.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
-                        <i class="fas fa-plus mr-2"></i> New Sit-In
-                    </a>
+                    <div class="flex space-x-3">
+                        <a href="sitin_records.php" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
+                            <i class="fas fa-history mr-2"></i> Sit-in Records
+                        </a>
+                        <a href="search.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
+                            <i class="fas fa-plus mr-2"></i> New Sit-In
+                        </a>
+                    </div>
                 </div>
                 
                 <div id="sitin-list" class="overflow-x-auto">

@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once('../../db.php');
+require_once('../../config/db.php');
 
 // Set the content type to JSON
 header('Content-Type: application/json');
 
 // Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    echo json_encode(['success' => false, 'message' => 'Not authorized']);
     exit();
 }
 
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Validate input
 if (empty($_POST['id']) || empty($_POST['title']) || empty($_POST['content'])) {
-    echo json_encode(['success' => false, 'message' => 'ID, title, and content are required']);
+    echo json_encode(['success' => false, 'message' => 'Missing required fields']);
     exit();
 }
 
@@ -44,7 +44,7 @@ try {
     
     $row = $result->fetch_assoc();
     if ($row['ADMIN_ID'] != $admin_id) {
-        echo json_encode(['success' => false, 'message' => 'You can only edit your own announcements']);
+        echo json_encode(['success' => false, 'message' => 'Not authorized to edit this announcement']);
         $stmt->close();
         exit();
     }
