@@ -149,14 +149,32 @@ include('includes/header.php');
     </main>
 </div>
 
+<!-- Confirmation Dialog -->
+<div id="confirmation-dialog" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h3 class="text-lg font-medium text-secondary mb-4">Confirm Logout</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to log out from the admin panel?</p>
+        <div class="flex justify-end space-x-4">
+            <button id="cancel-logout" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </button>
+            <a href="logout.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-dark transition-colors">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Confirmation dialog for logout
     function confirmLogout(event) {
         event.preventDefault();
-        var userConfirmed = confirm("Are you sure you want to logout?");
-        if (userConfirmed) {
-            window.location.href = "logout.php";
-        }
+        document.getElementById('confirmation-dialog').classList.remove('hidden');
     }
+    
+    document.getElementById('cancel-logout').addEventListener('click', () => {
+        document.getElementById('confirmation-dialog').classList.add('hidden');
+    });
 </script>
 
 <?php include('includes/footer.php'); ?>

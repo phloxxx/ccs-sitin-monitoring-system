@@ -388,7 +388,7 @@ include('includes/header.php');
                             <label for="course" class="block text-secondary font-medium mb-2">Course</label>
                             <select id="course" name="course" 
                                 class="form-input text-secondary">
-                                <option value="<?php echo htmlspecialchars($user['COURSE']); ?>" selected><?php echo htmlspecialchars($user['COURSE']); ?></option>
+                                <option value="<?php echo htmlspecialchars($user['COURSE']); ?>" disabled><?php echo htmlspecialchars($user['COURSE']); ?></option>
                                 <option value="Bachelor of Science in Information Technology">BSIT</option>
                                 <option value="Bachelor of Science in Information Systems">BSIS</option>
                                 <option value="Bachelor of Science in Computer Science">BSCS</option>
@@ -399,11 +399,11 @@ include('includes/header.php');
                             <label for="year" class="block text-secondary font-medium mb-2">Year Level</label>
                             <select id="year" name="year" 
                                 class="form-input text-secondary">
-                                <option value="<?php echo htmlspecialchars($user['YEAR']); ?>" selected><?php echo htmlspecialchars($user['YEAR']); ?></option>
-                                <option value="Freshman">1st Year</option>
-                                <option value="Sophomore">2nd Year</option>
-                                <option value="Junior">3rd Year</option>
-                                <option value="Senior">4th Year</option>
+                                <option value="<?php echo htmlspecialchars($user['YEAR']); ?>" disabled><?php echo htmlspecialchars($user['YEAR']); ?></option>
+                                <option value="First Year">1st Year</option>
+                                <option value="Second Year">2nd Year</option>
+                                <option value="Third Year">3rd Year</option>
+                                <option value="Fourth Year">4th Year</option>
                             </select>
                         </div>
                     </div>

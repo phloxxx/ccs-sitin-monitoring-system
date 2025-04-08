@@ -267,10 +267,6 @@ include('includes/header.php');
                                             data-year="<?php echo htmlspecialchars($student['YEAR']); ?>">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
-                                    <button class="text-secondary hover:text-dark" 
-                                            onclick="openSitInForm('<?php echo $student['IDNO']; ?>', '<?php echo htmlspecialchars($student['FIRSTNAME'] . ' ' . $student['LASTNAME']); ?>', <?php echo $student['SESSION']; ?>)">
-                                        <i class="fas fa-desktop"></i> Sit-In
-                                    </button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -318,6 +314,22 @@ include('includes/header.php');
                 <?php endif; ?>
             </div>
         </main>
+    </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div id="confirmation-dialog" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h3 class="text-lg font-medium text-secondary mb-4">Confirm Logout</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to log out from the admin panel?</p>
+        <div class="flex justify-end space-x-4">
+            <button id="cancel-logout" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </button>
+            <a href="logout.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-dark transition-colors">
+                Logout
+            </a>
+        </div>
     </div>
 </div>
 
@@ -380,12 +392,12 @@ include('includes/header.php');
                     <label for="student-course" class="block text-sm font-medium text-gray-700 mb-1">Course *</label>
                     <select id="student-course" name="course" required
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
-                        <option value="">Select Course</option>
-                        <option value="BSIT">BSIT</option>
-                        <option value="BSCS">BSCS</option>
-                        <option value="BSDA">BSDA</option>
-                        <option value="ACT">ACT</option>
-                        <option value="MIT">MIT</option>
+                        <option value="" disabled>Select Course</option>
+                        <option value="Bachelor of Science in Information Technology">BSIT</option>
+                        <option value="Bachelor of Science in Computer Science">BSCS</option>
+                        <option value="Associate in Computer Technology">ACT</option>
+                        <option value="Bachelor of Science in Human Resourse Management">BSHRM</option>
+                        <option value="Bachelor of Science in Criminology">BSCRIM</option>
                     </select>
                 </div>
                 
@@ -393,23 +405,22 @@ include('includes/header.php');
                     <label for="student-year" class="block text-sm font-medium text-gray-700 mb-1">Year Level *</label>
                     <select id="student-year" name="year" required
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
-                        <option value="">Select Year</option>
-                        <option value="1">1st Year</option>
-                        <option value="2">2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
-                        <option value="5">5th Year</option>
+                        <option value="" disabled>Select Year</option>
+                        <option value="First Year">1st Year</option>
+                        <option value="Second Year">2nd Year</option>
+                        <option value="Third Year">3rd Year</option>
+                        <option value="Fourth Year">4th Year</option>
                     </select>
                 </div>
                 
                 <div>
                     <label for="student-sessions" class="block text-sm font-medium text-gray-700 mb-1">Initial Sessions *</label>
-                    <input type="number" id="student-sessions" name="sessions" required min="0" max="100" value="10"
+                    <input type="number" id="student-sessions" name="sessions" required min="0" max="30" value="30"
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
                 </div>
             </div>
             
-            <div class="flex justify-end space-x-4">
+            <div class="flex justify-end space-x-2 mt-4">
                 <button type="button" id="cancel-student-form" 
                         class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     Cancel
@@ -477,7 +488,7 @@ include('includes/header.php');
             document.getElementById('student-midname').value = this.dataset.midname;
             document.getElementById('student-course').value = this.dataset.course;
             document.getElementById('student-year').value = this.dataset.year;
-            document.getElementById('student-sessions').value = this.dataset.session;
+            document.getElementById('student-sessions').readOnly = this.dataset.session;
             
             // Password fields not required for edit
             document.getElementById('student-password').removeAttribute('required');

@@ -124,11 +124,12 @@ include('includes/header.php');
                             <div class="relative">
                                 <select id="course" name="course" required 
                                         class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary appearance-none bg-white text-gray-700">
-                                    <option value="" class="text-gray-700">Select Course</option>
+                                    <option value="" class="text-gray-700" disabled>Select Course</option>
                                     <option value="Bachelor of Science in Information Technology" <?php echo ($form_data['course'] == 'Bachelor of Science in Information Technology') ? 'selected' : ''; ?> class="text-gray-700">BSIT</option>
-                                    <option value="Bachelor of Science in Information Systems" <?php echo ($form_data['course'] == 'Bachelor of Science in Information Systems') ? 'selected' : ''; ?> class="text-gray-700">BSIS</option>
                                     <option value="Bachelor of Science in Computer Science" <?php echo ($form_data['course'] == 'Bachelor of Science in Computer Science') ? 'selected' : ''; ?> class="text-gray-700">BSCS</option>
                                     <option value="Associate in Computer Technology" <?php echo ($form_data['course'] == 'Associate in Computer Technology') ? 'selected' : ''; ?> class="text-gray-700">ACT</option>
+                                    <option value="Bachelor of Science in Human Resourse Management" <?php echo ($form_data['course'] == 'Bachelor of Science in Human Resourse Management') ? 'selected' : ''; ?> class="text-gray-700">BSHRM</option>
+                                    <option value="Bachelor of Science in Criminology" <?php echo ($form_data['course'] == 'Bachelor of Science in Criminology') ? 'selected' : ''; ?> class="text-gray-700">BSCRIM</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
                                     <i class="fas fa-chevron-down"></i>
@@ -144,7 +145,7 @@ include('includes/header.php');
                             <div class="relative">
                                 <select id="year" name="year" required 
                                         class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary appearance-none bg-white text-gray-700">
-                                    <option value="" class="text-gray-700">Select Year</option>
+                                    <option value="" class="text-gray-700" disabled>Select Year</option>
                                     <option value="First Year" <?php echo ($form_data['year'] == 'First Year') ? 'selected' : ''; ?> class="text-gray-700">1st Year</option>
                                     <option value="Second Year" <?php echo ($form_data['year'] == 'Second Year') ? 'selected' : ''; ?> class="text-gray-700">2nd Year</option>
                                     <option value="Third Year" <?php echo ($form_data['year'] == 'Third Year') ? 'selected' : ''; ?> class="text-gray-700">3rd Year</option>
