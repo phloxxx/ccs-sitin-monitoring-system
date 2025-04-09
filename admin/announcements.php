@@ -81,6 +81,10 @@ include('includes/header.php');
                         <i class="fas fa-bullhorn mr-3"></i>
                         <span>Announcements</span>
                     </a>
+                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3"></i>
+                        <span>Feedbacks</span>
+                    </a>
                 </nav>
                 
                 <div class="mt-auto">
@@ -138,6 +142,10 @@ include('includes/header.php');
                     <a href="announcements.php" class="block px-4 py-2 text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-bullhorn mr-3"></i>
                         Announcements
+                    </a>
+                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-comments mr-3"></i>
+                        Feedbacks
                     </a>
                     <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-sign-out-alt mr-3"></i>

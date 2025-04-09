@@ -127,12 +127,12 @@ include('includes/header.php');
         <div class="container mx-auto max-w-7xl">
             <!-- Header Banner with Logos -->
             <div class="bg-blue-50 rounded-lg shadow-sm p-4 mb-6 flex items-center justify-between">
-                <img src="../user/images/uc_logo.png" alt="UC Logo" class="h-12 w-auto">
+                <img src="../student/images/uc_logo.png" alt="UC Logo" class="h-12 w-auto">
                 <div class="text-center">
                     <h2 class="text-secondary text-2xl font-bold">University of Cebu</h2>
                     <h3 class="text-dark text-lg">COLLEGE OF INFORMATION & COMPUTER STUDIES</h3>
                 </div>
-                <img src="../user/images/ccs_logo.png" alt="CCS Logo" class="h-14 w-auto">
+                <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-14 w-auto">
             </div>
             
             <!-- Content Cards -->

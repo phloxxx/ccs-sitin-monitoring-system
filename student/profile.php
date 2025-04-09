@@ -302,7 +302,7 @@ include('includes/header.php');
                     <img src="<?php echo htmlspecialchars($profile_pic); ?>" 
                         alt="Profile Picture" 
                         class="w-36 h-36 rounded-full border-4 border-primary object-cover shadow-md"
-                        onerror="this.src='../user/images/snoopy.jpg'">
+                        onerror="this.src='../student/images/snoopy.jpg'">
                 </div>
                 
                 <h2 class="text-2xl font-bold text-secondary mb-8"><?php echo htmlspecialchars($user['USERNAME']); ?></h2>
@@ -335,7 +335,7 @@ include('includes/header.php');
                         <img src="<?php echo htmlspecialchars($profile_pic); ?>" 
                             alt="Profile Picture" id="profilePicPreview"
                             class="w-36 h-36 rounded-full border-4 border-primary object-cover shadow-md"
-                            onerror="this.src='../user/images/snoopy.jpg'">
+                            onerror="this.src='../student/images/snoopy.jpg'">
                             
                         <div class="absolute bottom-0 right-0 left-0 mx-auto w-10 h-10 bg-secondary rounded-full flex items-center justify-center cursor-pointer shadow-lg transform translate-y-2" 
                             onclick="triggerFileInput()">

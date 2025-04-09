@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id']; 
 
 // Fetch user details from database
-$stmt = $conn->prepare("SELECT USERNAME, PROFILE_PIC FROM USERS WHERE USER_ID = ?");
+$stmt = $conn->prepare("SELECT USERNAME, PROFILE_PIC, IDNO FROM USERS WHERE USER_ID = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -24,43 +24,36 @@ if (!$user) {
 }
 
 $username = $user['USERNAME'];
+$student_id = $user['IDNO'];
 // Set up profile picture path handling - simplified approach
 $default_pic = "images/snoopy.jpg";
 $profile_pic = !empty($user['PROFILE_PIC']) ? $user['PROFILE_PIC'] : $default_pic;
 
-// Mock data for history (this would come from a database in a real app)
-$history = [
-    [
-        'date' => '2024-05-15',
-        'time_in' => '08:30 AM',
-        'time_out' => '10:30 AM',
-        'duration' => '2 hours',
-        'lab_room' => 'CCS Lab 1',
-        'pc_number' => 'PC-15',
-        'status' => 'Completed'
-    ],
-    [
-        'date' => '2024-05-10',
-        'time_in' => '01:15 PM',
-        'time_out' => '03:15 PM',
-        'duration' => '2 hours',
-        'lab_room' => 'CCS Lab 2',
-        'pc_number' => 'PC-08',
-        'status' => 'Completed'
-    ],
-    [
-        'date' => '2024-05-05',
-        'time_in' => '10:00 AM',
-        'time_out' => '11:30 AM',
-        'duration' => '1.5 hours',
-        'lab_room' => 'CCS Lab 1',
-        'pc_number' => 'PC-22',
-        'status' => 'Completed'
-    ],
-];
+// Get actual sit-in history for the user with feedback status
+$history = [];
+try {
+    $stmt = $conn->prepare("
+        SELECT s.SITIN_ID, s.SESSION_START, s.SESSION_END, s.PURPOSE, s.STATUS, l.LAB_NAME,
+               (SELECT COUNT(*) FROM FEEDBACK f WHERE f.SITIN_ID = s.SITIN_ID) AS feedback_exists
+        FROM SITIN s
+        JOIN LABORATORY l ON s.LAB_ID = l.LAB_ID
+        WHERE s.IDNO = ? AND s.STATUS = 'COMPLETED'
+        ORDER BY s.SESSION_END DESC
+    ");
+    $stmt->bind_param("s", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $history[] = $row;
+    }
+    $stmt->close();
+} catch (Exception $e) {
+    // Log error for debugging
+    error_log("Error fetching history: " . $e->getMessage());
+}
 
 $pageTitle = "History";
-$bodyClass = "bg-light font-montserrat";
+$bodyClass = "bg-light font-poppins";
 include('includes/header.php');
 ?>
 
@@ -109,10 +102,10 @@ include('includes/header.php');
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Date</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Time In</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Time Out</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Duration</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Lab Room</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">PC Number</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Purpose</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -123,16 +116,26 @@ include('includes/header.php');
                             <?php else: ?>
                                 <?php foreach ($history as $record): ?>
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['date']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['time_in']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['time_out']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['duration']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['lab_room']); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['pc_number']); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars(date('Y-m-d', strtotime($record['SESSION_START']))); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars(date('h:i A', strtotime($record['SESSION_START']))); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars(date('h:i A', strtotime($record['SESSION_END']))); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['LAB_NAME']); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($record['PURPOSE']); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                <?php echo htmlspecialchars($record['status']); ?>
+                                                <?php echo htmlspecialchars($record['STATUS']); ?>
                                             </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <?php if ($record['feedback_exists'] > 0): ?>
+                                                <span class="text-green-600">
+                                                    <i class="fas fa-check-circle mr-1"></i> Feedback Submitted
+                                                </span>
+                                            <?php else: ?>
+                                                <button class="text-primary hover:text-dark feedback-btn" data-sitin-id="<?php echo $record['SITIN_ID']; ?>">
+                                                    <i class="fas fa-comment-alt mr-1"></i> Feedback
+                                                </button>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -144,7 +147,6 @@ include('includes/header.php');
         </div>
     </main>
 </div>
-
 
 <!-- Confirmation Dialog -->
 <div id="confirmation-dialog" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
@@ -162,6 +164,48 @@ include('includes/header.php');
     </div>
 </div>
 
+<!-- Feedback Modal -->
+<div id="feedback-modal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div class="flex justify-between items-center border-b pb-3">
+            <h3 class="text-lg font-medium text-secondary">Submit Feedback</h3>
+            <button id="close-feedback" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="feedback-form" class="mt-4">
+            <input type="hidden" id="feedback-sitin-id" name="sitin_id" value="">
+            
+            <div class="mb-4">
+                <label for="feedback-rating" class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                <div class="flex justify-center space-x-3 text-3xl">
+                    <i class="far fa-star rating-star cursor-pointer text-primary" data-rating="1"></i>
+                    <i class="far fa-star rating-star cursor-pointer text-primary" data-rating="2"></i>
+                    <i class="far fa-star rating-star cursor-pointer text-primary" data-rating="3"></i>
+                    <i class="far fa-star rating-star cursor-pointer text-primary" data-rating="4"></i>
+                    <i class="far fa-star rating-star cursor-pointer text-primary" data-rating="5"></i>
+                </div>
+                <input type="hidden" id="feedback-rating-value" name="rating" value="0">
+            </div>
+            
+            <div class="mb-4">
+                <label for="feedback-comments" class="block text-sm font-medium text-gray-700 mb-1">Comments</label>
+                <textarea id="feedback-comments" name="comments" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary" placeholder="Share your experience..."></textarea>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button type="button" id="cancel-feedback" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-2">
+                    Cancel
+                </button>
+                <button type="submit" id="submit-feedback" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors">
+                    Submit Feedback
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     // Confirmation dialog for logout
     function confirmLogout(event) {
@@ -171,6 +215,146 @@ include('includes/header.php');
     
     document.getElementById('cancel-logout').addEventListener('click', () => {
         document.getElementById('confirmation-dialog').classList.add('hidden');
+    });
+    
+    // Feedback functionality
+    const feedbackModal = document.getElementById('feedback-modal');
+    const feedbackForm = document.getElementById('feedback-form');
+    const feedbackSitinId = document.getElementById('feedback-sitin-id');
+    const ratingStars = document.querySelectorAll('.rating-star');
+    const ratingValue = document.getElementById('feedback-rating-value');
+    
+    // Show feedback modal when clicking the feedback button
+    document.querySelectorAll('.feedback-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const sitinId = button.getAttribute('data-sitin-id');
+            feedbackSitinId.value = sitinId;
+            
+            // Reset form
+            feedbackForm.reset();
+            resetStars();
+            ratingValue.value = 0;
+            
+            // Show modal
+            feedbackModal.classList.remove('hidden');
+        });
+    });
+    
+    // Close feedback modal
+    document.getElementById('close-feedback').addEventListener('click', () => {
+        feedbackModal.classList.add('hidden');
+    });
+    
+    document.getElementById('cancel-feedback').addEventListener('click', () => {
+        feedbackModal.classList.add('hidden');
+    });
+    
+    // Star rating functionality
+    function resetStars() {
+        ratingStars.forEach(star => {
+            star.classList.remove('fas');
+            star.classList.add('far');
+        });
+    }
+    
+    ratingStars.forEach(star => {
+        star.addEventListener('mouseover', () => {
+            resetStars();
+            const rating = parseInt(star.getAttribute('data-rating'));
+            
+            // Fill stars up to the hovered star
+            ratingStars.forEach(s => {
+                const starRating = parseInt(s.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    s.classList.remove('far');
+                    s.classList.add('fas');
+                }
+            });
+        });
+        
+        star.addEventListener('click', () => {
+            const rating = parseInt(star.getAttribute('data-rating'));
+            ratingValue.value = rating;
+        });
+    });
+    
+    // Reset star appearance when mouse leaves the rating area
+    const ratingContainer = document.querySelector('.rating-star').parentElement;
+    ratingContainer.addEventListener('mouseleave', () => {
+        resetStars();
+        const currentRating = parseInt(ratingValue.value);
+        
+        // Refill stars based on the selected rating
+        if (currentRating > 0) {
+            ratingStars.forEach(s => {
+                const starRating = parseInt(s.getAttribute('data-rating'));
+                if (starRating <= currentRating) {
+                    s.classList.remove('far');
+                    s.classList.add('fas');
+                }
+            });
+        }
+    });
+    
+    // Form submission
+    feedbackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const rating = ratingValue.value;
+        const comments = document.getElementById('feedback-comments').value;
+        
+        if (rating === '0') {
+            alert('Please select a rating before submitting.');
+            return;
+        }
+        
+        // Submit form via AJAX
+        const formData = new FormData(this);
+        
+        // Disable submit button
+        const submitBtn = document.getElementById('submit-feedback');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+        
+        fetch('ajax/submit_feedback.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                alert('Thank you for your feedback!');
+                // Close modal
+                feedbackModal.classList.add('hidden');
+                // Reload the page to show updated status
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Unknown error occurred'));
+                console.error('Feedback submission error:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again. Details: ' + error.message);
+        })
+        .finally(() => {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Submit Feedback';
+        });
+    });
+    
+    // Close modal when clicking outside
+    feedbackModal.addEventListener('click', function(event) {
+        if (event.target === this) {
+            this.classList.add('hidden');
+        }
     });
 </script>
 

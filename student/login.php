@@ -33,7 +33,7 @@ include('includes/header.php');
 ?>
 
 <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center relative" 
-     style="background-image: url('../user/images/uc_bg.jpg')">
+     style="background-image: url('../student/images/uc_bg.jpg')">
     <!-- Overlay -->
     <div class="absolute inset-0 bg-dark opacity-50"></div>
     
@@ -41,8 +41,8 @@ include('includes/header.php');
         <div class="bg-white shadow-lg rounded-xl overflow-hidden transform transition-all hover:scale-105 duration-300">
             <div class="px-8 py-8">
                 <div class="flex justify-center space-x-8 mb-6">
-                    <img src="../user/images/ccs_logo.png" alt="CCS Logo" class="h-16 w-auto">
-                    <img src="../user/images/uc_logo.png" alt="UC Logo" class="h-16 w-auto">
+                    <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-16 w-auto">
+                    <img src="../student/images/uc_logo.png" alt="UC Logo" class="h-16 w-auto">
                 </div>
                 
                 <h2 class="text-center text-2xl font-bold text-secondary mb-8">CCS SITIN MONITORING SYSTEM</h2>

@@ -11,8 +11,7 @@ if (!isset($_SESSION['admin_id'])) {
 $admin_id = $_SESSION['admin_id'];
 $username = $_SESSION['username'];
 
-// Fetch basic stats - these would typically come from database queries
-// For example, count of students, active sit-ins, etc.
+// Initialize stats array
 $stats = [
     'total_students' => 0,
     'active_sessions' => 0,
@@ -28,13 +27,30 @@ try {
     $stats['total_students'] = $result->fetch_assoc()['count'];
     $stmt->close();
     
-    // You would add other database queries here for the rest of the stats
-    // Since we don't have these tables yet, we'll use placeholder data
-    $stats['active_sessions'] = 15;
-    $stats['total_sessions'] = 1250;
-    $stats['labs_in_use'] = 2;
+    // Count active sessions from SITIN table
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM SITIN WHERE STATUS = 'ACTIVE'");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stats['active_sessions'] = $result->fetch_assoc()['count'];
+    $stmt->close();
+    
+    // Count total sessions (all time) from SITIN table
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM SITIN");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stats['total_sessions'] = $result->fetch_assoc()['count'];
+    $stmt->close();
+    
+    // Count labs in use (distinct labs with active sessions)
+    $stmt = $conn->prepare("SELECT COUNT(DISTINCT LAB_ID) as count FROM SITIN WHERE STATUS = 'ACTIVE'");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stats['labs_in_use'] = $result->fetch_assoc()['count'];
+    $stmt->close();
+    
 } catch (Exception $e) {
-    // Handle database errors
+    // Handle database errors - silently continue with zero values
+    // You might want to log the error in a production environment
 }
 
 // Get recent announcements (last 5) with admin username
@@ -107,6 +123,10 @@ include('includes/header.php');
                         <i class="fas fa-bullhorn mr-3"></i>
                         <span>Announcements</span>
                     </a>
+                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3"></i>
+                        <span>Feedbacks</span>
+                    </a>
                 </nav>
                 
                 <div class="mt-auto">
@@ -161,6 +181,14 @@ include('includes/header.php');
                         Sit-in
                     </a>
                     <hr class="my-2 border-gray-400 border-opacity-20">
+                    <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-bullhorn mr-3"></i>
+                        Announcements
+                    </a>
+                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-comments mr-3"></i>
+                        Feedbacks
+                    </a>
                     <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-sign-out-alt mr-3"></i>
                         Logout

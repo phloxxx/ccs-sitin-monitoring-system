@@ -30,6 +30,21 @@ try {
     $error_message = $e->getMessage();
 }
 
+// Get all laboratories for the filter dropdown
+$laboratories = [];
+try {
+    $stmt = $conn->prepare("SELECT * FROM LABORATORY ORDER BY LAB_NAME");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $laboratories[] = $row;
+    }
+    $stmt->close();
+} catch (Exception $e) {
+    // If error, use default values
+    $laboratories = [];
+}
+
 $pageTitle = "Sit-In Records";
 $bodyClass = "bg-light font-poppins";
 include('includes/header.php');
@@ -64,6 +79,10 @@ include('includes/header.php');
                     <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-bullhorn mr-3"></i>
                         <span>Announcements</span>
+                    </a>
+                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3"></i>
+                        <span>Feedbacks</span>
                     </a>
                 </nav>
                 
@@ -123,6 +142,10 @@ include('includes/header.php');
                         <i class="fas fa-bullhorn mr-3"></i>
                         Announcements
                     </a>
+                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-comments mr-3"></i>
+                        Feedbacks
+                    </a>
                     <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-sign-out-alt mr-3"></i>
                         Logout
@@ -133,13 +156,77 @@ include('includes/header.php');
 
         <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+            <!-- Filter Options -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <h2 class="text-lg font-semibold text-secondary mb-4">Filter Records</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="lab-filter" class="block text-sm font-medium text-gray-700 mb-1">Laboratory</label>
+                        <select id="lab-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
+                            <option value="">All Laboratories</option>
+                            <?php foreach ($laboratories as $lab): ?>
+                                <option value="<?php echo $lab['LAB_NAME']; ?>"><?php echo htmlspecialchars($lab['LAB_NAME']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="date-filter" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input type="date" id="date-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    
+                    <div>
+                        <label for="purpose-filter" class="block text-sm font-medium text-gray-700 mb-1">Programming Language</label>
+                        <select id="purpose-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
+                            <option value="">All Languages</option>
+                            <?php
+                            try {
+                                $purposeQuery = "SELECT DISTINCT PURPOSE FROM SITIN WHERE PURPOSE != '' ORDER BY PURPOSE";
+                                $purposeResult = $conn->query($purposeQuery);
+                                while ($purpose = $purposeResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($purpose['PURPOSE']) . '">' . 
+                                         htmlspecialchars($purpose['PURPOSE']) . '</option>';
+                                }
+                            } catch (Exception $e) {
+                                // Fallback to default options if query fails
+                                $defaultOptions = ['Java', 'Python', 'C++', 'C#', 'JavaScript', 'PHP', 'SQL', 'Other'];
+                                foreach ($defaultOptions as $option) {
+                                    echo '<option value="' . $option . '">' . $option . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="student-filter" class="block text-sm font-medium text-gray-700 mb-1">Student ID/Name</label>
+                        <input type="text" id="student-filter" placeholder="Search by ID or name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                </div>
+                
+                <div class="mt-4 flex justify-end">
+                    <button id="reset-filters" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-2">
+                        Reset Filters
+                    </button>
+                    <button id="apply-filters" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-dark transition-colors">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+
             <!-- Table Header -->
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-secondary">Completed Sit-In Sessions</h2>
-                    <a href="sitin.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
-                        <i class="fas fa-desktop mr-2"></i> Active Sessions
-                    </a>
+                    <div class="flex space-x-3">
+                        <a href="sitin.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
+                            <i class="fas fa-desktop mr-2"></i> Active Sessions
+                        </a>
+                        <a href="sitin_reports.php" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
+                            <i class="fas fa-chart-bar mr-2"></i> Sit-In Reports
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Records Table -->
@@ -152,17 +239,23 @@ include('includes/header.php');
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Time</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php foreach ($completed_sitins as $sitin): ?>
-                                <tr>
+                                <tr class="sitin-record-row"
+                                    data-lab="<?php echo htmlspecialchars($sitin['LAB_NAME']); ?>"
+                                    data-date="<?php echo date('Y-m-d', strtotime($sitin['SESSION_START'])); ?>"
+                                    data-purpose="<?php echo htmlspecialchars($sitin['PURPOSE']); ?>"
+                                    data-student="<?php echo htmlspecialchars($sitin['IDNO'] . ' ' . $sitin['LASTNAME'] . ' ' . $sitin['FIRSTNAME'] . ' ' . $sitin['MIDNAME']); ?>">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div>
                                                 <div class="text-sm font-medium text-gray-900">
                                                     <?php echo htmlspecialchars($sitin['LASTNAME'] . ', ' . $sitin['FIRSTNAME'] . ' ' . $sitin['MIDNAME']); ?>
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    <?php echo htmlspecialchars($sitin['IDNO']); ?>
                                                 </div>
                                                 <div class="text-sm text-gray-500">
                                                     <?php echo htmlspecialchars($sitin['COURSE'] . ' - ' . $sitin['YEAR']); ?>
@@ -182,22 +275,153 @@ include('includes/header.php');
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <?php echo date('M j, Y h:i A', strtotime($sitin['SESSION_END'])); ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php
-                                        $start = new DateTime($sitin['SESSION_START']);
-                                        $end = new DateTime($sitin['SESSION_END']);
-                                        $duration = $end->diff($start);
-                                        echo $duration->format('%h hrs %i mins');
-                                        ?>
-                                    </td>
                                 </tr>
                             <?php endforeach; ?>
+                            <?php if (empty($completed_sitins)): ?>
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        No completed sit-in sessions found.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="no-results-message" class="py-8 text-center text-gray-500 hidden">
+                    <i class="fas fa-search mb-3 text-2xl"></i>
+                    <p>No records found matching your filter criteria</p>
                 </div>
             </div>
         </main>
     </div>
 </div>
+
+<!-- Confirmation Dialog for Logout -->
+<div id="confirmation-dialog" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h3 class="text-lg font-medium text-secondary mb-4">Confirm Logout</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to log out from the admin panel?</p>
+        <div class="flex justify-end space-x-4">
+            <button id="cancel-logout" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </button>
+            <a href="logout.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-dark transition-colors">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    
+    // Confirmation dialog for logout
+    function confirmLogout(event) {
+        event.preventDefault();
+        document.getElementById('confirmation-dialog').classList.remove('hidden');
+    }
+    
+    document.getElementById('cancel-logout').addEventListener('click', () => {
+        document.getElementById('confirmation-dialog').classList.add('hidden');
+    });
+    
+    // Close dialog when clicking outside
+    document.getElementById('confirmation-dialog').addEventListener('click', function(event) {
+        if (event.target === this) {
+            this.classList.add('hidden');
+        }
+    });
+
+    // Filter functionality
+    const labFilter = document.getElementById('lab-filter');
+    const dateFilter = document.getElementById('date-filter');
+    const purposeFilter = document.getElementById('purpose-filter');
+    const studentFilter = document.getElementById('student-filter');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const resetFiltersBtn = document.getElementById('reset-filters');
+    const rows = document.querySelectorAll('.sitin-record-row');
+    const noResultsMessage = document.getElementById('no-results-message');
+    
+    // Apply filters
+    function applyFilters() {
+        const labValue = labFilter.value.toLowerCase();
+        const dateValue = dateFilter.value;
+        const purposeValue = purposeFilter.value.toLowerCase();
+        const studentValue = studentFilter.value.toLowerCase();
+        
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            let show = true;
+            
+            if (labValue && row.getAttribute('data-lab').toLowerCase() !== labValue) {
+                show = false;
+            }
+            
+            if (dateValue && row.getAttribute('data-date') !== dateValue) {
+                show = false;
+            }
+            
+            if (purposeValue && row.getAttribute('data-purpose').toLowerCase() !== purposeValue) {
+                show = false;
+            }
+            
+            if (studentValue && !row.getAttribute('data-student').toLowerCase().includes(studentValue)) {
+                show = false;
+            }
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        // Show "no results" message if no rows are visible
+        if (visibleCount === 0) {
+            noResultsMessage.classList.remove('hidden');
+        } else {
+            noResultsMessage.classList.add('hidden');
+        }
+    }
+    
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', applyFilters);
+    }
+    
+    // Reset filters
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', () => {
+            labFilter.value = '';
+            dateFilter.value = '';
+            purposeFilter.value = '';
+            studentFilter.value = '';
+            
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            
+            noResultsMessage.classList.add('hidden');
+        });
+    }
+
+    // Real-time filtering for student search
+    if (studentFilter) {
+        studentFilter.addEventListener('input', function() {
+            if (this.value.length >= 2) {
+                applyFilters();
+            } else if (this.value.length === 0) {
+                applyFilters();
+            }
+        });
+    }
+</script>
 
 <?php include('includes/footer.php'); ?>

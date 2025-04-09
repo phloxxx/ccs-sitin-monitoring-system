@@ -33,7 +33,7 @@ include('includes/header.php');
 ?>
 
 <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center relative" 
-     style="background-image: url('../user/images/uc_bg.jpg')">
+     style="background-image: url('../student/images/uc_bg.jpg')">
     <!-- Overlay -->
     <div class="absolute inset-0 bg-dark opacity-50"></div>
     

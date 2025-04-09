@@ -2,59 +2,78 @@
 session_start();
 require_once('../../config/db.php');
 
-// Ensure the admin is logged in
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['admin_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Not authorized']);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit;
 }
 
-$admin_id = $_SESSION['admin_id'];
-
-// Get the sit-in ID
-$sitin_id = isset($_POST['sitin_id']) ? (int)$_POST['sitin_id'] : 0;
-
-if ($sitin_id <= 0) {
-    echo json_encode(['success' => false, 'message' => 'Invalid sit-in ID']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
 }
 
-// Start transaction
-$conn->begin_transaction();
+$sitin_id = $_POST['sitin_id'] ?? null;
+
+if (!$sitin_id) {
+    echo json_encode(['success' => false, 'message' => 'Missing sit-in ID']);
+    exit;
+}
 
 try {
-    // Get the sit-in record
-    $stmt = $conn->prepare("SELECT * FROM SITIN WHERE SITIN_ID = ? AND STATUS = 'ACTIVE'");
+    // Begin transaction
+    $conn->begin_transaction();
+    
+    // Get the sit-in session and student details
+    $stmt = $conn->prepare("SELECT s.*, u.SESSION as remaining_sessions 
+                            FROM SITIN s
+                            JOIN USERS u ON s.IDNO = u.IDNO 
+                            WHERE s.SITIN_ID = ? AND s.STATUS = 'ACTIVE'");
     $stmt->bind_param("i", $sitin_id);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result->num_rows === 0) {
-        throw new Exception("Sit-in session not found or already completed");
+        throw new Exception("Active sit-in session not found");
     }
     
     $sitin = $result->fetch_assoc();
+    $idno = $sitin['IDNO'];
+    $remainingSessions = $sitin['remaining_sessions'];
+    $sessionCount = $sitin['SESSION_DURATION'];
     
-    // Calculate the actual session duration
-    $start_time = new DateTime($sitin['SESSION_START']);
-    $end_time = new DateTime();
-    $duration = $start_time->diff($end_time);
-    $duration_hours = $duration->h + ($duration->days * 24);
+    // Check if student has enough sessions
+    if ($remainingSessions < $sessionCount) {
+        // In case the student doesn't have enough sessions, use what they have
+        $sessionCount = $remainingSessions;
+    }
     
-    // Update the sit-in record
-    $stmt = $conn->prepare("UPDATE SITIN SET 
-                           SESSION_END = NOW(), 
-                           STATUS = 'COMPLETED', 
-                           UPDATED_AT = NOW() 
-                           WHERE SITIN_ID = ?");
+    // Update the sit-in session to COMPLETED
+    $stmt = $conn->prepare("UPDATE SITIN SET STATUS = 'COMPLETED', SESSION_END = NOW() WHERE SITIN_ID = ?");
     $stmt->bind_param("i", $sitin_id);
-    $stmt->execute();
+    
+    if (!$stmt->execute()) {
+        throw new Exception("Failed to update sit-in session: " . $stmt->error);
+    }
+    
+    // NOW deduct the session from the user
+    $newSessionCount = $remainingSessions - $sessionCount;
+    $stmt = $conn->prepare("UPDATE USERS SET SESSION = ? WHERE IDNO = ?");
+    $stmt->bind_param("is", $newSessionCount, $idno);
+    
+    if (!$stmt->execute()) {
+        throw new Exception("Failed to update user's session count: " . $stmt->error);
+    }
     
     // Commit transaction
     $conn->commit();
     
     echo json_encode([
         'success' => true, 
-        'message' => 'Sit-in session completed successfully'
+        'message' => 'Sit-in session ended successfully',
+        'session_deducted' => $sessionCount,
+        'remaining_sessions' => $newSessionCount
     ]);
     
 } catch (Exception $e) {

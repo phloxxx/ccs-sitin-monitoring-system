@@ -77,7 +77,7 @@ include('includes/header.php');
 ?>
 
 <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center relative py-10" 
-     style="background-image: url('../user/images/uc_bg.jpg')">
+     style="background-image: url('../student/images/uc_bg.jpg')">
     <!-- Overlay -->
     <div class="absolute inset-0 bg-dark opacity-50"></div>
     
@@ -124,7 +124,7 @@ include('includes/header.php');
                             <div class="relative">
                                 <select id="course" name="course" required 
                                         class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary appearance-none bg-white text-gray-700">
-                                    <option value="" class="text-gray-700" disabled>Select Course</option>
+                                    <option value="" class="text-gray-700">Select Course</option>
                                     <option value="Bachelor of Science in Information Technology" <?php echo ($form_data['course'] == 'Bachelor of Science in Information Technology') ? 'selected' : ''; ?> class="text-gray-700">BSIT</option>
                                     <option value="Bachelor of Science in Computer Science" <?php echo ($form_data['course'] == 'Bachelor of Science in Computer Science') ? 'selected' : ''; ?> class="text-gray-700">BSCS</option>
                                     <option value="Associate in Computer Technology" <?php echo ($form_data['course'] == 'Associate in Computer Technology') ? 'selected' : ''; ?> class="text-gray-700">ACT</option>
@@ -145,7 +145,7 @@ include('includes/header.php');
                             <div class="relative">
                                 <select id="year" name="year" required 
                                         class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary appearance-none bg-white text-gray-700">
-                                    <option value="" class="text-gray-700" disabled>Select Year</option>
+                                    <option value="" class="text-gray-700">Select Year</option>
                                     <option value="First Year" <?php echo ($form_data['year'] == 'First Year') ? 'selected' : ''; ?> class="text-gray-700">1st Year</option>
                                     <option value="Second Year" <?php echo ($form_data['year'] == 'Second Year') ? 'selected' : ''; ?> class="text-gray-700">2nd Year</option>
                                     <option value="Third Year" <?php echo ($form_data['year'] == 'Third Year') ? 'selected' : ''; ?> class="text-gray-700">3rd Year</option>

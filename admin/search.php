@@ -130,6 +130,10 @@ include('includes/header.php');
                         <i class="fas fa-bullhorn mr-3"></i>
                         <span>Announcements</span>
                     </a>
+                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3"></i>
+                        <span>Feedbacks</span>
+                    </a>
                 </nav>
                 
                 <div class="mt-auto">
@@ -188,6 +192,10 @@ include('includes/header.php');
                         <i class="fas fa-bullhorn mr-3"></i>
                         Announcements
                     </a>
+                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-comments mr-3"></i>
+                        Feedbacks
+                    </a>
                     <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-sign-out-alt mr-3"></i>
                         Logout
@@ -227,7 +235,7 @@ include('includes/header.php');
                 <div class="p-6 border-b border-gray-200">
                     <h2 class="text-lg font-semibold text-secondary">Search Results</h2>
                 </div>
-                
+                      
                 <div id="search-results" class="p-6">
                     <div class="flex items-center justify-center h-32 text-gray-500">
                         <p>Enter a search term to find students</p>
@@ -314,14 +322,30 @@ include('includes/header.php');
                 <select id="purpose" name="purpose" required
                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
                     <option value="">Select Purpose</option>
-                    <option value="Java">Java</option>
-                    <option value="Python">Python</option>
-                    <option value="C++">C++</option>
-                    <option value="C#">C#</option>
-                    <option value="JavaScript">JavaScript</option>
-                    <option value="PHP">PHP</option>
-                    <option value="SQL">SQL</option>
-                    <option value="Other">Other</option>
+                    <?php
+                    try {
+                        $purposeQuery = "SELECT DISTINCT PURPOSE FROM SITIN WHERE PURPOSE != '' ORDER BY PURPOSE";
+                        $purposeResult = $conn->query($purposeQuery);
+                        while ($purpose = $purposeResult->fetch_assoc()) {
+                            echo '<option value="' . htmlspecialchars($purpose['PURPOSE']) . '">' . 
+                                 htmlspecialchars($purpose['PURPOSE']) . '</option>';
+                        }
+                    } catch (Exception $e) {
+                        // Fallback to specified programming languages if query fails
+                        $defaultOptions = ['Java', 'Python', 'C++', 'C#', 'PHP', 'SQL', 'Other'];
+                        foreach ($defaultOptions as $option) {
+                            echo '<option value="' . $option . '">' . $option . '</option>';
+                        }
+                    }
+                    
+                    // If no results from database, ensure these specific languages are always available
+                    if (!isset($purposeResult) || $purposeResult->num_rows == 0) {
+                        $defaultOptions = ['Java', 'Python', 'C++', 'C#', 'PHP', 'SQL', 'Other'];
+                        foreach ($defaultOptions as $option) {
+                            echo '<option value="' . $option . '">' . $option . '</option>';
+                        }
+                    }
+                    ?>
                 </select>
             </div>
             
@@ -521,13 +545,13 @@ include('includes/header.php');
         // Clear any previous messages
         errorElement.classList.add('hidden');
         successElement.classList.add('hidden');
-        
-        // Show the modal only if student has remaining sessions
-        if (parseInt(remainingSessions) > 0) {
-            sitInModal.classList.remove('hidden');
-        } else {
-            alert("This student has no remaining sessions available.");
-        }
+            
+        // Show the modal (we're not checking remaining sessions now since deduction happens at end of session)
+        sitInModal.classList.remove('hidden');
+           
+        // Add a note about session deduction happening at the end
+        const noteHtml = '<p class="text-xs text-gray-500 mt-1">Note: Session will only be deducted when the sit-in is ended.</p>';
+        document.querySelector('div.flex.items-center').insertAdjacentHTML('afterend', noteHtml);
     }
     
     function closeSitInModal() {
@@ -596,10 +620,10 @@ include('includes/header.php');
                 successElement.textContent = data.message;
                 successElement.classList.remove('hidden');
                 
-                // Close the modal after a shorter delay (500ms instead of 1500ms)
+                // Close the modal after a shorter delay (500ms instead of 1500ms) 
                 setTimeout(() => {
                     closeSitInModal();
-                    
+                           
                     // Refresh search results to update remaining sessions
                     performSearch();
                 }, 500); // Reduced from 1500ms to 500ms for faster response

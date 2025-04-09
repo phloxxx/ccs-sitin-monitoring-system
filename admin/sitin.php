@@ -80,6 +80,10 @@ include('includes/header.php');
                         <i class="fas fa-bullhorn mr-3"></i>
                         <span>Announcements</span>
                     </a>
+                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3"></i>
+                        <span>Feedbacks</span>
+                    </a>
                 </nav>
                 
                 <div class="mt-auto">
@@ -137,6 +141,10 @@ include('includes/header.php');
                     <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-bullhorn mr-3"></i>
                         Announcements
+                    </a>
+                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-comments mr-3"></i>
+                        Feedbacks
                     </a>
                     <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-sign-out-alt mr-3"></i>
@@ -222,13 +230,22 @@ include('includes/header.php');
                         <label for="purpose-filter" class="block text-sm font-medium text-gray-700 mb-1">Programming Language</label>
                         <select id="purpose-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
                             <option value="">All Languages</option>
-                            <option value="Java">Java</option>
-                            <option value="Python">Python</option>
-                            <option value="C++">C++</option>
-                            <option value="C#">C#</option>
-                            <option value="JavaScript">JavaScript</option>
-                            <option value="PHP">PHP</option>
-                            <option value="Other">Other</option>
+                            <?php
+                            try {
+                                $purposeQuery = "SELECT DISTINCT PURPOSE FROM SITIN WHERE PURPOSE != '' ORDER BY PURPOSE";
+                                $purposeResult = $conn->query($purposeQuery);
+                                while ($purpose = $purposeResult->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($purpose['PURPOSE']) . '">' . 
+                                         htmlspecialchars($purpose['PURPOSE']) . '</option>';
+                                }
+                            } catch (Exception $e) {
+                                // Fallback to default options if query fails
+                                $defaultOptions = ['Java', 'Python', 'C++', 'C#', 'JavaScript', 'PHP', 'SQL', 'Other'];
+                                foreach ($defaultOptions as $option) {
+                                    echo '<option value="' . $option . '">' . $option . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -417,6 +434,10 @@ include('includes/header.php');
                 endSessionDialog.classList.add('hidden');
                 
                 if (data.success) {
+                    // Show more detailed success message with session information
+                    const message = `Session ended successfully! ${data.session_deducted} session(s) deducted. Student now has ${data.remaining_sessions} remaining session(s).`;
+                    alert(message);
+                    
                     // Reload the page to show updated data
                     window.location.reload();
                 } else {
