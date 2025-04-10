@@ -2,15 +2,16 @@
 session_start();
 require_once('../../config/db.php');
 
-header('Content-Type: application/json');
-
+// Ensure admin is logged in
 if (!isset($_SESSION['admin_id'])) {
+    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
-    exit;
+    exit();
 }
 
+// Get recent sit-in sessions
+$sessions = [];
 try {
-    // Get recent sit-in sessions
     $query = "SELECT s.*, u.FIRSTNAME, u.LASTNAME, u.MIDNAME, l.LAB_NAME 
               FROM SITIN s
               JOIN USERS u ON s.IDNO = u.IDNO
@@ -19,18 +20,19 @@ try {
               LIMIT 50";
     
     $result = $conn->query($query);
-    
-    $sessions = [];
     while ($row = $result->fetch_assoc()) {
         $sessions[] = $row;
     }
     
-    echo json_encode([
-        'success' => true,
-        'sessions' => $sessions
-    ]);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'sessions' => $sessions]);
     
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 }
+
+// Close connection
+$conn->close();
+exit();
 ?>

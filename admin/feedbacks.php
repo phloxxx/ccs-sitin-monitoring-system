@@ -11,15 +11,24 @@ if (!isset($_SESSION['admin_id'])) {
 $admin_id = $_SESSION['admin_id'];
 $username = $_SESSION['username'];
 
+// Initialize rating counters
+$rating_counts = [
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0
+];
+
 // Fetch all feedback
 $feedbacks = [];
-// Fix: Fix column references in JOIN conditions
+// Fix: Use the correct column name CREATED_AT instead of SUBMISSION_DATE
 $query = "SELECT f.*, u.USERNAME, u.PROFILE_PIC, l.LAB_NAME, s.SESSION_START, s.SESSION_END
           FROM FEEDBACK f
           JOIN SITIN s ON f.SITIN_ID = s.SITIN_ID
           JOIN USERS u ON s.IDNO = u.IDNO
           JOIN LABORATORY l ON s.LAB_ID = l.LAB_ID
-          ORDER BY f.SUBMISSION_DATE DESC";
+          ORDER BY f.CREATED_AT DESC";
 
 // Try executing the query to see the specific error
 try {
@@ -28,10 +37,15 @@ try {
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $feedbacks[] = $row;
+            
+            // Count ratings
+            if (isset($row['RATING']) && $row['RATING'] >= 1 && $row['RATING'] <= 5) {
+                $rating_counts[$row['RATING']]++;
+            }
         }
     } else {
         // Fallback query with no joins
-        $fallback_query = "SELECT * FROM FEEDBACK ORDER BY SUBMISSION_DATE DESC";
+        $fallback_query = "SELECT * FROM FEEDBACK ORDER BY CREATED_AT DESC";
         $fallback_result = $conn->query($fallback_query);
         
         if ($fallback_result) {
@@ -40,8 +54,14 @@ try {
                 $row['USERNAME'] = 'Unknown User';
                 $row['PROFILE_PIC'] = '';
                 $row['LAB_NAME'] = 'Unknown Lab';
-                $row['SESSION_START'] = $row['SUBMISSION_DATE'];
-                $row['SESSION_END'] = $row['SUBMISSION_DATE'];
+                $row['SESSION_START'] = $row['CREATED_AT'];
+                $row['SESSION_END'] = $row['CREATED_AT'];
+                
+                // Count ratings
+                if (isset($row['RATING']) && $row['RATING'] >= 1 && $row['RATING'] <= 5) {
+                    $rating_counts[$row['RATING']]++;
+                }
+                
                 $feedbacks[] = $row;
             }
         }
@@ -60,7 +80,7 @@ try {
     
     // Try another query approach
     if (in_array('SITIN_ID', $feedback_columns)) {
-        $query2 = "SELECT f.* FROM FEEDBACK f ORDER BY f.SUBMISSION_DATE DESC";
+        $query2 = "SELECT f.* FROM FEEDBACK f ORDER BY f.CREATED_AT DESC";
         $result2 = $conn->query($query2);
         if ($result2) {
             while ($row = $result2->fetch_assoc()) {
@@ -68,8 +88,14 @@ try {
                 $row['USERNAME'] = 'Unknown User';
                 $row['PROFILE_PIC'] = '';
                 $row['LAB_NAME'] = 'Unknown Lab';
-                $row['SESSION_START'] = $row['SUBMISSION_DATE'];
-                $row['SESSION_END'] = $row['SUBMISSION_DATE'];
+                $row['SESSION_START'] = $row['CREATED_AT'];
+                $row['SESSION_END'] = $row['CREATED_AT'];
+                
+                // Count ratings
+                if (isset($row['RATING']) && $row['RATING'] >= 1 && $row['RATING'] <= 5) {
+                    $rating_counts[$row['RATING']]++;
+                }
+                
                 $feedbacks[] = $row;
             }
         }
@@ -79,7 +105,6 @@ try {
 $pageTitle = "Student Feedbacks";
 include('includes/header.php');
 ?>
-
 <div class="flex h-screen bg-gray-100">
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
@@ -115,7 +140,6 @@ include('includes/header.php');
                         <span>Feedbacks</span>
                     </a>
                 </nav>
-                
                 <div class="mt-auto">
                     <a href="#" onclick="confirmLogout(event)" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-sign-out-alt mr-3"></i>
@@ -125,7 +149,6 @@ include('includes/header.php');
             </div>
         </div>
     </div>
-
     <!-- Main Content -->
     <div class="flex flex-col flex-1 overflow-hidden">
         <!-- Top Navigation -->
@@ -138,7 +161,6 @@ include('includes/header.php');
                     </button>
                     <h1 class="ml-4 text-xl font-semibold text-secondary">Student Feedbacks</h1>
                 </div>
-                
                 <!-- Admin Profile -->
                 <div class="flex items-center">
                     <span class="mr-4 text-sm font-medium text-gray-700"><?php echo htmlspecialchars($username); ?></span>
@@ -147,7 +169,6 @@ include('includes/header.php');
                     </button>
                 </div>
             </div>
-            
             <!-- Mobile Navigation -->
             <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-secondary">
                 <nav class="space-y-2">
@@ -183,7 +204,6 @@ include('includes/header.php');
                 </nav>
             </div>
         </header>
-        
         <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
             <!-- Feedback Dashboard Overview -->
@@ -214,13 +234,41 @@ include('includes/header.php');
                     </p>
                 </div>
             </div>
-            
+            <!-- Rating Breakdown -->
+            <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-3">Rating Breakdown</h3>
+                <div class="space-y-2">
+                    <?php for ($i = 5; $i >= 1; $i--): ?>
+                        <div class="flex items-center">
+                            <div class="flex items-center w-20">
+                                <span class="text-sm font-medium text-gray-700 mr-2"><?php echo $i; ?></span>
+                                <div class="flex text-yellow-500">
+                                    <?php for ($j = 1; $j <= $i; $j++): ?>
+                                        <i class="fas fa-star text-sm"></i>
+                                    <?php endfor; ?>
+                                </div>
+                            </div>
+                            <div class="flex-grow mx-4">
+                                <div class="bg-gray-200 rounded-full h-2.5">
+                                    <?php 
+                                    $percentage = $count > 0 ? ($rating_counts[$i] / $count) * 100 : 0;
+                                    ?>
+                                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: <?php echo $percentage; ?>%"></div>
+                                </div>
+                            </div>
+                            <div class="w-16 text-right">
+                                <span class="text-sm font-medium text-gray-700"><?php echo $rating_counts[$i]; ?></span>
+                            </div>
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+
             <!-- Feedback List -->
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div class="p-4 border-b">
                     <h2 class="text-xl font-semibold">All Student Feedback</h2>
                 </div>
-                
                 <?php if (empty($feedbacks)): ?>
                 <div class="p-6 text-center text-gray-500">
                     <p>No feedback available</p>
@@ -253,11 +301,10 @@ include('includes/header.php');
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($feedback['USERNAME']); ?></div>
-                                            <div class="text-sm text-gray-500">Submitted: <?php echo date('M d, Y', strtotime($feedback['SUBMISSION_DATE'])); ?></div>
+                                            <div class="text-sm text-gray-500">Submitted: <?php echo date('M d, Y', strtotime($feedback['CREATED_AT'])); ?></div>
                                         </div>
                                     </div>
                                 </td>
-                                
                                 <!-- Lab & Session Info -->
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-900"><?php echo htmlspecialchars($feedback['LAB_NAME']); ?></div>
@@ -268,7 +315,7 @@ include('includes/header.php');
                                         ?>
                                     </div>
                                 </td>
-                                
+
                                 <!-- Rating -->
                                 <td class="px-6 py-4">
                                     <div class="flex text-yellow-500">
@@ -277,7 +324,7 @@ include('includes/header.php');
                                         <?php endfor; ?>
                                     </div>
                                 </td>
-                                
+
                                 <!-- Comments -->
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-900 max-w-xs truncate">
@@ -320,25 +367,21 @@ include('includes/header.php');
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        
         <div class="mt-4">
             <div class="mb-4">
                 <p class="text-sm text-gray-500" id="view-username-lab"></p>
                 <p class="text-sm text-gray-500" id="view-date"></p>
             </div>
-            
             <div class="mb-4">
                 <h4 class="text-sm font-medium text-gray-700 mb-1">Rating</h4>
                 <div class="flex text-yellow-500" id="view-rating">
                     <!-- Stars will be inserted here -->
                 </div>
             </div>
-            
             <div class="mb-4">
                 <h4 class="text-sm font-medium text-gray-700 mb-1">Comments</h4>
                 <p class="text-sm text-gray-900 p-3 bg-gray-50 rounded" id="view-comments"></p>
             </div>
-            
             <div class="mt-6 flex justify-end">
                 <button class="close-modal px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     Close
@@ -352,21 +395,21 @@ include('includes/header.php');
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
-    
+
     mobileMenuButton.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
     });
-    
+
     // Confirmation dialog for logout
     function confirmLogout(event) {
         event.preventDefault();
         document.getElementById('confirmation-dialog').classList.remove('hidden');
     }
-    
+
     document.getElementById('cancel-logout').addEventListener('click', () => {
         document.getElementById('confirmation-dialog').classList.add('hidden');
     });
-    
+
     // Close dialog when clicking outside
     document.getElementById('confirmation-dialog').addEventListener('click', function(event) {
         if (event.target === this) {
@@ -377,7 +420,7 @@ include('includes/header.php');
     // View feedback modal
     const viewFeedbackModal = document.getElementById('view-feedback-modal');
     const viewButtons = document.querySelectorAll('.view-feedback');
-    
+
     viewButtons.forEach(button => {
         button.addEventListener('click', () => {
             // Populate modal with feedback data
@@ -386,10 +429,10 @@ include('includes/header.php');
             const username = button.getAttribute('data-username');
             const lab = button.getAttribute('data-lab');
             const date = button.getAttribute('data-date');
-            
+
             document.getElementById('view-username-lab').textContent = `${username} - ${lab}`;
             document.getElementById('view-date').textContent = `Submitted on ${date}`;
-            
+
             // Display stars based on rating
             const ratingDiv = document.getElementById('view-rating');
             ratingDiv.innerHTML = '';
@@ -398,21 +441,21 @@ include('includes/header.php');
                 starIcon.classList.add(i <= rating ? 'fas' : 'far', 'fa-star');
                 ratingDiv.appendChild(starIcon);
             }
-            
+
             document.getElementById('view-comments').textContent = comments;
             
             // Show modal
             viewFeedbackModal.classList.remove('hidden');
         });
     });
-    
+
     // Close modals when clicking close button or outside
     document.querySelectorAll('.close-modal').forEach(button => {
         button.addEventListener('click', () => {
             viewFeedbackModal.classList.add('hidden');
         });
     });
-    
+
     // Close modal when clicking outside
     [viewFeedbackModal].forEach(modal => {
         modal.addEventListener('click', function(event) {
@@ -422,5 +465,4 @@ include('includes/header.php');
         });
     });
 </script>
-
 <?php include('includes/footer.php'); ?>
