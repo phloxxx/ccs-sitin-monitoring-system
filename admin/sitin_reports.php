@@ -563,6 +563,10 @@ include('includes/header.php');
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 <script>
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -696,178 +700,61 @@ include('includes/header.php');
 
     // Export to CSV
     document.getElementById('export-csv').addEventListener('click', function() {
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
-        const labId = document.getElementById('report-lab').value;
-        const purpose = document.getElementById('report-purpose').value;
-        
-        if (!startDate || !endDate) {
-            alert('Please select start and end dates before exporting to CSV.');
-            return;
-        }
-        
-        const originalButtonText = this.innerHTML;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...';
-        this.disabled = true;
-        
-        // Direct download approach
-        const exportUrl = `ajax/export_sitin_csv.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`;
-        
-        const downloadLink = document.createElement('a');
-        downloadLink.href = exportUrl;
-        downloadLink.target = '_blank';
-        downloadLink.download = `SitIn_Report_${new Date().toISOString().slice(0, 10)}.csv`;
-        
-        // Add to DOM, click, and remove
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        
-        // Reset button after a delay
-        setTimeout(() => {
-            document.body.removeChild(downloadLink);
-            this.innerHTML = originalButtonText;
-            this.disabled = false;
-        }, 1500);
+        const rows = getReportData();
+        if (!rows.length) return alert('No data to export.');
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        rows.forEach(row => {
+            csvContent += row.join(",") + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "report.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     });
 
-    // If export is still failing, show troubleshooting link
-    const troubleshootingLink = document.createElement('div');
-    troubleshootingLink.className = 'text-xs text-blue-500 mt-2 hidden';
-    troubleshootingLink.innerHTML = 'Exports not working? <a href="ajax/export_test.php" target="_blank" class="underline">Run diagnostic test</a>';
-    document.querySelector('.flex.gap-2.ml-auto').appendChild(troubleshootingLink);
-    
-    // After 3 failed exports, show the troubleshooting link
-    let exportFailCount = 0;
-    
-    function handleExportError() {
-        exportFailCount++;
-        if (exportFailCount >= 3) {
-            troubleshootingLink.classList.remove('hidden');
-        }
-    }
-    
-    // Add error handling to each export button
-    document.getElementById('export-csv').addEventListener('error', handleExportError);
-    document.getElementById('export-pdf').addEventListener('error', handleExportError);
-    document.getElementById('export-excel').addEventListener('error', handleExportError);
-
     // Export to PDF
-    document.getElementById('export-pdf').addEventListener('click', function() {
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
-        const labId = document.getElementById('report-lab').value;
-        const purpose = document.getElementById('report-purpose').value;
-        
-        if (!startDate || !endDate) {
-            alert('Please select start and end dates before exporting to PDF.');
-            return;
-        }
-        
-        // Show loading indicator
-        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating PDF...';
-        this.disabled = true;
-        
-        // Use iframe to handle the download to prevent navigation
-        const downloadFrame = document.createElement('iframe');
-        downloadFrame.style.display = 'none';
-        document.body.appendChild(downloadFrame);
-        
-        // Set the PDF export URL
-        const pdfUrl = `ajax/export_sitin_pdf.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`;
-        
-        // Handle both success and failure cases
-        downloadFrame.onload = () => {
-            // Check if the iframe loaded something other than PDF (error page)
-            try {
-                if (downloadFrame.contentDocument && 
-                    downloadFrame.contentDocument.body.textContent.includes('TCPDF')) {
-                    // TCPDF error occurred, use the manual generator
-                    window.open(`ajax/manual_pdf_generator.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`, '_blank');
-                }
-            } catch (e) {
-                // If we can't access iframe content, assume PDF downloaded successfully
-                console.log('PDF likely downloaded successfully');
-            }
-            
-            // Reset button state
-            this.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> PDF';
-            this.disabled = false;
-            
-            // Clean up the iframe after a delay
-            setTimeout(() => {
-                document.body.removeChild(downloadFrame);
-            }, 1000);
-        };
-        
-        downloadFrame.onerror = () => {
-            // On error, use the manual generator
-            window.open(`ajax/manual_pdf_generator.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`, '_blank');
-            
-            // Reset button state
-            this.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> PDF';
-            this.disabled = false;
-            
-            // Clean up the iframe
-            document.body.removeChild(downloadFrame);
-        };
-        
-        // Start the download
-        downloadFrame.src = pdfUrl;
+    document.getElementById('export-pdf').addEventListener('click', async function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const rows = getReportData();
+        if (!rows.length) return alert('No data to export.');
+
+        rows.forEach((row, index) => {
+            doc.text(row.join(" | "), 10, 10 + index * 10);
+        });
+
+        doc.save("report.pdf");
     });
 
     // Export to Excel
     document.getElementById('export-excel').addEventListener('click', function() {
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
-        const labId = document.getElementById('report-lab').value;
-        const purpose = document.getElementById('report-purpose').value;
-        
-        if (!startDate || !endDate) {
-            alert('Please select start and end dates before exporting to Excel.');
-            return;
-        }
-        
-        // Show loading indicator
-        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating Excel...';
-        this.disabled = true;
-        
-        // Create an iframe for downloading the file
-        const downloadFrame = document.createElement('iframe');
-        downloadFrame.style.display = 'none';
-        document.body.appendChild(downloadFrame);
-        
-        // Set the Excel export URL
-        const excelUrl = `ajax/export_sitin_excel.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`;
-        
-        // Handle both success and failure cases
-        downloadFrame.onload = () => {
-            // Reset button state after a delay
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-file-excel mr-2"></i> Excel';
-                this.disabled = false;
-                
-                // Clean up the iframe
-                document.body.removeChild(downloadFrame);
-            }, 1000);
-        };
-        
-        downloadFrame.onerror = () => {
-            // On error, fall back to CSV
-            alert('Excel export failed. Falling back to CSV export.');
-            window.location.href = `ajax/export_sitin_csv.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`;
-            
-            // Reset button state
-            this.innerHTML = '<i class="fas fa-file-excel mr-2"></i> Excel';
-            this.disabled = false;
-            
-            // Clean up the iframe
-            document.body.removeChild(downloadFrame);
-        };
-        
-        // Start the download
-        downloadFrame.src = excelUrl;
+        const rows = getReportData();
+        if (!rows.length) return alert('No data to export.');
+
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+
+        XLSX.writeFile(workbook, "report.xlsx");
     });
-    
+
+    // Helper function to get report data
+    function getReportData() {
+        const table = document.querySelector("#recent-sessions table");
+        if (!table) return [];
+
+        const rows = Array.from(table.querySelectorAll("tr"));
+        return rows.map(row => {
+            const cells = row.querySelectorAll("td, th");
+            return Array.from(cells).map(cell => cell.textContent.trim());
+        });
+    }
+
     // Add print functionality
     document.getElementById('print-report').addEventListener('click', function() {
         const startDate = document.getElementById('start-date').value;
