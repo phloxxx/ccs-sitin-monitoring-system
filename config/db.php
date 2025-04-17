@@ -4,9 +4,10 @@ $host = 'localhost';
 $user = 'root';
 $password = ''; // Make sure this matches your XAMPP MySQL password (often empty by default)
 $dbname = 'ccssms_db';
+// $port = 3309;
 
 // Create connection without selecting database first
-$conn = new mysqli($host, $user, $password);
+$conn = new mysqli($host, $user, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {

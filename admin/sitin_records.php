@@ -228,11 +228,11 @@ include('includes/header.php');
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-secondary">Completed Sit-In Sessions</h2>
                     <div class="flex space-x-3">
-                        <a href="sitin.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
-                            <i class="fas fa-desktop mr-2"></i> Active Sessions
-                        </a>
                         <a href="sitin_reports.php" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
                             <i class="fas fa-chart-bar mr-2"></i> Sit-In Reports
+                        </a>
+                        <a href="sitin.php" class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-opacity-90 transition-colors flex items-center">
+                            <i class="fas fa-desktop mr-2"></i> Active Sessions
                         </a>
                     </div>
                 </div>

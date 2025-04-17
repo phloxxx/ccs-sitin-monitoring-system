@@ -720,6 +720,10 @@ include('includes/header.php');
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 <script>
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
