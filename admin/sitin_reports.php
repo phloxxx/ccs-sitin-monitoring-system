@@ -180,6 +180,167 @@ $bodyClass = "bg-light font-poppins";
 include('includes/header.php');
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $pageTitle ?? 'CCS SITIN MONITORING SYSTEM'; ?></title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
+    <?php if(isset($customStyles)): ?>
+        <?php foreach($customStyles as $style): ?>
+            <link rel="stylesheet" href="<?php echo $style; ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#94B0DF', // Soft blue
+                        secondary: '#356480', // Medium blue-gray
+                        dark: '#2c3e50', // Dark blue-gray (tertiary)
+                        light: '#FCFDFF', // Very light blue-white
+                        success: '#22c55e', // Softer green
+                        danger: '#ef4444', // Softer red
+                    },
+                    fontFamily: {
+                        poppins: ['"Poppins"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94B0DF;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #356480;
+        }
+        
+        /* DataTables buttons styling - match reference code */
+        .buttons-csv, .buttons-excel {
+            background-color: #10B981 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.25rem !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 0.9rem !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        .buttons-csv:hover, .buttons-excel:hover {
+            background-color: #059669 !important;
+        }
+        
+        .buttons-pdf {
+            background-color: #EF4444 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.25rem !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 0.9rem !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        .buttons-pdf:hover {
+            background-color: #DC2626 !important;
+        }
+        
+        .buttons-print {
+            background-color: #3B82F6 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 0.25rem !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 0.9rem !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        .buttons-print:hover {
+            background-color: #2563EB !important;
+        }
+        
+        /* DataTables general styling */
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #D1D5DB;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #D1D5DB;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.5rem;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 0.25rem;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #3B82F6 !important;
+            border-color: #3B82F6 !important;
+            color: white !important;
+        }
+        
+        /* Report table styling */
+        #reportTable {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        #reportTable th {
+            background-color: #F3F4F6;
+            color: #374151;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid #D1D5DB;
+        }
+        
+        #reportTable td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #E5E7EB;
+            color: #4B5563;
+        }
+        
+        #reportTable tr:nth-child(even) {
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="<?php echo $bodyClass ?? 'font-poppins bg-light'; ?>">
+
 <div class="flex h-screen bg-gray-100">
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
@@ -204,6 +365,10 @@ include('includes/header.php');
                     <a href="sitin.php" class="flex items-center px-4 py-3 text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-desktop mr-3"></i>
                         <span>Sit-in</span>
+                    </a>
+                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Reservation</span>
                     </a>
                     <hr class="my-4 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
@@ -266,6 +431,10 @@ include('includes/header.php');
                     <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg bg-primary bg-opacity-30 hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-desktop mr-3"></i>
                         Sit-in
+                    </a>
+                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Reservation
                     </a>
                     <hr class="my-2 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
@@ -420,15 +589,9 @@ include('includes/header.php');
                                 </div>
                             </div>
                             
-                            <div class="flex gap-2 ml-auto mt-2 md:mt-0">
+                            <div class="self-end mb-0.5">
                                 <button type="submit" class="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors flex items-center shadow-sm">
                                     <i class="fas fa-search mr-2"></i> Generate
-                                </button>
-                                <button type="button" id="export-csv" class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors flex items-center shadow-sm">
-                                    <i class="fas fa-file-csv mr-2"></i> CSV
-                                </button>
-                                <button type="button" id="export-pdf" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors flex items-center shadow-sm">
-                                    <i class="fas fa-file-pdf mr-2"></i> PDF
                                 </button>
                             </div>
                         </div>
@@ -585,6 +748,35 @@ include('includes/header.php');
         }
     });
 
+    // Formatting functions
+    function formatDateTime(dateTimeStr) {
+        const date = new Date(dateTimeStr);
+        return date.toLocaleString('en-US', {
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+    
+    function formatDate(dateTimeStr) {
+        const date = new Date(dateTimeStr);
+        return date.toISOString().split('T')[0];
+    }
+    
+    function formatTime(dateTimeStr) {
+        const date = new Date(dateTimeStr);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+    
+    // Store report data globally
+    let reportData = [];
+
     // Handle report form submission
     document.getElementById('report-form').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -602,111 +794,171 @@ include('includes/header.php');
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Display report data in table
-                    displayReportTable(data.sessions);
+                    // Store data globally for export
+                    reportData = data.sessions;
+                    
+                    if (reportData.length === 0) {
+                        document.getElementById('report-results').innerHTML = '<div class="bg-blue-50 p-4 rounded-md"><p class="text-blue-700">No sit-in sessions found for the selected date range.</p></div>';
                 } else {
-                    document.getElementById('report-results').innerHTML = `
-                        <div class="bg-red-50 p-4 rounded-md">
-                            <p class="text-red-700">${data.message || 'An error occurred while generating the report.'}</p>
-                        </div>
-                    `;
+                        createReportTable(reportData, startDate, endDate);
+                    }
+                } else {
+                    document.getElementById('report-results').innerHTML = '<div class="bg-red-50 p-4 rounded-md"><p class="text-red-700">' + (data.message || 'An error occurred while generating the report.') + '</p></div>';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('report-results').innerHTML = `
-                    <div class="bg-red-50 p-4 rounded-md">
-                        <p class="text-red-700">Network error. Please try again.</p>
-                    </div>
-                `;
+                document.getElementById('report-results').innerHTML = '<div class="bg-red-50 p-4 rounded-md"><p class="text-red-700">Network error. Please try again.</p></div>';
             });
     });
 
-    // Function to display report data in table
-    function displayReportTable(sessions) {
-        if (sessions.length === 0) {
-            document.getElementById('report-results').innerHTML = `
-                <div class="bg-blue-50 p-4 rounded-md">
-                    <p class="text-blue-700">No sit-in sessions found for the selected date range.</p>
-                </div>
-            `;
-            return;
-        }
+    // Function to create report table with DataTables
+    function createReportTable(sessions, startDate, endDate) {
+        // Create table HTML
+        let tableHtml = '<table id="reportTable" class="min-w-full divide-y divide-gray-200">';
+        tableHtml += '<thead class="bg-gray-50">';
+        tableHtml += '<tr>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Laboratory</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Time</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time</th>';
+        tableHtml += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>';
+        tableHtml += '</tr>';
+        tableHtml += '</thead>';
+        tableHtml += '<tbody class="bg-white divide-y divide-gray-200">';
         
-        let html = `
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Laboratory</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purpose</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Time</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">`;
-                
+        // Add rows
         sessions.forEach(session => {
             const statusClass = session.STATUS === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800';
             
-            html += `
-            <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${session.IDNO}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${session.LASTNAME}, ${session.FIRSTNAME} ${session.MIDNAME || ''}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${session.LAB_NAME}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${session.PURPOSE}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDateTime(session.SESSION_START)}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${session.SESSION_END ? formatDateTime(session.SESSION_END) : 'N/A'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                        ${session.STATUS}
-                    </span>
-                </td>
-            </tr>`;
+            tableHtml += '<tr>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">' + session.IDNO + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + session.LASTNAME + ', ' + session.FIRSTNAME + ' ' + (session.MIDNAME || '') + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + session.LAB_NAME + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + session.PURPOSE + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + formatDateTime(session.SESSION_START) + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + (session.SESSION_END ? formatDateTime(session.SESSION_END) : 'N/A') + '</td>';
+            tableHtml += '<td class="px-6 py-4 whitespace-nowrap">';
+            tableHtml += '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + statusClass + '">' + session.STATUS + '</span>';
+            tableHtml += '</td>';
+            tableHtml += '</tr>';
         });
-                
-        html += `
-                </tbody>
-            </table>
-        </div>`;
         
-        document.getElementById('report-results').innerHTML = html;
-    }
-
-    // Format date and time for display
-    function formatDateTime(dateTimeStr) {
-        const date = new Date(dateTimeStr);
-        return date.toLocaleString('en-US', {
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+        tableHtml += '</tbody>';
+        tableHtml += '</table>';
+        
+        // Add table to DOM
+        document.getElementById('report-results').innerHTML = tableHtml;
+        
+        // Initialize DataTables
+        $(document).ready(function() {
+            $('#reportTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv mr-1"></i> CSV',
+                        title: 'Sit-In Report ' + startDate + ' to ' + endDate,
+                        className: 'btn btn-success text-white'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel mr-1"></i> Excel',
+                        title: 'Sit-In Report ' + startDate + ' to ' + endDate,
+                        className: 'btn btn-success text-white'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf mr-1"></i> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        title: 'Sit-In Report ' + startDate + ' to ' + endDate,
+                        className: 'btn btn-danger text-white',
+                        customize: function(doc) {
+                            // Customize PDF styling
+                            doc.styles.tableHeader.fontSize = 10;
+                            doc.styles.tableHeader.alignment = 'left';
+                            doc.styles.tableBodyEven.alignment = 'left';
+                            doc.styles.tableBodyOdd.alignment = 'left';
+                            
+                            // Set column widths
+                            doc.content[1].table.widths = ['15%', '20%', '15%', '15%', '15%', '15%', '5%'];
+                            
+                            // Create a custom header with university name
+                            doc.content.splice(0, 1, {
+                                margin: [0, 0, 0, 15],
+                                alignment: 'center',
+                                stack: [
+                                    { text: 'University Of Cebu', style: 'universityName' },
+                                    { text: 'CCS SITIN MONITORING SYSTEM', style: 'header' },
+                                    { text: 'Sit-In Report (' + startDate + ' to ' + endDate + ')', style: 'subheader' }
+                                ]
+                            });
+                            
+                            // Add custom styles
+                            doc.styles.universityName = {
+                                fontSize: 16,
+                                bold: true,
+                                margin: [0, 0, 0, 5]
+                            };
+                            
+                            doc.styles.header = {
+                                fontSize: 14,
+                                bold: true,
+                                color: '#0369a1',
+                                margin: [0, 0, 0, 5]
+                            };
+                            
+                            doc.styles.subheader = {
+                                fontSize: 12,
+                                italics: true,
+                                color: '#666666',
+                                margin: [0, 0, 0, 10]
+                            };
+                            
+                            // Add footer with date and pagination
+                            var now = new Date();
+                            var dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+                            
+                            doc.footer = function(currentPage, pageCount) {
+                                return {
+                                    columns: [
+                                        { text: 'Generated on: ' + dateStr, alignment: 'left', fontSize: 8, margin: [40, 0, 0, 0] },
+                                        { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'right', fontSize: 8, margin: [0, 0, 40, 0] }
+                                    ],
+                                    margin: [0, 10, 0, 0]
+                                };
+                            };
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print mr-1"></i> Print',
+                        className: 'btn btn-info text-white'
+                    }
+                ],
+                "pageLength": 25,
+                "language": {
+                    "search": "<i class='fas fa-search'></i> _INPUT_",
+                    "searchPlaceholder": "Search records...",
+                    "lengthMenu": "Show _MENU_ records",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ records",
+                    "zeroRecords": "No matching records found",
+                    "paginate": {
+                        "first": "<i class='fas fa-angle-double-left'></i>",
+                        "last": "<i class='fas fa-angle-double-right'></i>",
+                        "next": "<i class='fas fa-angle-right'></i>",
+                        "previous": "<i class='fas fa-angle-left'></i>"
+                    }
+                }
+            });
+            
+            // Add custom classes to button container
+            $('.dt-buttons').addClass('flex gap-2 mb-4');
         });
     }
-
-    // Export to CSV
-    document.getElementById('export-csv').addEventListener('click', function() {
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
-        const labId = document.getElementById('report-lab').value;
-        const purpose = document.getElementById('report-purpose').value;
-        
-        window.location.href = `ajax/export_sitin_csv.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`;
-    });
-
-    // Export to PDF
-    document.getElementById('export-pdf').addEventListener('click', function() {
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
-        const labId = document.getElementById('report-lab').value;
-        const purpose = document.getElementById('report-purpose').value;
-        
-        window.location.href = `ajax/export_sitin_pdf.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&lab_id=${encodeURIComponent(labId)}&purpose=${encodeURIComponent(purpose)}`;
-    });
 
     // Refresh recent sessions table
     document.getElementById('refresh-sessions').addEventListener('click', function() {
@@ -734,37 +986,20 @@ include('includes/header.php');
                                 formatTime(session.SESSION_END) : 
                                 '<span class="italic">Active</span>';
                             
-                            html += `
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${formatDate(session.SESSION_START)}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        ${session.LASTNAME}, ${session.FIRSTNAME} ${session.MIDNAME || ''}
-                                    </div>
-                                    <div class="text-sm text-gray-500">
-                                        ${session.IDNO}
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${session.PURPOSE}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${session.LAB_NAME}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${formatTime(session.SESSION_START)}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${timeOut}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                                        ${session.STATUS}
-                                    </span>
-                                </td>
-                            </tr>`;
+                            html += '<tr>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + formatDate(session.SESSION_START) + '</td>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap">';
+                            html += '<div class="text-sm font-medium text-gray-900">' + session.LASTNAME + ', ' + session.FIRSTNAME + ' ' + (session.MIDNAME || '') + '</div>';
+                            html += '<div class="text-sm text-gray-500">' + session.IDNO + '</div>';
+                            html += '</td>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + session.PURPOSE + '</td>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + session.LAB_NAME + '</td>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + formatTime(session.SESSION_START) + '</td>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' + timeOut + '</td>';
+                            html += '<td class="px-6 py-4 whitespace-nowrap">';
+                            html += '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + statusClass + '">' + session.STATUS + '</span>';
+                            html += '</td>';
+                            html += '</tr>';
                         });
                         
                         tableBody.innerHTML = html;
@@ -783,21 +1018,8 @@ include('includes/header.php');
                 refreshButton.innerHTML = originalHtml;
             });
     });
-    
-    // Helper functions for date/time formatting
-    function formatDate(dateTimeStr) {
-        const date = new Date(dateTimeStr);
-        return date.toISOString().split('T')[0];
-    }
-    
-    function formatTime(dateTimeStr) {
-        const date = new Date(dateTimeStr);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    }
 </script>
 
 <?php include('includes/footer.php'); ?>
+</body>
+</html>

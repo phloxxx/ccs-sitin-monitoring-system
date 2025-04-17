@@ -118,6 +118,10 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3"></i>
                         <span>Sit-in</span>
                     </a>
+                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Reservation</span>
+                    </a>
                     <hr class="my-4 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-bullhorn mr-3"></i>
@@ -180,6 +184,10 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3"></i>
                         Sit-in
                     </a>
+                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Reservation
+                    </a>
                     <hr class="my-2 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-bullhorn mr-3"></i>
@@ -202,9 +210,9 @@ include('includes/header.php');
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Total Students -->
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-primary">
+                <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-primary bg-opacity-20 text-primary">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-500">
                             <i class="fas fa-user-graduate text-xl"></i>
                         </div>
                         <div class="ml-4">
@@ -215,7 +223,7 @@ include('includes/header.php');
                 </div>
                 
                 <!-- Active Sessions -->
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
+                <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-green-100 text-green-500">
                             <i class="fas fa-desktop text-xl"></i>
@@ -228,7 +236,7 @@ include('includes/header.php');
                 </div>
                 
                 <!-- Total Sessions -->
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+                <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-blue-100 text-blue-500">
                             <i class="fas fa-history text-xl"></i>
@@ -241,7 +249,7 @@ include('includes/header.php');
                 </div>
                 
                 <!-- Labs in Use -->
-                <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
+                <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-yellow-100 text-yellow-500">
                             <i class="fas fa-building text-xl"></i>
@@ -255,59 +263,82 @@ include('includes/header.php');
             </div>
             
             <!-- Recent Announcements -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-secondary">Recent Announcements</h2>
-                    <a href="announcements.php" class="text-sm text-primary hover:text-secondary transition-colors">View All</a>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 flex justify-between items-center text-white">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-bullhorn mr-2"></i> Recent Announcements
+                    </h2>
+                    <a href="announcements.php" class="bg-white text-blue-600 px-3 py-1 rounded-md text-sm flex items-center hover:bg-gray-100 transition-colors shadow-sm">
+                        <i class="fas fa-list mr-1"></i> View All
+                    </a>
                 </div>
                 
-                <div class="space-y-4">
-                    <?php if (empty($announcements)): ?>
-                        <p class="text-gray-500 text-center py-4">No recent announcements.</p>
-                    <?php else: ?>
-                        <?php foreach (array_slice($announcements, 0, 3) as $announcement): ?>
-                            <div class="border-l-4 border-primary pl-4 py-2">
-                                <h3 class="font-medium text-gray-800"><?php echo htmlspecialchars($announcement['TITLE']); ?></h3>
-                                <p class="text-sm text-gray-600 line-clamp-2"><?php echo htmlspecialchars($announcement['CONTENT']); ?></p>
-                                <div class="flex justify-between mt-1">
-                                    <p class="text-xs text-gray-400">Posted by: <?php echo htmlspecialchars($announcement['username']); ?></p>
-                                    <p class="text-xs text-gray-400"><?php echo date('F j, Y', strtotime($announcement['CREATED_AT'])); ?></p>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <?php if (empty($announcements)): ?>
+                            <p class="text-gray-500 text-center py-4">No recent announcements.</p>
+                        <?php else: ?>
+                            <?php foreach (array_slice($announcements, 0, 3) as $announcement): ?>
+                                <div class="border-l-4 border-blue-500 pl-4 py-3 bg-blue-50 rounded-md">
+                                    <h3 class="font-medium text-gray-800"><?php echo htmlspecialchars($announcement['TITLE']); ?></h3>
+                                    <p class="text-sm text-gray-600 line-clamp-2 mt-1"><?php echo htmlspecialchars($announcement['CONTENT']); ?></p>
+                                    <div class="flex justify-between mt-2">
+                                        <p class="text-xs text-gray-500 flex items-center">
+                                            <i class="fas fa-user mr-1"></i> <?php echo htmlspecialchars($announcement['username']); ?>
+                                        </p>
+                                        <p class="text-xs text-gray-500 flex items-center">
+                                            <i class="fas fa-calendar-alt mr-1"></i> <?php echo date('F j, Y', strtotime($announcement['CREATED_AT'])); ?>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="mt-4">
-                    <button id="open-announcement-modal" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-dark transition-colors">
-                        <i class="fas fa-plus mr-2"></i> New Announcement
-                    </button>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <button id="open-announcement-modal" class="bg-blue-500 hover:bg-blue-600 transition-colors px-4 py-2 rounded-md text-sm font-medium text-white inline-flex items-center shadow-sm">
+                            <i class="fas fa-plus mr-2"></i> New Announcement
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <!-- System Info -->
-            <div class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-lg font-semibold text-secondary mb-4">System Information</h2>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-gradient-to-r from-green-600 to-green-500 p-4 text-white">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i> System Information
+                    </h2>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">System:</span> CCS Sit-in Monitoring System
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Version:</span> 1.0.0
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Last update:</span> <?php echo date('F j, Y'); ?>
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Server time:</span> <?php echo date('h:i:s A'); ?>
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-medium">Database status:</span> <span class="text-green-500">Connected</span>
-                        </p>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600 flex items-center mb-2">
+                                <span class="w-32 font-medium text-gray-700">System:</span> 
+                                <span class="bg-blue-50 px-3 py-1 rounded-md">CCS Sit-in Monitoring System</span>
+                            </p>
+                            <p class="text-sm text-gray-600 flex items-center mb-2">
+                                <span class="w-32 font-medium text-gray-700">Version:</span>
+                                <span class="bg-blue-50 px-3 py-1 rounded-md">1.0.0</span>
+                            </p>
+                            <p class="text-sm text-gray-600 flex items-center">
+                                <span class="w-32 font-medium text-gray-700">Last update:</span>
+                                <span class="bg-blue-50 px-3 py-1 rounded-md"><?php echo date('F j, Y'); ?></span>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 flex items-center mb-2">
+                                <span class="w-32 font-medium text-gray-700">Server time:</span>
+                                <span class="bg-blue-50 px-3 py-1 rounded-md"><?php echo date('h:i:s A'); ?></span>
+                            </p>
+                            <p class="text-sm text-gray-600 flex items-center">
+                                <span class="w-32 font-medium text-gray-700">Database status:</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-md flex items-center">
+                                    <i class="fas fa-check-circle mr-1"></i> Connected
+                                </span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

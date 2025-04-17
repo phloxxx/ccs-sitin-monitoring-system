@@ -75,6 +75,10 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3"></i>
                         <span>Sit-in</span>
                     </a>
+                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Reservation</span>
+                    </a>
                     <hr class="my-4 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-bullhorn mr-3"></i>
@@ -137,6 +141,10 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3"></i>
                         Sit-in
                     </a>
+                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Reservation
+                    </a>
                     <hr class="my-2 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-bullhorn mr-3"></i>
@@ -156,6 +164,23 @@ include('includes/header.php');
         
         <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+            <!-- Active Sessions -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 flex justify-between items-center text-white">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-desktop mr-2"></i> Active Sessions
+                    </h2>
+                    <div class="flex space-x-3">
+                        <a href="sitin_records.php" class="bg-white text-blue-600 px-3 py-1 rounded-md text-sm flex items-center shadow-sm hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-history mr-1"></i> View Records
+                        </a>
+                        <a href="sitin_reports.php" class="bg-white text-blue-600 px-3 py-1 rounded-md text-sm flex items-center shadow-sm hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-chart-bar mr-1"></i> View Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="bg-white rounded-lg shadow-sm p-6">

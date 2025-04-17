@@ -88,6 +88,10 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3"></i>
                         <span>Sit-in</span>
                     </a>
+                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Reservation</span>
+                    </a>
                     <hr class="my-4 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-bullhorn mr-3"></i>
@@ -146,6 +150,10 @@ include('includes/header.php');
                     <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-desktop mr-3"></i>
                         Sit-in
+                    </a>
+                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Reservation
                     </a>
                     <hr class="my-2 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
@@ -932,7 +940,7 @@ include('includes/header.php');
         studentRows.forEach(row => {
             const studentId = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
             const studentName = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
-            const studentCourse = row.querySelector('td:nth-child(3)').textContent.trim().toLowerCase();
+            const studentCourse = row.querySelector('td:nth-child(3)').textContent.trim();
             const studentYear = row.querySelector('td:nth-child(4)').textContent.trim().toLowerCase();
 
             // Check if row matches search term and filters
@@ -940,21 +948,19 @@ include('includes/header.php');
                                  studentId.includes(searchTerm) || 
                                  studentName.includes(searchTerm);
 
-            // Match course abbreviation with full names
+            // Match course with direct comparison or abbreviation
             let matchesCourse = selectedCourse === '';
             if (!matchesCourse) {
-                if (selectedCourse === 'BSIT' && studentCourse.includes('Information Technology')) {
+                if (selectedCourse === "Bachelor of Science in Information Technology" && studentCourse === "Bachelor of Science in Information Technology") {
                     matchesCourse = true;
-                } else if (selectedCourse === 'BSCS' && studentCourse.includes('Computer Science')) {
+                } else if (selectedCourse === "Bachelor of Science in Computer Science" && studentCourse === "Bachelor of Science in Computer Science") {
                     matchesCourse = true;
-                } else if (selectedCourse === 'ACT' && studentCourse.includes('Computer Technology')) {
+                } else if (selectedCourse === "Associate in Computer Technology" && studentCourse === "Associate in Computer Technology") {
                     matchesCourse = true;
-                } else if (selectedCourse === 'BSHRM' && studentCourse.includes('Human Resourse Management')) {
+                } else if (selectedCourse === "Bachelor of Science in Human Resourse Management" && studentCourse === "Bachelor of Science in Human Resourse Management") {
                     matchesCourse = true;
-                } else if (selectedCourse === 'BSCRIM' && studentCourse.includes('Criminology')) {
+                } else if (selectedCourse === "Bachelor of Science in Criminology" && studentCourse === "Bachelor of Science in Criminology") {
                     matchesCourse = true;
-                } else {
-                    matchesCourse = studentCourse.includes(selectedCourse);
                 }
             }
 

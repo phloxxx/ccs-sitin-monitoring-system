@@ -125,6 +125,10 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3"></i>
                         <span>Sit-in</span>
                     </a>
+                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Reservation</span>
+                    </a>
                     <hr class="my-4 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-bullhorn mr-3"></i>
@@ -186,6 +190,10 @@ include('includes/header.php');
                     <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-desktop mr-3"></i>
                         Sit-in
+                    </a>
+                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        Reservation
                     </a>
                     <hr class="my-2 border-gray-400 border-opacity-20">
                     <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
