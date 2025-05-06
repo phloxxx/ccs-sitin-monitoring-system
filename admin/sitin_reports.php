@@ -210,6 +210,9 @@ include('includes/header.php');
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+    <!-- Additional PDF libraries for fallback solution -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -856,7 +859,11 @@ include('includes/header.php');
         // Add table to DOM
         document.getElementById('report-results').innerHTML = tableHtml;
         
-        // Initialize DataTables
+        // Define tiny logo base64 strings - very small to ensure they load fast
+        const ucLogoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAEkSURBVHja7JW9TsMwFIU/J24TUdEOZWLtRie68wZ9KvpaVZHYGJAQS7vBwo9oB6SVcDsQh4EwJCJggLvoWNbx+Xy/a0tCCmOMkUUJQZXKE1BV1Q4wB+ZZli2buohkQJ7n9Vrbtk+rhLuui4F34Molq+Bsc80nsAdcAkNgZgYubadr9+eWbN9lVZRlmatFYMvpXSJy7+JHmyil9h1L4GQTlQs3tjqP/wF/L4iiqJRSPqs1cLAJo6qqnDHLlFKztm0/1hC8GWPGQCQi+6uK3ntWStXe+3vgMU3TyU+BtW37CbwAB7YX37G5r+u6IIqicRiGkYhM0jQdbSMwxpzabCeO43C5XL7+FGitc+AEOO/7HhFxq95sbWJgBrwCDyJSrAGkLkdG+phP9DX+twDfAwBCIQrTj5IC7QAAAABJRU5ErkJggg==';
+        const ccsLogoBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAACvSURBVHja7JVBDsIgEEXfFDcu9TDeoRdoD9EjcAsXrFxosWqikRYXJoRQoWjC9CeTDJmB+eRnfhAAlFKeRGQEXIAXkDoqIsc2ORhjLsCt/QZPVd06HLO1x9twURSFruvugbV4UVPsvwGM9uEWuPfdoK7rOzAYY84islbVpCsKgiBQ1QlIrLWitZ4Bzxamy3gZQJ7nJnrHxpgJMG0aqIOCw6prVdUOWL4A7ODnAC/gsvHZdwB0NrYPrlX0sAAAAABJRU5ErkJggg==';
+        
+        // Initialize DataTables with a simple PDF export approach
         $(document).ready(function() {
             $('#reportTable').DataTable({
                 dom: 'Bfrtip',
@@ -881,59 +888,182 @@ include('includes/header.php');
                         title: 'Sit-In Report ' + startDate + ' to ' + endDate,
                         className: 'btn btn-danger text-white',
                         customize: function(doc) {
-                            // Customize PDF styling
-                            doc.styles.tableHeader.fontSize = 10;
-                            doc.styles.tableHeader.alignment = 'left';
-                            doc.styles.tableBodyEven.alignment = 'left';
-                            doc.styles.tableBodyOdd.alignment = 'left';
+                            // Set page margins [left, top, right, bottom]
+                            doc.pageMargins = [40, 60, 40, 40];
                             
-                            // Set column widths
-                            doc.content[1].table.widths = ['15%', '20%', '15%', '15%', '15%', '15%', '5%'];
+                            // Set default font size
+                            doc.defaultStyle.fontSize = 10;
                             
-                            // Create a custom header with university name
-                            doc.content.splice(0, 1, {
-                                margin: [0, 0, 0, 15],
+                            // Add logos at the top
+                            doc.content.unshift({
+                                margin: [0, 0, 0, 12],
                                 alignment: 'center',
-                                stack: [
-                                    { text: 'University Of Cebu', style: 'universityName' },
-                                    { text: 'CCS SITIN MONITORING SYSTEM', style: 'header' },
-                                    { text: 'Sit-In Report (' + startDate + ' to ' + endDate + ')', style: 'subheader' }
+                                columns: [
+                                    {
+                                        image: ucLogoBase64,
+                                        width: 30,
+                                        alignment: 'right',
+                                        margin: [0, 0, 10, 0]
+                                    },
+                                    {
+                                        width: '*',
+                                        text: [
+                                            {text: 'UNIVERSITY OF CEBU\n', fontSize: 16, bold: true},
+                                            {text: 'College of Computer Studies\n', fontSize: 12, bold: true},
+                                            {text: 'CCS SITIN MONITORING SYSTEM', fontSize: 11, italics: true}
+                                        ],
+                                        alignment: 'center'
+                                    },
+                                    {
+                                        image: ccsLogoBase64,
+                                        width: 30,
+                                        alignment: 'left',
+                                        margin: [10, 0, 0, 0]
+                                    }
                                 ]
                             });
                             
-                            // Add custom styles
-                            doc.styles.universityName = {
-                                fontSize: 16,
-                                bold: true,
-                                margin: [0, 0, 0, 5]
-                            };
+                            // Add report metadata
+                            let labFilter = document.getElementById('report-lab').options[document.getElementById('report-lab').selectedIndex].text;
+                            let purposeFilter = document.getElementById('report-purpose').value || 'All Purposes';
                             
-                            doc.styles.header = {
-                                fontSize: 14,
-                                bold: true,
-                                color: '#0369a1',
-                                margin: [0, 0, 0, 5]
-                            };
+                            doc.content.splice(1, 0, {
+                                margin: [0, 10, 0, 10],
+                                alignment: 'center',
+                                columns: [
+                                    {
+                                        alignment: 'center',
+                                        fontSize: 10,
+                                        text: [
+                                            {text: 'Sit-In Report\n', fontSize: 14, bold: true},
+                                            {text: 'Period: ' + startDate + ' to ' + endDate + '\n', fontSize: 10},
+                                            {text: 'Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, fontSize: 10},
+                                            {text: '\nTotal Records: ' + reportData.length, fontSize: 10, bold: true}
+                                        ]
+                                    }
+                                ]
+                            });
                             
-                            doc.styles.subheader = {
-                                fontSize: 12,
-                                italics: true,
-                                color: '#666666',
-                                margin: [0, 0, 0, 10]
-                            };
+                            // Add summary statistics
+                            let activeCount = reportData.filter(session => session.STATUS === 'ACTIVE').length;
+                            let completedCount = reportData.filter(session => session.STATUS === 'COMPLETED').length;
                             
-                            // Add footer with date and pagination
-                            var now = new Date();
-                            var dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+                            let uniqueStudents = new Set();
+                            let uniqueLabs = {};
+                            let purposes = {};
                             
+                            reportData.forEach(session => {
+                                uniqueStudents.add(session.IDNO);
+                                
+                                if (!uniqueLabs[session.LAB_NAME]) {
+                                    uniqueLabs[session.LAB_NAME] = 0;
+                                }
+                                uniqueLabs[session.LAB_NAME]++;
+                                
+                                if (!purposes[session.PURPOSE]) {
+                                    purposes[session.PURPOSE] = 0;
+                                }
+                                purposes[session.PURPOSE]++;
+                            });
+                            
+                            // Get top lab and purpose
+                            let topLab = Object.keys(uniqueLabs).reduce((a, b) => uniqueLabs[a] > uniqueLabs[b] ? a : b, '');
+                            let topPurpose = Object.keys(purposes).reduce((a, b) => purposes[a] > purposes[b] ? a : b, '');
+                            
+                            doc.content.splice(2, 0, {
+                                margin: [0, 0, 0, 10],
+                                columnGap: 20,
+                                columns: [
+                                    {
+                                        width: 'auto',
+                                        table: {
+                                            headerRows: 1,
+                                            widths: ['*', '*'],
+                                            body: [
+                                                [{text: 'Summary Statistics', style: 'tableHeader', colSpan: 2, alignment: 'center'}, {}],
+                                                ['Unique Students', uniqueStudents.size],
+                                                ['Active Sessions', activeCount],
+                                                ['Completed Sessions', completedCount],
+                                                ['Most Used Lab', topLab],
+                                                ['Most Common Purpose', topPurpose]
+                                            ]
+                                        },
+                                        fontSize: 8,
+                                        alignment: 'center'
+                                    }
+                                ],
+                                alignment: 'center'
+                            });
+                            
+                            // Modify table styling
+                            doc.content[3].table.widths = ['15%', '20%', '15%', '15%', '15%', '15%', '5%'];
+                            
+                            // Fix: Apply styling to all header cells
+                            if (doc.content[3].table.body && doc.content[3].table.body.length > 0) {
+                                // Style all cells in the header row
+                                for (let i = 0; i < doc.content[3].table.body[0].length; i++) {
+                                    if (!doc.content[3].table.body[0][i]) continue;
+                                    
+                                    doc.content[3].table.body[0][i].fillColor = '#356480';
+                                    doc.content[3].table.body[0][i].color = '#ffffff';
+                                    doc.content[3].table.body[0][i].fontSize = 9;
+                                    doc.content[3].table.body[0][i].bold = true;
+                                }
+                                
+                                // Apply consistent row styles to data rows
+                                for (let rowIndex = 1; rowIndex < doc.content[3].table.body.length; rowIndex++) {
+                                    // Apply alternating row background colors
+                                    const shouldColor = rowIndex % 2 === 1;
+                                    const rowBgColor = shouldColor ? '#f8f9fa' : '#ffffff';
+                                    
+                                    // Apply the background color to each cell in the row
+                                    for (let cellIndex = 0; cellIndex < doc.content[3].table.body[rowIndex].length; cellIndex++) {
+                                        // Check if cell exists and is an object (could be a string or object)
+                                        if (!doc.content[3].table.body[rowIndex][cellIndex]) continue;
+                                        
+                                        // If cell is a string, convert it to object with text property
+                                        if (typeof doc.content[3].table.body[rowIndex][cellIndex] === 'string') {
+                                            doc.content[3].table.body[rowIndex][cellIndex] = {
+                                                text: doc.content[3].table.body[rowIndex][cellIndex],
+                                                fillColor: rowBgColor
+                                            };
+                                        } else {
+                                            // Otherwise, just set the fillColor property
+                                            doc.content[3].table.body[rowIndex][cellIndex].fillColor = rowBgColor;
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Add footer with page numbers
+                            var now = new Date().toLocaleString();
                             doc.footer = function(currentPage, pageCount) {
                                 return {
                                     columns: [
-                                        { text: 'Generated on: ' + dateStr, alignment: 'left', fontSize: 8, margin: [40, 0, 0, 0] },
-                                        { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'right', fontSize: 8, margin: [0, 0, 40, 0] }
+                                        { 
+                                            text: 'Generated by: <?php echo htmlspecialchars($username); ?> | ' + now, 
+                                            alignment: 'left', 
+                                            fontSize: 8, 
+                                            margin: [40, 0] 
+                                        },
+                                        { 
+                                            text: 'Page ' + currentPage.toString() + ' of ' + pageCount, 
+                                            alignment: 'right', 
+                                            fontSize: 8, 
+                                            margin: [0, 0, 40, 0] 
+                                        }
                                     ],
-                                    margin: [0, 10, 0, 0]
+                                    margin: [40, 0]
                                 };
+                            };
+                            
+                            // Add watermark
+                            doc.watermark = {
+                                text: 'UNIVERSITY OF CEBU',
+                                color: '#eeeeee',
+                                opacity: 0.1,
+                                bold: true,
+                                fontSize: 60
                             };
                         }
                     },
@@ -976,7 +1106,6 @@ include('includes/header.php');
             .then(data => {
                 if (data.success) {
                     const tableBody = document.querySelector('#recent-sessions table tbody');
-                    
                     if (data.sessions.length === 0) {
                         tableBody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">No recent sit-in sessions found</td></tr>';
                     } else {
@@ -1022,8 +1151,242 @@ include('includes/header.php');
                 refreshButton.innerHTML = originalHtml;
             });
     });
-</script>
 
+    // Add direct PDF download function that bypasses DataTables buttons
+    function generateDirectPDF(startDate, endDate) {
+        try {
+            // Show loading message
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50';
+            loadingDiv.innerHTML = '<div class="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">' +
+                                   '<i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>' +
+                                   '<p class="text-lg font-semibold">Generating PDF...</p>' +
+                                   '<p class="text-sm text-gray-500 mt-2">Please wait, this may take a few moments.</p>' +
+                                   '</div>';
+            document.body.appendChild(loadingDiv);
+            
+            // Initialize jsPDF without waiting for images
+            window.jsPDF = window.jspdf.jsPDF;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Wait to ensure jspdf-autotable is fully loaded and attached to jsPDF
+            if (typeof doc.autoTable !== 'function') {
+                // Add the plugin manually if it's not automatically attached
+                if (window.jspdf && window.jspdf.jsPDF && typeof window.jspdf.jsPDF.API.autoTable === 'function') {
+                    window.jspdf.jsPDF.API.autoTable = window.jspdf.jsPDF.API.autoTable;
+                }
+            }
+            
+            // Check if autoTable is available, if not use a simpler approach
+            const hasAutoTable = typeof doc.autoTable === 'function';
+            
+            // Add title immediately - don't wait for images
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 15, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 22, { align: 'center' });
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'italic');
+            doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 27, { align: 'center' });
+            
+            // Add report details
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(14);
+            doc.text('Sit-In Report', doc.internal.pageSize.width / 2, 35, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            let labFilter = $('#report-lab option:selected').text();
+            let purposeFilter = $('#report-purpose').val() || 'All Purposes';
+            
+            doc.text('Period: ' + startDate + ' to ' + endDate, doc.internal.pageSize.width / 2, 40, { align: 'center' });
+            doc.text('Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, doc.internal.pageSize.width / 2, 45, { align: 'center' });
+            doc.text('Total Records: ' + reportData.length, doc.internal.pageSize.width / 2, 50, { align: 'center' });
+            
+            // Add summary statistics
+            let activeCount = reportData.filter(session => session.STATUS === 'ACTIVE').length;
+            let completedCount = reportData.filter(session => session.STATUS === 'COMPLETED').length;
+            
+            let uniqueStudents = new Set();
+            reportData.forEach(session => uniqueStudents.add(session.IDNO));
+            
+            // Draw statistics box
+            doc.setDrawColor(100, 100, 100);
+            doc.setFillColor(240, 240, 240);
+            doc.roundedRect(90, 53, 120, 25, 2, 2, 'FD');
+            
+            doc.setFontSize(9);
+            doc.setFont(undefined, 'bold');
+            doc.text('Summary Statistics', doc.internal.pageSize.width / 2, 58, { align: 'center' });
+            
+            doc.setFont(undefined, 'normal');
+            doc.text('Unique Students: ' + uniqueStudents.size, 100, 64);
+            doc.text('Active Sessions: ' + activeCount, 100, 69);
+            doc.text('Completed Sessions: ' + completedCount, 100, 74);
+            
+            // Get table data
+            const headers = [];
+            const rows = [];
+            
+            // Extract headers
+            $('#reportTable thead th').each(function() {
+                headers.push($(this).text());
+            });
+            
+            // Extract data
+            $('#reportTable tbody tr').each(function() {
+                const row = [];
+                $(this).find('td').each(function() {
+                    row.push($(this).text());
+                });
+                rows.push(row);
+            });
+            
+            // Generate table in PDF
+            if (hasAutoTable) {
+                // Use autoTable if available
+                doc.autoTable({
+                    head: [headers],
+                    body: rows,
+                    startY: 82,
+                    theme: 'grid',
+                    styles: { fontSize: 8 },
+                    headStyles: {
+                        fillColor: [53, 100, 128],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    },
+                    alternateRowStyles: {
+                        fillColor: [245, 247, 250]
+                    },
+                    didDrawPage: function(data) {
+                        // Add footer
+                        doc.setFontSize(8);
+                        doc.setTextColor(100, 100, 100);
+                        doc.setFont(undefined, 'normal');
+                        doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
+                        doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), 280, doc.internal.pageSize.height - 10);
+                    }
+                });
+            } else {
+                // Fallback: Draw a basic table manually
+                console.log("AutoTable plugin not available, using basic table");
+                const startY = 82;
+                const rowHeight = 10;
+                const colWidths = [25, 40, 30, 30, 35, 35, 20];
+                let xPos = 15;
+                
+                // Draw headers
+                doc.setFillColor(53, 100, 128);
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(8);
+                doc.setFont(undefined, 'bold');
+                
+                let currentX = xPos;
+                for (let i = 0; i < headers.length; i++) {
+                    doc.rect(currentX, startY, colWidths[i], rowHeight, 'F');
+                    doc.text(headers[i], currentX + 2, startY + 6);
+                    currentX += colWidths[i];
+                }
+                
+                // Draw rows
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'normal');
+                
+                let currentY = startY + rowHeight;
+                for (let i = 0; i < Math.min(rows.length, 20); i++) { // Limit to 20 rows to prevent overflow
+                    currentX = xPos;
+                    // Alternate row colors
+                    if (i % 2 === 1) {
+                        doc.setFillColor(245, 247, 250);
+                        for (let j = 0; j < headers.length; j++) {
+                            doc.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
+                            currentX += colWidths[j];
+                        }
+                    }
+                    
+                    currentX = xPos;
+                    for (let j = 0; j < rows[i].length; j++) {
+                        doc.text(String(rows[i][j]).substring(0, 18), currentX + 2, currentY + 6); // Limit text length
+                        currentX += colWidths[j];
+                    }
+                    currentY += rowHeight;
+                }
+                
+                // Add note if rows were truncated
+                if (rows.length > 20) {
+                    doc.text('Note: Only showing first 20 records due to PDF size limitations', xPos, currentY + 10);
+                }
+                
+                // Add footer
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                doc.setFont(undefined, 'normal');
+                doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
+                doc.text('Page 1 of 1', 280, doc.internal.pageSize.height - 10);
+            }
+            
+            // Directly trigger download using multiple methods for browser compatibility
+            setTimeout(function() {
+                try {
+                    // Method 1: Standard save
+                    doc.save('Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf');
+                } catch (e) {
+                    console.error('Standard save failed:', e);
+                    try {
+                        // Method 2: Using FileSaver.js
+                        const blob = doc.output('blob');
+                        window.saveAs(blob, 'Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf');
+                    } catch (e2) {
+                        console.error('FileSaver failed:', e2);
+                        try {
+                            // Method 3: Direct download link
+                            const pdfData = doc.output('datauristring');
+                            const link = document.createElement('a');
+                            link.href = pdfData;
+                            link.download = 'Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf';
+                            link.click();
+                        } catch (e3) {
+                            console.error('Link method failed:', e3);
+                            // Method 4: Open in new window as last resort
+                            const pdfDataUri = doc.output('datauristring');
+                            window.open(pdfDataUri);
+                        }
+                    }
+                }
+                
+                // Remove loading message
+                document.body.removeChild(loadingDiv);
+            }, 1000); // Small delay to ensure PDF generation is complete
+            
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF: ' + error.message);
+            // Remove loading message if there's an error
+            const loadingDiv = document.querySelector('.fixed.top-0.left-0.w-full.h-full');
+            if (loadingDiv) document.body.removeChild(loadingDiv);
+        }
+    }
+    
+    // Override both the original PDF button and the alternative button
+    $(document).on('click', '.buttons-pdf, #direct-pdf-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        
+        // Use our direct PDF generation function
+        generateDirectPDF(startDate, endDate);
+        
+        return false;
+    });
+</script>
 <?php include('includes/footer.php'); ?>
 </body>
 </html>

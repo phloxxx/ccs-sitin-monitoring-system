@@ -264,11 +264,11 @@ include('includes/header.php');
             
             <!-- Recent Announcements -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-                <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 flex justify-between items-center text-white">
+                <div class="bg-gradient-to-r from-secondary to-secondary p-4 flex justify-between items-center text-white">
                     <h2 class="text-lg font-semibold flex items-center">
                         <i class="fas fa-bullhorn mr-2"></i> Recent Announcements
                     </h2>
-                    <a href="announcements.php" class="bg-white text-blue-600 px-3 py-1 rounded-md text-sm flex items-center hover:bg-gray-100 transition-colors shadow-sm">
+                    <a href="announcements.php" class="bg-white text-secondary px-3 py-1 rounded-md text-sm flex items-center hover:bg-gray-100 transition-colors shadow-sm">
                         <i class="fas fa-list mr-1"></i> View All
                     </a>
                 </div>
