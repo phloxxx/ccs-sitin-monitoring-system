@@ -131,6 +131,10 @@ include('includes/header.php');
                         <i class="fas fa-comments mr-3"></i>
                         <span>Feedbacks</span>
                     </a>
+                    <a href="leaderboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3"></i>
+                        <span>Leaderboard</span>
+                    </a>
                 </nav>
                 
                 <div class="mt-auto">
@@ -196,6 +200,10 @@ include('includes/header.php');
                     <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-comments mr-3"></i>
                         Feedbacks
+                    </a>
+                    <a href="leaderboard.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
+                        <i class="fas fa-trophy mr-3"></i>
+                        Leaderboard
                     </a>
                     <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
                         <i class="fas fa-sign-out-alt mr-3"></i>
