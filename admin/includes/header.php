@@ -52,6 +52,34 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #356480;
         }
+        
+        /* Hide scrollbar while maintaining scroll functionality */
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Global scrollable container styles */
+        .scrollable-content {
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollable-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Dropdown menus */
+        .dropdown-content {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .dropdown-content::-webkit-scrollbar {
+            display: none;
+        }
     </style>
 </head>
 <body class="<?php echo $bodyClass ?? 'font-poppins bg-light'; ?>">

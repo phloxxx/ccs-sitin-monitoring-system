@@ -97,118 +97,140 @@ include('includes/header.php');
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-64 bg-secondary">
-            <div class="flex items-center justify-center h-16 px-4 bg-dark text-white">
-                <span class="text-xl font-semibold">CCS Admin Panel</span>
-            </div>
-            <div class="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
-                <nav class="flex-1 space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-3 text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-home mr-3"></i>
-                        <span>Home</span>
+                <!-- Added Logos -->                <div class="flex flex-col items-center pt-5 pb-2">
+                    <div class="relative w-16 h-16 mb-1">
+                        <!-- UC Logo -->
+                        <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
+                        </div>
+                        <!-- CCS Logo (smaller and positioned at the bottom right) -->
+                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
+                        </div>
+                    </div>
+                    <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
+                    <p class="text-gray-300 text-xs">Monitoring System</p>
+                </div>                
+                <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
+                    <nav class="flex-1 space-y-1">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Search</span>
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        <span>Students</span>
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-desktop mr-3"></i>
-                        <span>Sit-in</span>
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        <span>Reservation</span>
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-4 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        <span>Announcements</span>
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-comments mr-3"></i>
-                        <span>Feedbacks</span>
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="leaderboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-trophy mr-3"></i>
-                        <span>Leaderboard</span>
+                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
                     </a>
-                </nav>
-                
-                <div class="mt-auto">
-                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        <span>Logout</span>
+                </nav>                  
+                <div class="mt-1 border-t border-white-700 pt-2">
+                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Logout</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
+    <div class="flex flex-col flex-1 overflow-hidden">        
         <!-- Top Navigation -->
-        <header class="bg-white shadow-sm">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
             <div class="flex items-center justify-between h-16 px-6">
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center">
-                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none">
+                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h1 class="ml-4 text-xl font-semibold text-secondary">Dashboard</h1>
+                    <h1 class="ml-4 text-xl font-semibold text-secondary flex items-center">
+                        Dashboard
+                    </h1>
                 </div>
                 
                 <!-- Admin Profile -->
                 <div class="flex items-center">
-                    <span class="mr-4 text-sm font-medium text-gray-700"><?php echo htmlspecialchars($username); ?></span>
-                    <button class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <span class="mr-3 text-sm font-medium text-gray-700 hidden sm:inline-block"><?php echo htmlspecialchars($username); ?></span>
+                    <div class="relative group">
+                        <button class="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors border-2 border-white shadow-sm">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                            <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                                Signed in as <span class="font-semibold"><?php echo htmlspecialchars($username); ?></span>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
+                            <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>            
             
             <!-- Mobile Navigation -->
-            <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-secondary">
-                <nav class="space-y-2">
-                    <a href="dashboard.php" class="block px-4 py-2 text-white rounded-lg bg-primary bg-opacity-30 hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-home mr-3"></i>
-                        Home
+            <div id="mobile-menu" class="hidden md:hidden px-4 py-3 bg-secondary">
+                <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white  bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-search mr-3"></i>
-                        Search
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        Student
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-desktop mr-3"></i>
-                        Sit-in
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        Reservation
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-2 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        Announcements
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-comments mr-3"></i>
-                        Feedbacks
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="leaderboard.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-trophy mr-3"></i>
-                        Leaderboard
+                <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
                     </a>
-                    <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        Logout
-                    </a>
+                    
+                    <div class="border-t border-gray-700 mt-2 pt-2">
+                        <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </div>
                 </nav>
             </div>
         </header>
@@ -276,9 +298,9 @@ include('includes/header.php');
                     <h2 class="text-lg font-semibold flex items-center">
                         <i class="fas fa-bullhorn mr-2"></i> Recent Announcements
                     </h2>
-                    <a href="announcements.php" class="bg-white text-secondary px-3 py-1 rounded-md text-sm flex items-center hover:bg-gray-100 transition-colors shadow-sm">
+                    <button id="view-all-announcements" class="bg-white text-secondary px-3 py-1 rounded-md text-sm flex items-center hover:bg-gray-100 transition-colors shadow-sm">
                         <i class="fas fa-list mr-1"></i> View All
-                    </a>
+                    </button>
                 </div>
                 
                 <div class="p-6">
@@ -410,6 +432,41 @@ include('includes/header.php');
     </div>
 </div>
 
+<!-- View All Announcements Modal -->
+<div id="view-all-announcements-modal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full p-6 max-h-[80vh] flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-secondary">All Announcements</h3>
+            <button type="button" id="close-all-announcements-modal" class="text-gray-400 hover:text-gray-500">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="overflow-y-auto flex-grow" id="all-announcements-container">
+            <div class="flex justify-center items-center h-full">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <h3 class="text-lg font-medium text-secondary mb-4">Confirm Deletion</h3>
+        <p id="delete-message" class="text-gray-600 mb-6">Are you sure you want to delete this announcement?</p>
+        <input type="hidden" id="delete-id" value="">
+        <div class="flex justify-end space-x-4">
+            <button id="cancel-delete" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </button>
+            <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -472,36 +529,54 @@ include('includes/header.php');
         
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
+        const formMode = document.getElementById('form-mode') ? document.getElementById('form-mode').value : 'create';
+        const id = document.getElementById('announcement-id') ? document.getElementById('announcement-id').value : '';
         
         // Disable the submit button during submission
         const submitButton = document.getElementById('submit-announcement');
         submitButton.disabled = true;
-        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Posting...';
+        
+        if (formMode === 'create') {
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Posting...';
+        } else {
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Updating...';
+        }
         
         // Hide any previous messages
         errorElement.classList.add('hidden');
         successElement.classList.add('hidden');
         
+        // Determine which endpoint to use based on the form mode
+        let endpoint = 'ajax/create_announcement.php';
+        let requestData = `title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`;
+        
+        if (formMode === 'edit') {
+            endpoint = 'ajax/update_announcement.php';
+            requestData = `id=${encodeURIComponent(id)}&title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`;
+        }
+        
         // Send AJAX request
-        fetch('ajax/create_announcement.php', {
+        fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`
+            body: requestData
         })
         .then(response => response.json())
         .then(data => {
             submitButton.disabled = false;
-            submitButton.innerHTML = 'Post Announcement';
+            submitButton.innerHTML = formMode === 'create' ? 'Post Announcement' : 'Update Announcement';
             
             if (data.success) {
                 // Show success message
                 successElement.textContent = data.message;
                 successElement.classList.remove('hidden');
                 
-                // Reset the form
-                announcementForm.reset();
+                // Reset the form if it's a new announcement
+                if (formMode === 'create') {
+                    announcementForm.reset();
+                }
                 
                 // Refresh the announcements list
                 refreshAnnouncements();
@@ -510,13 +585,13 @@ include('includes/header.php');
                 setTimeout(closeModal, 500);
             } else {
                 // Show error message
-                errorElement.textContent = data.message || 'An error occurred while posting the announcement.';
+                errorElement.textContent = data.message || 'An error occurred while processing your request.';
                 errorElement.classList.remove('hidden');
             }
         })
         .catch(error => {
             submitButton.disabled = false;
-            submitButton.innerHTML = 'Post Announcement';
+            submitButton.innerHTML = formMode === 'create' ? 'Post Announcement' : 'Update Announcement';
             errorElement.textContent = 'Network error. Please try again.';
             errorElement.classList.remove('hidden');
             console.error('Error:', error);
@@ -561,6 +636,225 @@ include('includes/header.php');
             })
             .catch(error => console.error('Error:', error));
     }
+
+    // View All Announcements modal handling
+    const viewAllAnnouncementsModal = document.getElementById('view-all-announcements-modal');
+    const viewAllAnnouncementsBtn = document.getElementById('view-all-announcements');
+    const closeAllAnnouncementsModal = document.getElementById('close-all-announcements-modal');
+    const allAnnouncementsContainer = document.getElementById('all-announcements-container');
+    
+    viewAllAnnouncementsBtn.addEventListener('click', () => {
+        viewAllAnnouncementsModal.classList.remove('hidden');
+        loadAllAnnouncements();
+    });
+    
+    closeAllAnnouncementsModal.addEventListener('click', () => {
+        viewAllAnnouncementsModal.classList.add('hidden');
+    });
+    
+    // Close modal when clicking outside
+    viewAllAnnouncementsModal.addEventListener('click', function(event) {
+        if (event.target === this) {
+            viewAllAnnouncementsModal.classList.add('hidden');
+        }
+    });
+    
+    // Function to load all announcements
+    function loadAllAnnouncements() {
+        fetch('ajax/get_announcements.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.announcements.length === 0) {
+                        allAnnouncementsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">No announcements found.</p>';
+                    } else {
+                        let html = '<div class="space-y-4 p-2">';
+                        
+                        data.announcements.forEach(announcement => {
+                            const date = new Date(announcement.CREATED_AT);
+                            const formattedDate = date.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            const formattedTime = date.toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            
+                            // Check if this announcement belongs to current admin
+                            const isOwner = announcement.ADMIN_ID == <?php echo $admin_id; ?>;
+                            
+                            html += `
+                            <div class="border-l-4 border-blue-500 pl-4 py-3 bg-blue-50 rounded-md">
+                                <div class="flex justify-between">
+                                    <h3 class="font-medium text-gray-800">${announcement.TITLE}</h3>
+                                    ${isOwner ? `
+                                    <div class="flex space-x-2 mr-3">
+                                        <button
+                                            class="text-primary hover:text-secondary edit-btn"
+                                            data-id="${announcement.ANNOUNCE_ID}"
+                                            data-title="${announcement.TITLE}"
+                                            data-content="${announcement.CONTENT}"
+                                        >
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button
+                                            class="text-red-600 hover:text-red-800 delete-btn"
+                                            data-id="${announcement.ANNOUNCE_ID}"
+                                            data-title="${announcement.TITLE}"
+                                        >
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">${announcement.CONTENT}</p>
+                                <div class="flex justify-between mt-2">
+                                    <p class="text-xs text-gray-500 flex items-center">
+                                        <i class="fas fa-user mr-1"></i> ${announcement.username}
+                                    </p>
+                                    <p class="text-xs text-gray-500 flex items-center mr-3">
+                                        <i class="fas fa-calendar-alt mr-1"></i> ${formattedDate} at ${formattedTime}
+                                    </p>
+                                </div>
+                            </div>`;
+                        });
+                        
+                        html += '</div>';
+                        allAnnouncementsContainer.innerHTML = html;
+                        
+                        // Set up edit and delete button event listeners
+                        setupAnnouncementButtons();
+                    }
+                } else {
+                    allAnnouncementsContainer.innerHTML = '<p class="text-red-500 text-center py-4">Error loading announcements.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                allAnnouncementsContainer.innerHTML = '<p class="text-red-500 text-center py-4">Error loading announcements. Please try again later.</p>';
+            });
+    }
+    
+    // Setup edit and delete functionality for announcements
+    function setupAnnouncementButtons() {
+        // Handle edit buttons
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const title = this.getAttribute('data-title');
+                const content = this.getAttribute('data-content');
+                
+                // Set form values for editing
+                document.getElementById('title').value = title;
+                document.getElementById('content').value = content;
+                
+                // Add hidden fields if they don't exist
+                if (!document.getElementById('form-mode')) {
+                    const formMode = document.createElement('input');
+                    formMode.type = 'hidden';
+                    formMode.id = 'form-mode';
+                    formMode.name = 'mode';
+                    formMode.value = 'edit';
+                    announcementForm.appendChild(formMode);
+                } else {
+                    document.getElementById('form-mode').value = 'edit';
+                }
+                
+                if (!document.getElementById('announcement-id')) {
+                    const announcementId = document.createElement('input');
+                    announcementId.type = 'hidden';
+                    announcementId.id = 'announcement-id';
+                    announcementId.name = 'id';
+                    announcementId.value = id;
+                    announcementForm.appendChild(announcementId);
+                } else {
+                    document.getElementById('announcement-id').value = id;
+                }
+                
+                // Change submit button text
+                document.getElementById('submit-announcement').textContent = 'Update Announcement';
+                
+                // Show the edit modal
+                viewAllAnnouncementsModal.classList.add('hidden');
+                announcementModal.classList.remove('hidden');
+            });
+        });
+        
+        // Handle delete buttons
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const title = this.getAttribute('data-title');
+                
+                // Set delete ID and message
+                document.getElementById('delete-id').value = id;
+                document.getElementById('delete-message').textContent = `Are you sure you want to delete the announcement "${title}"?`;
+                
+                // Show delete confirmation modal
+                viewAllAnnouncementsModal.classList.add('hidden');
+                document.getElementById('delete-modal').classList.remove('hidden');
+            });
+        });
+    }
+    
+    // Handle delete confirmation
+    const deleteModal = document.getElementById('delete-modal');
+    const deleteId = document.getElementById('delete-id');
+    const cancelDelete = document.getElementById('cancel-delete');
+    const confirmDelete = document.getElementById('confirm-delete');
+    
+    cancelDelete.addEventListener('click', () => {
+        deleteModal.classList.add('hidden');
+        viewAllAnnouncementsModal.classList.remove('hidden');
+    });
+    
+    // Close delete modal when clicking outside
+    deleteModal.addEventListener('click', function(event) {
+        if (event.target === this) {
+            this.classList.add('hidden');
+            viewAllAnnouncementsModal.classList.remove('hidden');
+        }
+    });
+    
+    // Confirm delete
+    confirmDelete.addEventListener('click', function() {
+        // Disable button to prevent multiple submissions
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Deleting...';
+        
+        const id = deleteId.value;
+        
+        // Send AJAX request to delete
+        fetch('ajax/delete_announcement.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id=${encodeURIComponent(id)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close modal and reload announcements
+                deleteModal.classList.add('hidden');
+                refreshAnnouncements();
+                loadAllAnnouncements();
+                viewAllAnnouncementsModal.classList.remove('hidden');
+            } else {
+                alert('Error: ' + (data.message || 'Failed to delete announcement'));
+                this.disabled = false;
+                this.innerHTML = 'Delete';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error occurred while trying to delete');
+            this.disabled = false;
+            this.innerHTML = 'Delete';
+        });
+    });
 </script>
 
 <?php include('includes/footer.php'); ?>

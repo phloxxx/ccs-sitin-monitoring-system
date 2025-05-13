@@ -344,8 +344,9 @@ include('includes/header.php');
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
             <!-- Logo and Username -->
             <a href="profile.php" class="flex items-center space-x-4 mb-4 md:mb-0 group">
-                <div class="h-12 w-12 rounded-full overflow-hidden border-2 border-primary shadow-md">
-                    <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" class="h-full w-full object-cover">
+                <div class="h-12 w-12 rounded-full overflow-hidden border-2 border-primary">
+                    <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" class="h-full w-full object-cover" 
+                         onerror="this.onerror=null; this.src='images/snoopy.jpg';">
                 </div>
                 <span class="text-white font-semibold text-lg group-hover:text-primary transition"><?php echo htmlspecialchars($username); ?></span>
             </a>

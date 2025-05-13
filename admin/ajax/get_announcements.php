@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('../../db.php');
+require_once('../../config/db.php');
 
 // Set the content type to JSON
 header('Content-Type: application/json');
@@ -11,13 +11,26 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
-// Get recent announcements (last 5) with admin username
+// Get announcements with admin username
 $announcements = [];
 try {
+    // Check if limit parameter is provided
+    $limit = isset($_GET['limit']) ? intval($_GET['limit']) : null;
+    
     // Query that joins ANNOUNCEMENT with ADMIN to get the username
-    $stmt = $conn->prepare("SELECT a.*, admin.username FROM ANNOUNCEMENT a 
-                           JOIN ADMIN admin ON a.ADMIN_ID = admin.ADMIN_ID 
-                           ORDER BY a.CREATED_AT DESC LIMIT 5");
+    $query = "SELECT a.*, admin.username FROM ANNOUNCEMENT a 
+              JOIN ADMIN admin ON a.ADMIN_ID = admin.ADMIN_ID 
+              ORDER BY a.CREATED_AT DESC";
+              
+    // Add limit clause if limit parameter is provided
+    if ($limit) {
+        $query .= " LIMIT ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $limit);
+    } else {
+        $stmt = $conn->prepare($query);
+    }
+    
     $stmt->execute();
     $result = $stmt->get_result();
     

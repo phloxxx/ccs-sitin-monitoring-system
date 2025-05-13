@@ -275,52 +275,62 @@ include('includes/header.php');
 ?>
 
 <div class="flex h-screen bg-gray-100">
-    <!-- Sidebar -->
+        <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-64 bg-secondary">
-            <div class="flex items-center justify-center h-16 px-4 bg-dark text-white">
-                <span class="text-xl font-semibold">CCS Admin Panel</span>
-            </div>
-            <div class="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
-                <nav class="flex-1 space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-home mr-3"></i>
-                        <span>Home</span>
+                <!-- Added Logos -->                <div class="flex flex-col items-center pt-5 pb-2">
+                    <div class="relative w-16 h-16 mb-1">
+                        <!-- UC Logo -->
+                        <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
+                        </div>
+                        <!-- CCS Logo (smaller and positioned at the bottom right) -->
+                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
+                        </div>
+                    </div>
+                    <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
+                    <p class="text-gray-300 text-xs">Monitoring System</p>
+                </div>                
+                <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
+                    <nav class="flex-1 space-y-1">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Search</span>
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        <span>Students</span>
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-desktop mr-3"></i>
-                        <span>Sit-in</span>
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        <span>Reservation</span>
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-4 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        <span>Announcements</span>
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-comments mr-3"></i>
-                        <span>Feedbacks</span>
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="leaderboard.php" class="flex items-center px-4 py-3 text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-trophy mr-3"></i>
-                        <span>Leaderboard</span>
+                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
                     </a>
-                </nav>
-                <div class="mt-auto">
-                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        <span>Logout</span>
+                </nav>                  
+                <div class="mt-1 border-t border-white-700 pt-2">
+                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Logout</span>
                     </a>
                 </div>
             </div>
@@ -328,304 +338,381 @@ include('includes/header.php');
     </div>
 
     <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
+    <div class="flex flex-col flex-1 overflow-hidden">        
         <!-- Top Navigation -->
-        <header class="bg-white shadow-sm">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
             <div class="flex items-center justify-between h-16 px-6">
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center">
-                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none">
+                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h1 class="ml-4 text-xl font-semibold text-secondary">Student Leaderboard</h1>
+                    <h1 class="ml-4 text-xl font-semibold text-secondary flex items-center">
+                        Student Leaderboard
+                    </h1>
                 </div>
                 
                 <!-- Admin Profile -->
                 <div class="flex items-center">
-                    <span class="mr-4 text-sm font-medium text-gray-700"><?php echo htmlspecialchars($username); ?></span>
-                    <button class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <span class="mr-3 text-sm font-medium text-gray-700 hidden sm:inline-block"><?php echo htmlspecialchars($username); ?></span>
+                    <div class="relative group">
+                        <button class="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors border-2 border-white shadow-sm">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                            <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                                Signed in as <span class="font-semibold"><?php echo htmlspecialchars($username); ?></span>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
+                            <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>            
             
             <!-- Mobile Navigation -->
-            <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-secondary">
-                <nav class="space-y-2">
-                    <a href="dashboard.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-home mr-3"></i>
-                        Home
+            <div id="mobile-menu" class="hidden md:hidden px-4 py-3 bg-secondary">
+                <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-search mr-3"></i>
-                        Search
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        Students
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-desktop mr-3"></i>
-                        Sit-in
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        Reservation
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-2 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        Announcements
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-comments mr-3"></i>
-                        Feedbacks
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="leaderboard.php" class="block px-4 py-2 text-white rounded-lg bg-primary bg-opacity-30 hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-trophy mr-3"></i>
-                        Leaderboard
+                <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
                     </a>
-                    <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        Logout
-                    </a>
+                    
+                    <div class="border-t border-gray-700 mt-2 pt-2">
+                        <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </div>
                 </nav>
             </div>
         </header>
         
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
-            <!-- Flash Messages -->
-            <?php if (!empty($message)): ?>
-                <div class="mb-6 p-4 rounded-md <?php echo $messageType === 'error' ? 'bg-red-100 border border-red-400 text-red-700' : 'bg-green-100 border border-green-400 text-green-700'; ?>" role="alert">
-                    <?php echo $messageType === 'error' ? '<i class="fas fa-exclamation-circle mr-2"></i>' : '<i class="fas fa-check-circle mr-2"></i>'; ?>
-                    <?php echo htmlspecialchars($message); ?>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Two Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column - Leaderboard -->
-                <div class="lg:col-span-2">
-                    <!-- Leaderboard Section -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6" style="height: 400px; display: flex; flex-direction: column;">
-                        <div class="bg-gradient-to-r from-secondary to-secondary p-4 flex justify-between items-center text-white">
-                            <h2 class="text-lg font-semibold flex items-center">
-                                <i class="fas fa-trophy mr-2"></i> Student Points Leaderboard
-                            </h2>
-                        </div>
-                        
-                        <div class="overflow-y-auto flex-grow">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50 sticky top-0">
-                                    <tr>
-                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sessions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    <?php if (empty($students)): ?>
-                                        <tr>
-                                            <td colspan="5" class="px-3 py-4 text-center text-sm text-gray-500">No students with points yet.</td>
-                                        </tr>
-                                    <?php else: ?>
-                                        <?php $rank = 1; foreach ($students as $student): ?>
-                                            <tr class="hover:bg-gray-50">
-                                                <td class="px-3 py-3 whitespace-nowrap">
-                                                    <?php if ($rank <= 3): ?>
-                                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full 
-                                                            <?php echo $rank == 1 ? 'bg-yellow-100 text-yellow-600' : 
-                                                                    ($rank == 2 ? 'bg-gray-100 text-gray-600' : 
-                                                                                'bg-orange-100 text-orange-600'); ?>">
-                                                            <?php echo $rank; ?>
-                                                        </span>
-                                                    <?php else: ?>
-                                                        <span class="text-gray-500"><?php echo $rank; ?></span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td class="px-3 py-3 whitespace-nowrap">
-                                                    <div class="flex items-center">
-                                                        <div class="ml-1">
-                                                            <div class="text-sm font-medium text-gray-900">
-                                                                <?php echo htmlspecialchars($student['FNAME'] . ' ' . $student['LNAME']); ?>
-                                                            </div>
-                                                            <div class="text-xs text-gray-500">
-                                                                <?php echo htmlspecialchars($student['USER_ID']); ?> • <?php echo htmlspecialchars($student['COURSE']); ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="px-3 py-3 whitespace-nowrap">
-                                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                        <?php echo $student['POINTS']; ?> pts
-                                                    </span>
-                                                </td>
-                                                <td class="px-3 py-3 whitespace-nowrap">
-                                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        <?php echo isset($student['TOTAL_POINTS']) ? $student['TOTAL_POINTS'] : $student['POINTS']; ?> pts
-                                                    </span>
-                                                </td>
-                                                <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                                        +<?php echo $student['rewards_earned']; ?>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        <?php $rank++; endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <!-- Recent Activities Section -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden" style="height: 300px; display: flex; flex-direction: column;">
-                        <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 flex justify-between items-center text-white">
-                            <h2 class="text-lg font-semibold flex items-center">
-                                <i class="fas fa-history mr-2"></i> Recent Point Activities
-                            </h2>
-                        </div>
-                        
-                        <div class="p-4 overflow-y-auto flex-grow">
-                            <div class="flow-root">
-                                <ul class="-my-4 divide-y divide-gray-200">
-                                    <?php if (empty($recent_activities)): ?>
-                                        <li class="py-4 text-center text-gray-500">No recent point activities.</li>
-                                    <?php else: ?>
-                                        <?php foreach ($recent_activities as $activity): ?>
-                                            <li class="py-4">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-shrink-0">
-                                                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                                            <i class="fas fa-plus"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-medium text-gray-900 truncate">
-                                                            <?php echo htmlspecialchars($activity['student_name']); ?> (<?php echo htmlspecialchars($activity['USER_ID']); ?>)
-                                                        </p>
-                                                        <p class="text-sm text-gray-500">
-                                                            Received <span class="font-medium text-blue-600"><?php echo $activity['POINTS_ADDED']; ?> points</span> from <?php echo htmlspecialchars($activity['admin_name']); ?>
-                                                        </p>
-                                                    </div>
-                                                    <div class="flex-shrink-0 text-sm text-gray-400">
-                                                        <?php echo date('M j, g:i A', strtotime($activity['CREATED_AT'])); ?>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <main class="flex-1 overflow-y-auto p-8 bg-gray-50 hide-scrollbar">
+    <!-- Flash Messages -->
+    <?php if (!empty($message)): ?>
+        <div class="mb-8 p-4 rounded-lg <?php echo $messageType === 'error' ? 'bg-red-100 border border-red-400 text-red-700' : 'bg-green-100 border border-green-400 text-green-700'; ?>" role="alert">
+            <?php echo $messageType === 'error' ? '<i class="fas fa-exclamation-circle mr-2"></i>' : '<i class="fas fa-check-circle mr-2"></i>'; ?>
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+    <?php endif; ?>
 
-                <!-- Right Column - Add Points Form -->
-                <div>
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden" style="height: 400px; display: flex; flex-direction: column;">
-                        <div class="bg-gradient-to-r from-green-600 to-green-500 p-4 text-white">
-                            <h2 class="text-lg font-semibold flex items-center">
-                                <i class="fas fa-plus-circle mr-2"></i> Add Points
-                            </h2>
-                        </div>
-                        
-                        <div class="p-6 flex-grow overflow-y-auto">
-                            <form method="POST" action="">
-                                <div class="mb-4">
-                                    <label for="student_input" class="block text-sm font-medium text-gray-700 mb-1">Student Name or ID</label>
-                                    <div class="relative">
-                                        <input type="text" id="student_input" name="student_input" required 
-                                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                                              placeholder="Enter name or ID (e.g., John Doe or 2020-00001)" autocomplete="off">
-                                        <div id="student-suggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden mt-1 max-h-60 overflow-auto"></div>
+    <style>
+        /* Hide scrollbar while maintaining scroll functionality */
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;     /* Firefox */
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;             /* Chrome, Safari and Opera */
+        }
+
+        /* Apply to all scrollable containers */
+        .scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Make content areas scrollable with hidden scrollbars */
+        .scrollable-content {
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollable-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* For student suggestions dropdown */
+        #student-suggestions {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #student-suggestions::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+
+    <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Top Rankings Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Most Sessions Used -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-r from-violet-600 to-violet-500 p-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-clock mr-3"></i> Most Active Students
+                    </h2>
+                    <p class="text-violet-100 text-sm mt-1">Based on completed sessions</p>
+                </div>
+                <div class="p-6">
+                    <?php 
+                        $query = "SELECT u.IDNO, u.FIRSTNAME as FNAME, u.LASTNAME as LNAME, u.COURSE, 
+                                 COUNT(s.SITIN_ID) as sessions_used,
+                                 MAX(s.SESSION_END) as last_session
+                                 FROM USERS u
+                                 LEFT JOIN SITIN s ON u.IDNO = s.IDNO
+                                 WHERE s.STATUS = 'COMPLETED'
+                                 GROUP BY u.IDNO, u.FIRSTNAME, u.LASTNAME, u.COURSE
+                                 ORDER BY sessions_used DESC
+                                 LIMIT 5";
+                        $result = $conn->query($query);
+                        $index = 0;
+                        while ($student = $result->fetch_assoc()):
+                        ?>
+                            <div class="flex items-center justify-between p-4 <?php echo $index === 0 ? 'bg-violet-50 border border-violet-100' : ''; ?> rounded-lg mb-4 last:mb-0 transition duration-150 hover:bg-gray-50">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center <?php echo $index === 0 ? 'bg-violet-100 text-violet-600' : 'bg-gray-100 text-gray-600'; ?>">
+                                            <span class="text-xl font-bold">#<?php echo $index + 1; ?></span>
+                                        </div>
                                     </div>
-                                    <p class="mt-1 text-xs text-gray-500">Type at least 2 characters to search</p>
-                                </div>
-                                
-                                <div class="mb-6">
-                                    <label for="points" class="block text-sm font-medium text-gray-700 mb-1">Points to Add</label>
-                                    <select id="points" name="points" required
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary">
-                                        <option value="1">1 Point</option>
-                                        <option value="2">2 Points</option>
-                                        <option value="3">3 Points</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <button type="submit" name="add_points"
-                                            class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md transition-colors flex items-center justify-center">
-                                        <i class="fas fa-plus mr-2"></i> Add Points
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Points Info Card -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden mt-6" style="height: 300px; display: flex; flex-direction: column;">
-                        <div class="bg-gradient-to-r from-indigo-600 to-indigo-500 p-4 text-white">
-                            <h2 class="text-lg font-semibold flex items-center">
-                                <i class="fas fa-info-circle mr-2"></i> Points System
-                            </h2>
-                        </div>
-                        
-                        <div class="p-6 overflow-y-auto flex-grow">
-                            <div class="space-y-4">
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0 h-5 w-5 text-indigo-500">
-                                        <i class="fas fa-check-circle"></i>
+                                    <div class="min-w-0">
+                                        <h3 class="text-lg font-semibold text-gray-900 truncate"><?php echo htmlspecialchars($student['FNAME'] . ' ' . $student['LNAME']); ?></h3>
+                                        <div class="flex items-center space-x-3 mt-1">
+                                            <span class="text-sm text-gray-500 truncate"><?php echo htmlspecialchars($student['COURSE']); ?></span>
+                                            <span class="text-sm text-gray-400">•</span>
+                                            <span class="text-sm text-gray-500">Last session: <?php echo date('M j', strtotime($student['last_session'])); ?></span>
+                                        </div>
                                     </div>
-                                    <p class="ml-3 text-sm text-gray-600">
-                                        Students can earn points for good behavior, helping others, or exceptional work.
-                                    </p>
                                 </div>
-                                
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0 h-5 w-5 text-indigo-500">
-                                        <i class="fas fa-gift"></i>
-                                    </div>
-                                    <p class="ml-3 text-sm text-gray-600">
-                                        <strong>Every 3 points</strong> automatically rewards the student with 1 extra Sit-in session.
-                                    </p>
-                                </div>
-                                
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0 h-5 w-5 text-indigo-500">
-                                        <i class="fas fa-trophy"></i>
-                                    </div>
-                                    <p class="ml-3 text-sm text-gray-600">
-                                        Top students on the leaderboard may receive additional privileges and recognition.
-                                    </p>
-                                </div>
-                                
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0 h-5 w-5 text-indigo-500">
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <p class="ml-3 text-sm text-gray-600">
-                                        Points are accumulated for ranking purposes even after being converted to sessions.
-                                    </p>
-                                </div>
-                                
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0 h-5 w-5 text-indigo-500">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <p class="ml-3 text-sm text-gray-600">
-                                        Leaderboard rankings are based on total lifetime points earned.
-                                    </p>
+                                <div class="text-right flex-shrink-0">
+                                    <div class="text-2xl font-bold <?php echo $index === 0 ? 'text-violet-600' : 'text-gray-700'; ?>"><?php echo $student['sessions_used']; ?></div>
+                                    <div class="text-sm text-gray-500">sessions</div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        <?php 
+                            $index++;
+                        endwhile; 
+                        // Fill empty slots if less than 5 students
+                        while ($index < 5):
+                        ?>
+                            <div class="flex items-center justify-between p-4 rounded-lg mb-4 last:mb-0 bg-gray-50">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gray-100 text-gray-400">
+                                            <span class="text-xl font-bold">#<?php echo $index + 1; ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="text-lg font-semibold text-gray-400 truncate">No student yet</h3>
+                                        <div class="flex items-center space-x-3 mt-1">
+                                            <span class="text-sm text-gray-400">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right flex-shrink-0">
+                                    <div class="text-2xl font-bold text-gray-400">0</div>
+                                    <div class="text-sm text-gray-400">sessions</div>
+                                </div>
+                            </div>
+                        <?php 
+                            $index++;
+                        endwhile;
+                        ?>
                 </div>
             </div>
-        </main>
+
+            <!-- Most Points Earned -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-trophy mr-3"></i> Top Point Earners
+                    </h2>
+                    <p class="text-blue-100 text-sm mt-1">Based on total accumulated points</p>
+                </div>
+                <div class="p-6">
+                    <?php 
+                    usort($students, function($a, $b) {
+                        return $b['TOTAL_POINTS'] - $a['TOTAL_POINTS'];
+                    });
+                    $topPoints = array_slice($students, 0, 5);
+                    $index = 0;
+                    foreach ($topPoints as $student): 
+                    ?>
+                        <div class="flex items-center justify-between p-4 <?php echo $index === 0 ? 'bg-blue-50 border border-blue-100' : ''; ?> rounded-lg mb-4 last:mb-0 transition duration-150 hover:bg-gray-50">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center <?php echo $index === 0 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'; ?>">
+                                        <span class="text-xl font-bold">#<?php echo $index + 1; ?></span>
+                                    </div>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-lg font-semibold text-gray-900 truncate"><?php echo htmlspecialchars($student['FNAME'] . ' ' . $student['LNAME']); ?></h3>
+                                    <div class="flex items-center space-x-3 mt-1">
+                                        <span class="text-sm text-gray-500 truncate"><?php echo htmlspecialchars($student['COURSE']); ?></span>
+                                        <span class="text-sm text-gray-400">•</span>
+                                        <span class="text-sm text-gray-500">Rewards: <?php echo $student['rewards_earned']; ?> sessions</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-2xl font-bold <?php echo $index === 0 ? 'text-blue-600' : 'text-gray-700'; ?>"><?php echo $student['TOTAL_POINTS']; ?></div>
+                                <div class="text-sm text-gray-500">points</div>
+                            </div>
+                        </div>
+                    <?php 
+                        $index++;
+                    endforeach;
+                    // Fill empty slots if less than 5 students
+                    while ($index < 5):
+                    ?>
+                        <div class="flex items-center justify-between p-4 rounded-lg mb-4 last:mb-0 bg-gray-50">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gray-100 text-gray-400">
+                                        <span class="text-xl font-bold">#<?php echo $index + 1; ?></span>
+                                    </div>
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-lg font-semibold text-gray-400 truncate">No student yet</h3>
+                                    <div class="flex items-center space-x-3 mt-1">
+                                        <span class="text-sm text-gray-400">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-2xl font-bold text-gray-400">0</div>
+                                <div class="text-sm text-gray-400">points</div>
+                            </div>
+                        </div>
+                    <?php 
+                        $index++;
+                    endwhile;
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities and Add Points Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Recent Activities -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100" style="height: 600px;">
+                <div class="bg-gradient-to-r from-gray-800 to-gray-700 p-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-history mr-3"></i> Recent Activities
+                    </h2>
+                    <p class="text-gray-300 text-sm mt-1">Latest point awards and achievements</p>
+                </div>
+                <div class="p-6 scrollable-content" style="height: calc(100% - 116px);">
+                    <?php if (empty($recent_activities)): ?>
+                            <div class="text-center text-gray-500 py-8">No recent activities to display</div>
+                        <?php else: ?>
+                            <?php foreach ($recent_activities as $activity): ?>
+                                <div class="flex items-start space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-900">
+                                                    <?php echo htmlspecialchars($activity['student_name']); ?>
+                                                </p>
+                                                <p class="text-sm text-gray-500 mt-1">
+                                                    Received <span class="font-medium text-blue-600"><?php echo $activity['POINTS_ADDED']; ?> points</span> from <?php echo htmlspecialchars($activity['admin_name']); ?>
+                                                </p>
+                                            </div>
+                                            <span class="text-sm text-gray-400">
+                                                <?php echo date('M j, g:i A', strtotime($activity['CREATED_AT'])); ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Add Points Form -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-r from-green-600 to-green-500 p-6">
+                    <h2 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-plus-circle mr-3"></i> Add Points
+                    </h2>
+                    <p class="text-green-100 text-sm mt-1">Award points to students</p>
+                </div>
+                <div class="p-6">
+                    <form method="POST" action="" class="space-y-6">
+                        <div>
+                            <label for="student_input" class="block text-sm font-medium text-gray-700 mb-2">Student Name or ID</label>
+                            <div class="relative">
+                                <input type="text" id="student_input" name="student_input" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                    placeholder="Search by name or ID number">
+                                <div id="student-suggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg hidden mt-1 max-h-60 overflow-auto"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="points" class="block text-sm font-medium text-gray-700 mb-2">Points to Award</label>
+                            <select id="points" name="points" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="1">1 Point - Good Behavior</option>
+                                <option value="2">2 Points - Helpful to Others</option>
+                                <option value="3">3 Points - Outstanding Achievement</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" name="add_points"
+                            class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg transition duration-150 flex items-center justify-center font-medium">
+                            <i class="fas fa-plus mr-2"></i> Award Points
+                        </button>
+
+                        <!-- Points Info -->
+                        <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                            <h3 class="text-sm font-semibold text-gray-700 mb-3">Points System Info</h3>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-start">
+                                    <i class="fas fa-star text-yellow-400 mt-1 mr-2"></i>
+                                    <span>Every 3 points = 1 extra session</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-trophy text-blue-400 mt-1 mr-2"></i>
+                                    <span>Points accumulate for rankings</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
     </div>
 </div>
 
@@ -683,7 +770,7 @@ include('includes/header.php');
         const query = this.value.trim();
         selectedStudent = null;
         
-        if (query.length < 2) {
+        if (query.length < 1) {
             suggestionsList.innerHTML = '';
             suggestionsList.classList.add('hidden');
             return;
@@ -752,7 +839,15 @@ include('includes/header.php');
                     console.error('Error fetching suggestions:', error);
                     suggestionsList.innerHTML = '<div class="px-4 py-3 text-sm text-red-500">Error searching students</div>';
                 });
-        }, 300);
+        }, 200); // Reduced debounce time for faster response
+    });
+    
+    // Trigger search on focus if there's already content in the input
+    studentInput.addEventListener('focus', function() {
+        if (this.value.trim().length > 0) {
+            // Trigger the input event to show suggestions immediately
+            this.dispatchEvent(new Event('input'));
+        }
     });
     
     // Handle form submission
@@ -765,6 +860,11 @@ include('includes/header.php');
             hiddenInput.name = 'student_id';
             hiddenInput.value = selectedStudent.id;
             this.appendChild(hiddenInput);
+        } else {
+            // Prevent form submission if no student was selected from dropdown
+            event.preventDefault();
+            alert("Please select a student from the dropdown suggestions.");
+            return false;
         }
     });
     

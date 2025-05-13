@@ -119,6 +119,32 @@ if ($table_check->num_rows == 0) {
     }
 }
 
+// Check if PC table exists
+$table_check = $conn->query("SHOW TABLES LIKE 'pc'");
+
+if ($table_check->num_rows == 0) {
+    // Table doesn't exist, create it
+    $sql = "CREATE TABLE `PC` (
+        `PC_ID` int(11) NOT NULL AUTO_INCREMENT,
+        `LAB_ID` int(11) NOT NULL,
+        `PC_NUMBER` varchar(20) NOT NULL,
+        `STATUS` enum('AVAILABLE','IN_USE','MAINTENANCE') NOT NULL DEFAULT 'AVAILABLE',
+        `SPECS` text DEFAULT NULL,
+        `LAST_MAINTENANCE` date DEFAULT NULL,
+        `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp(),
+        `UPDATED_AT` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        PRIMARY KEY (`PC_ID`),
+        UNIQUE KEY `UNQ_PC_LAB_NUMBER` (`LAB_ID`,`PC_NUMBER`),
+        CONSTRAINT `FK_PC_LAB` FOREIGN KEY (`LAB_ID`) REFERENCES `LABORATORY` (`LAB_ID`) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+    
+    if ($conn->query($sql) === TRUE) {
+        echo "<script>console.log('PC table created successfully');</script>";
+    } else {
+        echo "<script>console.log('Error creating PC table: " . $conn->error . "');</script>";
+    }
+}
+
 // Default admin user
 $admin_check = $conn->query("SELECT * FROM ADMIN LIMIT 1");
 if ($admin_check->num_rows == 0) {

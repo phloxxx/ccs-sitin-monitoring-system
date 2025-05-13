@@ -62,112 +62,143 @@ include('includes/header.php');
 ?>
 
 <div class="flex h-screen bg-gray-100">
-    <!-- Sidebar -->
+        <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-64 bg-secondary">
-            <!-- Logo -->
-            <div class="flex items-center justify-center h-16 px-4 bg-dark text-white">
-                <span class="text-xl font-semibold">CCS Admin Panel</span>
-            </div>
-            <!-- Navigation -->
-            <div class="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
-                <nav class="flex-1 space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-home mr-3"></i>
-                        <span>Home</span>
+                <!-- Added Logos -->                <div class="flex flex-col items-center pt-5 pb-2">
+                    <div class="relative w-16 h-16 mb-1">
+                        <!-- UC Logo -->
+                        <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
+                        </div>
+                        <!-- CCS Logo (smaller and positioned at the bottom right) -->
+                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
+                        </div>
+                    </div>
+                    <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
+                    <p class="text-gray-300 text-xs">Monitoring System</p>
+                </div>                
+                <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
+                    <nav class="flex-1 space-y-1">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Search</span>
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="flex items-center px-4 py-3 text-white bg-primary bg-opacity-30 rounded-lg">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        <span>Students</span>
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white  bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-desktop mr-3"></i>
-                        <span>Sit-in</span>
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        <span>Reservation</span>
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-4 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        <span>Announcements</span>
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-comments mr-3"></i>
-                        <span>Feedbacks</span>
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                </nav>
-                
-                <div class="mt-auto">
-                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        <span>Logout</span>
+                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
+                    </a>
+                </nav>                  
+                <div class="mt-1 border-t border-white-700 pt-2">
+                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Logout</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
+    <div class="flex flex-col flex-1 overflow-hidden">        
         <!-- Top Navigation -->
-        <header class="bg-white shadow">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
             <div class="flex items-center justify-between h-16 px-6">
+                <!-- Mobile Menu Button -->
                 <div class="flex items-center">
-                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none">
+                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h1 class="ml-4 text-xl font-semibold text-secondary">Students Management</h1>
+                    <h1 class="ml-4 text-xl font-semibold text-secondary flex items-center">
+                        Students Management
+                    </h1>
                 </div>
+                
                 <!-- Admin Profile -->
                 <div class="flex items-center">
-                    <span class="mr-4 text-sm font-medium text-gray-700"><?php echo htmlspecialchars($username); ?></span>
-                    <button class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <span class="mr-3 text-sm font-medium text-gray-700 hidden sm:inline-block"><?php echo htmlspecialchars($username); ?></span>
+                    <div class="relative group">
+                        <button class="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors border-2 border-white shadow-sm">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                            <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                                Signed in as <span class="font-semibold"><?php echo htmlspecialchars($username); ?></span>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
+                            <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>            
             
             <!-- Mobile Navigation -->
-            <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-secondary">
-                <nav class="space-y-2">
-                    <a href="dashboard.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-home mr-3"></i>
-                        Home
+            <div id="mobile-menu" class="hidden md:hidden px-4 py-3 bg-secondary">
+                <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-search mr-3"></i>
-                        Search
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="block px-4 py-2 text-white rounded-lg bg-primary bg-opacity-30 hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        Students
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white  bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-desktop mr-3"></i>
-                        Sit-in
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        Reservation
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-2 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        Announcements
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-comments mr-3"></i>
-                        Feedbacks
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        Logout
+                <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
                     </a>
+                    
+                    <div class="border-t border-gray-700 mt-2 pt-2">
+                        <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </div>
                 </nav>
             </div>
         </header>
@@ -347,38 +378,69 @@ include('includes/header.php');
                 </div>
                 <!-- Pagination -->
                 <?php if ($totalPages > 1): ?>
-                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1 flex justify-between sm:hidden">
-                            <?php if ($page > 1): ?>
-                                <a href="?page=<?php echo $page - 1; ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                    Previous
-                                </a>
-                            <?php endif; ?>
-                            <?php if ($page < $totalPages): ?>
-                                <a href="?page=<?php echo $page + 1; ?>" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                    Next
-                                </a>
-                            <?php endif; ?>
+                <div class="px-6 py-4 flex items-center justify-between border-t border-gray-200">
+                    <div class="flex-1 flex justify-between sm:hidden">
+                        <a href="?page=<?php echo max(1, $page - 1); ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 <?php echo $page <= 1 ? 'opacity-50 cursor-not-allowed' : ''; ?>">
+                            Previous
+                        </a>
+                        <a href="?page=<?php echo min($totalPages, $page + 1); ?>" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 <?php echo $page >= $totalPages ? 'opacity-50 cursor-not-allowed' : ''; ?>">
+                            Next
+                        </a>
+                    </div>
+                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700">
+                                Showing
+                                <span class="font-medium"><?php echo ($offset + 1); ?></span>
+                                to
+                                <span class="font-medium"><?php echo min($offset + $studentsPerPage, $totalStudents); ?></span>
+                                of
+                                <span class="font-medium"><?php echo $totalStudents; ?></span>
+                                results
+                            </p>
                         </div>
-                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                            <div>
-                                <p class="text-sm text-gray-700">
-                                    Showing <span class="font-medium"><?php echo $offset + 1; ?></span> to 
-                                    <span class="font-medium"><?php echo min($offset + $studentsPerPage, $totalStudents); ?></span> of
-                                    <span class="font-medium"><?php echo $totalStudents; ?></span> results
-                                </p>
-                            </div>
-                            <div>
-                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                        <a href="?page=<?php echo $i; ?>" 
-                                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <?php echo $i === $page ? 'text-primary bg-primary bg-opacity-10 z-10' : 'text-gray-500 hover:bg-gray-50'; ?>">
-                                            <?php echo $i; ?>
-                                        </a>
-                                    <?php endfor; ?>
-                                </nav>
-                            </div>
+                        <div>
+                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                <a href="?page=<?php echo max(1, $page - 1); ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 <?php echo $page <= 1 ? 'opacity-50 cursor-not-allowed' : ''; ?>">
+                                    <span class="sr-only">Previous</span>
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                                
+                                <?php
+                                // Calculate range of page numbers to show
+                                $start_page = max(1, $page - 2);
+                                $end_page = min($totalPages, $page + 2);
+                                
+                                // Show first page if we're not starting at 1
+                                if ($start_page > 1) {
+                                    echo '<a href="?page=1" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</a>';
+                                    if ($start_page > 2) {
+                                        echo '<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">...</span>';
+                                    }
+                                }
+                                
+                                // Show page numbers
+                                for ($i = $start_page; $i <= $end_page; $i++) {
+                                    $is_current = $i == $page;
+                                    echo '<a href="?page=' . $i . '" class="relative inline-flex items-center px-4 py-2 border border-gray-300 ' . 
+                                         ($is_current ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-50') . 
+                                         ' text-sm font-medium">' . $i . '</a>';
+                                }
+                                
+                                // Show last page if we're not ending at totalPages
+                                if ($end_page < $totalPages) {
+                                    if ($end_page < $totalPages - 1) {
+                                        echo '<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">...</span>';
+                                    }
+                                    echo '<a href="?page=' . $totalPages . '" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">' . $totalPages . '</a>';
+                                }
+                                ?>
+                                
+                                <a href="?page=<?php echo min($totalPages, $page + 1); ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 <?php echo $page >= $totalPages ? 'opacity-50 cursor-not-allowed' : ''; ?>">
+                                    <span class="sr-only">Next</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </nav>
                         </div>
                     </div>
                 </div>

@@ -316,8 +316,8 @@ include('includes/header.php');
                 </div>
                 
                 <div class="flex justify-between space-x-4">
-                    <a href="dashboard.php" class="flex-1 bg-secondary text-light py-3 px-6 rounded-lg text-center hover:bg-dark transition shadow-md flex items-center justify-center">
-                        <i class="fas fa-home mr-2"></i> Dashboard
+                    <a href="#" onclick="history.back(); return false;" class="flex-1 bg-secondary text-light py-3 px-6 rounded-lg text-center hover:bg-dark transition shadow-md flex items-center justify-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
                     </a>
                     <a href="profile.php?edit=true" class="flex-1 bg-white text-secondary py-3 px-6 rounded-lg text-center border-2 border-secondary hover:bg-secondary hover-text-white transition shadow-md flex items-center justify-center">
                         <i class="fas fa-pencil-alt mr-2"></i> Edit Profile

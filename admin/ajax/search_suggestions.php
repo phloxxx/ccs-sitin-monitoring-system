@@ -13,25 +13,49 @@ if (!isset($_SESSION['admin_id'])) {
 $searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';
 $response = ['success' => false, 'suggestions' => []];
 
-if (strlen($searchTerm) >= 2) {
+if (!empty($searchTerm)) { // Changed from checking length to just checking if not empty
     try {
         // Search for students with names containing the search term
         $searchPattern = '%' . $searchTerm . '%';
         
         $stmt = $conn->prepare(
-            "SELECT IDNO as USER_ID, FIRSTNAME, LASTNAME, MIDNAME, CONCAT(FIRSTNAME, ' ', LASTNAME) as FULLNAME, 
+            "SELECT IDNO as USER_ID, FIRSTNAME, LASTNAME, MIDNAME, 
+                   CONCAT(FIRSTNAME, ' ', LASTNAME) as FULLNAME, 
                    COURSE, YEAR, IFNULL(sp.POINTS, 0) as POINTS
              FROM USERS u
              LEFT JOIN STUDENT_POINTS sp ON u.IDNO = sp.USER_ID
              WHERE CONCAT(FIRSTNAME, ' ', LASTNAME) LIKE ? 
                 OR IDNO LIKE ? 
+                OR USERNAME LIKE ?
                 OR FIRSTNAME LIKE ? 
                 OR LASTNAME LIKE ?
-             ORDER BY LASTNAME, FIRSTNAME
-             LIMIT 10"
+                OR CONCAT(LASTNAME, ', ', FIRSTNAME) LIKE ?
+             ORDER BY 
+                CASE 
+                    WHEN IDNO = ? THEN 1
+                    WHEN USERNAME = ? THEN 2
+                    WHEN CONCAT(LASTNAME, ', ', FIRSTNAME) = ? THEN 3
+                    WHEN FIRSTNAME = ? OR LASTNAME = ? THEN 4
+                    ELSE 5 
+                END,
+                LASTNAME, FIRSTNAME
+             LIMIT 20"
         );
         
-        $stmt->bind_param("ssss", $searchPattern, $searchPattern, $searchPattern, $searchPattern);
+        $exactPattern = $searchTerm;
+        $stmt->bind_param("sssssssssss", 
+            $searchPattern, // Full name 
+            $searchPattern, // IDNO
+            $searchPattern, // USERNAME
+            $searchPattern, // FIRSTNAME
+            $searchPattern, // LASTNAME
+            $searchPattern, // Last, First format
+            $exactPattern, // Exact IDNO match
+            $exactPattern, // Exact USERNAME match 
+            $exactPattern, // Exact full name match
+            $exactPattern, // Exact FIRSTNAME match
+            $exactPattern  // Exact LASTNAME match
+        );
         $stmt->execute();
         $result = $stmt->get_result();
         

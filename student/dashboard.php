@@ -107,7 +107,7 @@ include('includes/header.php');
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
                 <nav>
                     <ul class="flex flex-wrap justify-center space-x-6">
-                        <li><a href="dashboard.php" class="text-white hover:text-primary transition font-medium">Home</a></li>
+                        <li><a href="dashboard.php" class="text-white hover:text-primary transition font-semibold border-b-2 border-primary pb-1">Home</a></li>
                         <li><a href="notification.php" class="text-white hover:text-primary transition">Notification</a></li>
                         <li><a href="history.php" class="text-white hover:text-primary transition">History</a></li>
                         <li><a href="reservation.php" class="text-white hover:text-primary transition">Reservation</a></li>
@@ -115,8 +115,8 @@ include('includes/header.php');
                 </nav>
                 
                 <button onclick="confirmLogout(event)" 
-                        class="bg-primary text-secondary px-4 py-2 rounded-full font-medium hover:bg-white hover:text-dark transition">
-                    Logout
+                        class="bg-primary text-secondary px-4 py-2 rounded-full font-medium hover:bg-white hover:text-dark transition shadow-sm">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Logout
                 </button>
             </div>
         </div>

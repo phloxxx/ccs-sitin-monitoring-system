@@ -64,7 +64,8 @@ include('includes/header.php');
             <!-- Logo and Username -->
             <a href="profile.php" class="flex items-center space-x-4 mb-4 md:mb-0 group">
                 <div class="h-12 w-12 rounded-full overflow-hidden border-2 border-primary">
-                    <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" class="h-full w-full object-cover">
+                    <img src="<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" class="h-full w-full object-cover" 
+                         onerror="this.onerror=null; this.src='images/snoopy.jpg';">
                 </div>
                 <span class="text-white font-semibold text-lg group-hover:text-primary transition"><?php echo htmlspecialchars($username); ?></span>
             </a>
@@ -75,14 +76,14 @@ include('includes/header.php');
                     <ul class="flex flex-wrap justify-center space-x-6">
                         <li><a href="dashboard.php" class="text-white hover:text-primary transition">Home</a></li>
                         <li><a href="notification.php" class="text-white hover:text-primary transition">Notification</a></li>
-                        <li><a href="history.php" class="text-white hover:text-primary transition font-medium">History</a></li>
+                        <li><a href="history.php" class="text-white hover:text-primary transition font-semibold border-b-2 border-primary pb-1">History</a></li>
                         <li><a href="reservation.php" class="text-white hover:text-primary transition">Reservation</a></li>
                     </ul>
                 </nav>
                 
                 <button onclick="confirmLogout(event)" 
-                        class="bg-primary text-secondary px-4 py-2 rounded-full font-medium hover:bg-white hover:text-dark transition">
-                    Logout
+                        class="bg-primary text-secondary px-4 py-2 rounded-full font-medium hover:bg-white hover:text-dark transition shadow-sm">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Logout
                 </button>
             </div>
         </div>

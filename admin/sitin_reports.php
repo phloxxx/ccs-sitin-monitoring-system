@@ -348,46 +348,60 @@ include('includes/header.php');
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-64 bg-secondary">
-            <div class="flex items-center justify-center h-16 px-4 bg-dark text-white">
-                <span class="text-xl font-semibold">CCS Admin Panel</span>
-            </div>
-            <div class="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
-                <nav class="flex-1 space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-home mr-3"></i>
-                        <span>Home</span>
+                <!-- Added Logos -->                
+                 <div class="flex flex-col items-center pt-5 pb-2">
+                    <div class="relative w-16 h-16 mb-1">
+                        <!-- UC Logo -->
+                        <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
+                        </div>
+                        <!-- CCS Logo (smaller and positioned at the bottom right) -->
+                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                            <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
+                        </div>
+                    </div>
+                    <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
+                    <p class="text-gray-300 text-xs">Monitoring System</p>
+                </div>                
+                <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
+                    <nav class="flex-1 space-y-1">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Search</span>
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        <span>Students</span>
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-4 py-3 text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-desktop mr-3"></i>
-                        <span>Sit-in</span>
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        <span>Reservation</span>
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-4 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        <span>Announcements</span>
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-comments mr-3"></i>
-                        <span>Feedbacks</span>
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                </nav>
-                
-                <div class="mt-auto">
-                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        <span>Logout</span>
+                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
+                    </a>
+                </nav>                  
+                <div class="mt-1 border-t border-white-700 pt-2">
+                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Logout</span>
                     </a>
                 </div>
             </div>
@@ -395,63 +409,80 @@ include('includes/header.php');
     </div>
 
     <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
+    <div class="flex flex-col flex-1 overflow-hidden">        
         <!-- Top Navigation -->
-        <header class="bg-white shadow-sm">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
             <div class="flex items-center justify-between h-16 px-6">
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center">
-                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none">
+                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h1 class="ml-4 text-xl font-semibold text-secondary">Sit-In Reports</h1>
+                    <h1 class="ml-4 text-xl font-semibold text-secondary flex items-center">
+                        Sit-In Management
+                    </h1>
                 </div>
                 
                 <!-- Admin Profile -->
                 <div class="flex items-center">
-                    <span class="mr-4 text-sm font-medium text-gray-700"><?php echo htmlspecialchars($username); ?></span>
-                    <button class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <span class="mr-3 text-sm font-medium text-gray-700 hidden sm:inline-block"><?php echo htmlspecialchars($username); ?></span>
+                    <div class="relative group">
+                        <button class="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors border-2 border-white shadow-sm">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                            <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                                Signed in as <span class="font-semibold"><?php echo htmlspecialchars($username); ?></span>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
+                            <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>            
             
             <!-- Mobile Navigation -->
-            <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-secondary">
-                <nav class="space-y-2">
-                    <a href="dashboard.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-home mr-3"></i>
-                        Home
+            <div id="mobile-menu" class="hidden md:hidden px-4 py-3 bg-secondary">
+                <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-search mr-3"></i>
-                        Search
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        Students
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg bg-primary bg-opacity-30 hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-desktop mr-3"></i>
-                        Sit-in
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        Reservation
+                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Reservation</span>
                     </a>
-                    <hr class="my-2 border-gray-400 border-opacity-20">
-                    <a href="announcements.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-bullhorn mr-3"></i>
-                        Announcements
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-comments mr-3"></i>
-                        Feedbacks
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        Logout
+                <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
                     </a>
+                    
+                    <div class="border-t border-gray-700 mt-2 pt-2">
+                        <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </div>
                 </nav>
             </div>
         </header>
@@ -887,184 +918,201 @@ include('includes/header.php');
                         pageSize: 'A4',
                         title: 'Sit-In Report ' + startDate + ' to ' + endDate,
                         className: 'btn btn-danger text-white',
-                        customize: function(doc) {
-                            // Set page margins [left, top, right, bottom]
-                            doc.pageMargins = [40, 60, 40, 40];
+                        action: function(e, dt, node, config) {
+                            // Show loading spinner
+                            const loadingDiv = document.createElement('div');
+                            loadingDiv.id = 'pdf-loading';
+                            loadingDiv.className = 'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50';
+                            loadingDiv.innerHTML = `
+                                <div class="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">
+                                    <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                                    <p class="text-lg font-semibold">Generating PDF...</p>
+                                    <p class="text-sm text-gray-500 mt-2">Please wait, this may take a few moments.</p>
+                                </div>`;
+                            document.body.appendChild(loadingDiv);
+
+                            // Load logos as base64
+                            const ucLogo = new Image();
+                            const ccsLogo = new Image();
                             
-                            // Set default font size
-                            doc.defaultStyle.fontSize = 10;
-                            
-                            // Add logos at the top
-                            doc.content.unshift({
-                                margin: [0, 0, 0, 12],
-                                alignment: 'center',
-                                columns: [
-                                    {
-                                        image: ucLogoBase64,
-                                        width: 30,
-                                        alignment: 'right',
-                                        margin: [0, 0, 10, 0]
-                                    },
-                                    {
-                                        width: '*',
-                                        text: [
-                                            {text: 'UNIVERSITY OF CEBU\n', fontSize: 16, bold: true},
-                                            {text: 'College of Computer Studies\n', fontSize: 12, bold: true},
-                                            {text: 'CCS SITIN MONITORING SYSTEM', fontSize: 11, italics: true}
-                                        ],
-                                        alignment: 'center'
-                                    },
-                                    {
-                                        image: ccsLogoBase64,
-                                        width: 30,
-                                        alignment: 'left',
-                                        margin: [10, 0, 0, 0]
-                                    }
-                                ]
-                            });
-                            
-                            // Add report metadata
-                            let labFilter = document.getElementById('report-lab').options[document.getElementById('report-lab').selectedIndex].text;
-                            let purposeFilter = document.getElementById('report-purpose').value || 'All Purposes';
-                            
-                            doc.content.splice(1, 0, {
-                                margin: [0, 10, 0, 10],
-                                alignment: 'center',
-                                columns: [
-                                    {
-                                        alignment: 'center',
-                                        fontSize: 10,
-                                        text: [
-                                            {text: 'Sit-In Report\n', fontSize: 14, bold: true},
-                                            {text: 'Period: ' + startDate + ' to ' + endDate + '\n', fontSize: 10},
-                                            {text: 'Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, fontSize: 10},
-                                            {text: '\nTotal Records: ' + reportData.length, fontSize: 10, bold: true}
-                                        ]
-                                    }
-                                ]
-                            });
-                            
-                            // Add summary statistics
-                            let activeCount = reportData.filter(session => session.STATUS === 'ACTIVE').length;
-                            let completedCount = reportData.filter(session => session.STATUS === 'COMPLETED').length;
-                            
-                            let uniqueStudents = new Set();
-                            let uniqueLabs = {};
-                            let purposes = {};
-                            
-                            reportData.forEach(session => {
-                                uniqueStudents.add(session.IDNO);
-                                
-                                if (!uniqueLabs[session.LAB_NAME]) {
-                                    uniqueLabs[session.LAB_NAME] = 0;
-                                }
-                                uniqueLabs[session.LAB_NAME]++;
-                                
-                                if (!purposes[session.PURPOSE]) {
-                                    purposes[session.PURPOSE] = 0;
-                                }
-                                purposes[session.PURPOSE]++;
-                            });
-                            
-                            // Get top lab and purpose
-                            let topLab = Object.keys(uniqueLabs).reduce((a, b) => uniqueLabs[a] > uniqueLabs[b] ? a : b, '');
-                            let topPurpose = Object.keys(purposes).reduce((a, b) => purposes[a] > purposes[b] ? a : b, '');
-                            
-                            doc.content.splice(2, 0, {
-                                margin: [0, 0, 0, 10],
-                                columnGap: 20,
-                                columns: [
-                                    {
-                                        width: 'auto',
-                                        table: {
-                                            headerRows: 1,
-                                            widths: ['*', '*'],
-                                            body: [
-                                                [{text: 'Summary Statistics', style: 'tableHeader', colSpan: 2, alignment: 'center'}, {}],
-                                                ['Unique Students', uniqueStudents.size],
-                                                ['Active Sessions', activeCount],
-                                                ['Completed Sessions', completedCount],
-                                                ['Most Used Lab', topLab],
-                                                ['Most Common Purpose', topPurpose]
-                                            ]
-                                        },
-                                        fontSize: 8,
-                                        alignment: 'center'
-                                    }
-                                ],
-                                alignment: 'center'
-                            });
-                            
-                            // Modify table styling
-                            doc.content[3].table.widths = ['15%', '20%', '15%', '15%', '15%', '15%', '5%'];
-                            
-                            // Fix: Apply styling to all header cells
-                            if (doc.content[3].table.body && doc.content[3].table.body.length > 0) {
-                                // Style all cells in the header row
-                                for (let i = 0; i < doc.content[3].table.body[0].length; i++) {
-                                    if (!doc.content[3].table.body[0][i]) continue;
+                            ucLogo.src = '../student/images/uc_logo.png';
+                            ccsLogo.src = '../student/images/ccs_logo.png';
+
+                            Promise.all([
+                                new Promise(resolve => {
+                                    ucLogo.onload = () => {
+                                        const canvas = document.createElement('canvas');
+                                        canvas.width = ucLogo.width;
+                                        canvas.height = ucLogo.height;
+                                        const ctx = canvas.getContext('2d');
+                                        ctx.drawImage(ucLogo, 0, 0);
+                                        resolve(canvas.toDataURL('image/png'));
+                                    };
+                                }),
+                                new Promise(resolve => {
+                                    ccsLogo.onload = () => {
+                                        const canvas = document.createElement('canvas');
+                                        canvas.width = ccsLogo.width;
+                                        canvas.height = ccsLogo.height;
+                                        const ctx = canvas.getContext('2d');
+                                        ctx.drawImage(ccsLogo, 0, 0);
+                                        resolve(canvas.toDataURL('image/png'));
+                                    };
+                                })
+                            ]).then(([ucLogoBase64, ccsLogoBase64]) => {
+                                // Create and download PDF
+                                Promise.all([ucLogoBase64, ccsLogoBase64]).then(([ucLogo, ccsLogo]) => {
+                                    // Create PDF instance
+                                    let doc = new jsPDF('landscape', 'pt', 'a4');
                                     
-                                    doc.content[3].table.body[0][i].fillColor = '#356480';
-                                    doc.content[3].table.body[0][i].color = '#ffffff';
-                                    doc.content[3].table.body[0][i].fontSize = 9;
-                                    doc.content[3].table.body[0][i].bold = true;
-                                }
-                                
-                                // Apply consistent row styles to data rows
-                                for (let rowIndex = 1; rowIndex < doc.content[3].table.body.length; rowIndex++) {
-                                    // Apply alternating row background colors
-                                    const shouldColor = rowIndex % 2 === 1;
-                                    const rowBgColor = shouldColor ? '#f8f9fa' : '#ffffff';
+                                    // Add logos and header
+                                    doc.addImage(ucLogo, 'PNG', 40, 20, 50, 50);
+                                    doc.addImage(ccsLogo, 'PNG', doc.internal.pageSize.width - 90, 20, 50, 50);
                                     
-                                    // Apply the background color to each cell in the row
-                                    for (let cellIndex = 0; cellIndex < doc.content[3].table.body[rowIndex].length; cellIndex++) {
-                                        // Check if cell exists and is an object (could be a string or object)
-                                        if (!doc.content[3].table.body[rowIndex][cellIndex]) continue;
+                                    // Add title and headers
+                                    doc.setFontSize(16);
+                                    doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 40, { align: 'center' });
+                                    doc.setFontSize(12);
+                                    doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+                                    doc.setFontSize(14);
+                                    doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 80, { align: 'center' });
+
+                                    // Convert table data
+                                    let data = dt.rows().data().toArray();
+                                    let columns = dt.columns().header().map(h => $(h).text()).toArray();
+                                    
+                                    // Add table with error handling
+                                    try {
+                                        doc.autoTable({
+                                            head: [columns],
+                                            body: data,
+                                            startY: 100,
+                                            styles: { 
+                                                fontSize: 8,
+                                                textColor: [0, 0, 0] // Black text for all cells
+                                            },
+                                            headStyles: { 
+                                                fillColor: [53, 100, 128], // Dark blue background for headers
+                                                textColor: [255, 255, 255], // White text for headers
+                                                fontStyle: 'bold',
+                                                halign: 'left'
+                                            },
+                                            alternateRowStyles: { 
+                                                fillColor: [245, 245, 245] // Light gray for alternate rows
+                                            },
+                                            theme: 'grid',
+                                            columnStyles: {
+                                                0: {cellWidth: 25}, // ID
+                                                1: {cellWidth: 40}, // Name
+                                                2: {cellWidth: 30}, // Laboratory
+                                                3: {cellWidth: 30}, // Purpose
+                                                4: {cellWidth: 35}, // Start Time
+                                                5: {cellWidth: 35}, // End Time
+                                                6: {cellWidth: 20}  // Status
+                                            },
+                                            didDrawPage: function(data) {
+                                                // Add logos on each page
+                                                doc.addImage(ucLogo, 'PNG', 40, 20, 50, 50);
+                                                doc.addImage(ccsLogo, 'PNG', doc.internal.pageSize.width - 90, 20, 50, 50);
+                                                
+                                                // Add headers on each page
+                                                doc.setFontSize(16);
+                                                doc.setTextColor(0, 0, 0);
+                                                doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 40, { align: 'center' });
+                                                doc.setFontSize(12);
+                                                doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+                                                doc.setFontSize(14);
+                                                doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 80, { align: 'center' });
+
+                                                // Add page numbers
+                                                let pageCount = doc.internal.getNumberOfPages();
+                                                doc.setFontSize(8);
+                                                doc.text('Page ' + data.pageNumber + ' of ' + pageCount, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, { align: 'right' });
+                                                
+                                                // Add footer
+                                                doc.setFontSize(8);
+                                                doc.setTextColor(100, 100, 100);
+                                                doc.text('Generated on: ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
+                                            },
+                                            margin: { top: 100 } // Ensure enough space for header
+                                        });
                                         
-                                        // If cell is a string, convert it to object with text property
-                                        if (typeof doc.content[3].table.body[rowIndex][cellIndex] === 'string') {
-                                            doc.content[3].table.body[rowIndex][cellIndex] = {
-                                                text: doc.content[3].table.body[rowIndex][cellIndex],
-                                                fillColor: rowBgColor
-                                            };
-                                        } else {
-                                            // Otherwise, just set the fillColor property
-                                            doc.content[3].table.body[rowIndex][cellIndex].fillColor = rowBgColor;
+                                        let pdfSaved = false;
+                                        
+                                        // Function to clean up after successful save
+                                        const cleanupAfterSave = () => {
+                                            if (!pdfSaved) {
+                                                pdfSaved = true;
+                                                setTimeout(() => {
+                                                    const loadingElement = document.getElementById('pdf-loading');
+                                                    if (loadingElement) {
+                                                        loadingElement.remove();
+                                                    }
+                                                }, 3000); // Increased delay to 3 seconds
+                                            }
+                                        };
+
+                                        // Try multiple save methods in sequence
+                                        try {
+                                            // Method 1: Standard save
+                                            doc.save('SitIn_Report_' + startDate + '_to_' + endDate + '.pdf');
+                                            cleanupAfterSave();
+                                        } catch (saveError) {
+                                            console.warn('Standard save failed, trying alternative method:', saveError);
+                                            try {
+                                                // Method 2: Blob save
+                                                const blob = doc.output('blob');
+                                                const url = window.URL.createObjectURL(blob);
+                                                const link = document.createElement('a');
+                                                link.href = url;
+                                                link.download = 'SitIn_Report_' + startDate + '_to_' + endDate + '.pdf';
+                                                document.body.appendChild(link);
+                                                link.click();
+                                                document.body.removeChild(link);
+                                                window.URL.revokeObjectURL(url);
+                                                cleanupAfterSave();
+                                            } catch (blobError) {
+                                                console.warn('Blob save failed, trying final method:', blobError);
+                                                // Method 3: Direct data URI
+                                                const pdfData = doc.output('datauristring');
+                                                const newWindow = window.open(pdfData);
+                                                if (newWindow) {
+                                                    cleanupAfterSave();
+                                                } else {
+                                                    throw new Error('Popup blocked');
+                                                }
+                                            }
                                         }
+
+                                    } catch (tableError) {
+                                        console.error('Error in PDF generation:', tableError);
+                                        setTimeout(() => {
+                                            const loadingElement = document.getElementById('pdf-loading');
+                                            if (loadingElement) {
+                                                loadingElement.remove();
+                                            }
+                                            // Only show error if PDF wasn't successfully saved
+                                            if (!pdfSaved) {
+                                                alert('Error generating PDF. Please try again.');
+                                            }
+                                        }, 1000);
                                     }
+                                }).catch(error => {
+                                    console.error('Error loading images:', error);
+                                    alert('Error loading images for PDF. Please try again.');
+                                    const loadingElement = document.getElementById('pdf-loading');
+                                    if (loadingElement) {
+                                        loadingElement.remove();
+                                    }
+                                });
+                            }).catch(error => {
+                                console.error('Error loading images:', error);
+                                alert('Error loading images for PDF. Please try again.');
+                                const loadingElement = document.getElementById('pdf-loading');
+                                if (loadingElement) {
+                                    loadingElement.remove();
                                 }
-                            }
-                            
-                            // Add footer with page numbers
-                            var now = new Date().toLocaleString();
-                            doc.footer = function(currentPage, pageCount) {
-                                return {
-                                    columns: [
-                                        { 
-                                            text: 'Generated by: <?php echo htmlspecialchars($username); ?> | ' + now, 
-                                            alignment: 'left', 
-                                            fontSize: 8, 
-                                            margin: [40, 0] 
-                                        },
-                                        { 
-                                            text: 'Page ' + currentPage.toString() + ' of ' + pageCount, 
-                                            alignment: 'right', 
-                                            fontSize: 8, 
-                                            margin: [0, 0, 40, 0] 
-                                        }
-                                    ],
-                                    margin: [40, 0]
-                                };
-                            };
-                            
-                            // Add watermark
-                            doc.watermark = {
-                                text: 'UNIVERSITY OF CEBU',
-                                color: '#eeeeee',
-                                opacity: 0.1,
-                                bold: true,
-                                fontSize: 60
-                            };
+                            });
                         }
                     },
                     {
