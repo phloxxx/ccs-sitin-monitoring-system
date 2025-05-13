@@ -233,7 +233,6 @@ include('includes/header.php');
         }
     </script>
     <style>
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -249,8 +248,7 @@ include('includes/header.php');
         ::-webkit-scrollbar-thumb:hover {
             background: #356480;
         }
-        
-        /* DataTables buttons styling - match reference code */
+    
         .buttons-csv, .buttons-excel {
             background-color: #10B981 !important;
             color: white !important;
@@ -293,7 +291,6 @@ include('includes/header.php');
             background-color: #2563EB !important;
         }
         
-        /* DataTables general styling */
         .dataTables_wrapper .dataTables_filter input {
             border: 1px solid #D1D5DB;
             border-radius: 0.25rem;
@@ -316,7 +313,6 @@ include('includes/header.php');
             color: white !important;
         }
         
-        /* Report table styling */
         #reportTable {
             border-collapse: collapse;
             width: 100%;
@@ -347,16 +343,16 @@ include('includes/header.php');
 <div class="flex h-screen bg-gray-100">
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
-        <div class="flex flex-col w-64 bg-secondary">
-                <!-- Added Logos -->                
-                 <div class="flex flex-col items-center pt-5 pb-2">
+        <div class="flex flex-col w-64 bg-secondary">                
+            <!-- Added Logos -->                
+             <div class="flex flex-col items-center pt-5 pb-2">
                     <div class="relative w-16 h-16 mb-1">
                         <!-- UC Logo -->
                         <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
                             <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
                         </div>
                         <!-- CCS Logo (smaller and positioned at the bottom right) -->
-                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-ful-l bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
                             <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
                         </div>
                     </div>
@@ -365,41 +361,41 @@ include('includes/header.php');
                 </div>                
                 <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
                     <nav class="flex-1 space-y-1">
-                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="dashboard.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-home mr-3 text-lg"></i>
                         <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="search.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-search mr-3 text-lg"></i>
                         <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="students.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-user-graduate mr-3 text-lg"></i>
                         <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="sitin.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="reservation.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-calendar-alt mr-3 text-lg"></i>
                         <span class="font-medium">Reservation</span>
                     </a>
-                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="lab_resources.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-book-open mr-3 text-lg"></i>
                         <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="feedbacks.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-comments mr-3 text-lg"></i>
                         <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="leaderboard.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-trophy mr-3 text-lg"></i>
                         <span class="font-medium">Leaderboard</span>
                     </a>
                 </nav>                  
-                <div class="mt-1 border-t border-white-700 pt-2">
-                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                <div class="mt-3 border-t border-white-700 pt-2">
+                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
                         <span class="font-medium">Logout</span>
                     </a>
@@ -419,7 +415,7 @@ include('includes/header.php');
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                     <h1 class="ml-4 text-xl font-semibold text-secondary flex items-center">
-                        Sit-In Management
+                        Sit-In Reports
                     </h1>
                 </div>
                 
@@ -440,8 +436,7 @@ include('includes/header.php');
                     </div>
                 </div>
             </div>            
-            
-            <!-- Mobile Navigation -->
+              <!-- Mobile Navigation -->
             <div id="mobile-menu" class="hidden md:hidden px-4 py-3 bg-secondary">
                 <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
                     <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
@@ -456,7 +451,7 @@ include('includes/header.php');
                         <i class="fas fa-user-graduate mr-3 text-lg"></i>
                         <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
@@ -990,12 +985,16 @@ include('includes/header.php');
                                             styles: { 
                                                 fontSize: 8,
                                                 textColor: [0, 0, 0] // Black text for all cells
-                                            },
-                                            headStyles: { 
+                                            },                                            headStyles: { 
                                                 fillColor: [53, 100, 128], // Dark blue background for headers
                                                 textColor: [255, 255, 255], // White text for headers
                                                 fontStyle: 'bold',
-                                                halign: 'left'
+                                                fontSize: 8,                 // Consistent font size
+                                                halign: 'left',
+                                                minCellHeight: 12,          // Ensure minimum height for header cells
+                                                valign: 'middle',           // Vertical alignment
+                                                lineColor: [255, 255, 255], // White border for better contrast
+                                                lineWidth: 0.1              // Thin border
                                             },
                                             alternateRowStyles: { 
                                                 fillColor: [245, 245, 245] // Light gray for alternate rows
@@ -1231,29 +1230,49 @@ include('includes/header.php');
             
             // Check if autoTable is available, if not use a simpler approach
             const hasAutoTable = typeof doc.autoTable === 'function';
+              // Add a header with school logo background color bar
+            doc.setFillColor(25, 64, 175); // Dark blue header background
+            doc.rect(0, 0, doc.internal.pageSize.width, 22, 'F');
             
-            // Add title immediately - don't wait for images
+            // Add title with improved styling
+            doc.setTextColor(255, 255, 255); // White text for header
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 12, { align: 'center' });
+            
+            // Add subtitle with improved styling
+            doc.setTextColor(0, 0, 0); // Reset text color to black
+            doc.setFontSize(14);
+            doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 28, { align: 'center' });
+            
+            // Add system name with decorative underline
             doc.setFontSize(16);
             doc.setFont(undefined, 'bold');
-            doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 15, { align: 'center' });
-            doc.setFontSize(12);
-            doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 22, { align: 'center' });
-            doc.setFontSize(11);
-            doc.setFont(undefined, 'italic');
-            doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 27, { align: 'center' });
+            doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 36, { align: 'center' });
             
-            // Add report details
-            doc.setFont(undefined, 'bold');
-            doc.setFontSize(14);
-            doc.text('Sit-In Report', doc.internal.pageSize.width / 2, 35, { align: 'center' });
+            // Add decorative underline
+            doc.setDrawColor(25, 64, 175); // Dark blue line
+            doc.setLineWidth(0.5);
+            const textWidth = doc.getTextWidth('CCS SITIN MONITORING SYSTEM');
+            doc.line(
+                (doc.internal.pageSize.width / 2) - (textWidth / 2), 38,
+                (doc.internal.pageSize.width / 2) + (textWidth / 2), 38
+            );
             
+            // Add report title with improved styling
+            doc.setFontSize(16);
+            doc.setTextColor(25, 64, 175); // Blue text for report title
+            doc.text('Sit-In Report', doc.internal.pageSize.width / 2, 46, { align: 'center' });
+            
+            // Add report metadata with better spacing and styling
             doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0); // Reset to black
             doc.setFont(undefined, 'normal');
             let labFilter = $('#report-lab option:selected').text();
             let purposeFilter = $('#report-purpose').val() || 'All Purposes';
             
-            doc.text('Period: ' + startDate + ' to ' + endDate, doc.internal.pageSize.width / 2, 40, { align: 'center' });
-            doc.text('Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, doc.internal.pageSize.width / 2, 45, { align: 'center' });
+            doc.text('Period: ' + startDate + ' to ' + endDate, doc.internal.pageSize.width / 2, 53, { align: 'center' });
+            doc.text('Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, doc.internal.pageSize.width / 2, 58, { align: 'center' });
             doc.text('Total Records: ' + reportData.length, doc.internal.pageSize.width / 2, 50, { align: 'center' });
             
             // Add summary statistics
@@ -1303,11 +1322,11 @@ include('includes/header.php');
                     body: rows,
                     startY: 82,
                     theme: 'grid',
-                    styles: { fontSize: 8 },
-                    headStyles: {
-                        fillColor: [53, 100, 128],
-                        textColor: [255, 255, 255],
-                        fontStyle: 'bold'
+                    styles: { fontSize: 8 },                    headStyles: {
+                        fillColor: [53, 100, 128],     // Blue background for all headers
+                        textColor: [255, 255, 255],    // White text for all headers
+                        fontStyle: 'bold',
+                        fontSize: 8                    // Consistent font size
                     },
                     alternateRowStyles: {
                         fillColor: [245, 247, 250]
@@ -1322,32 +1341,97 @@ include('includes/header.php');
                     }
                 });
             } else {
-                // Fallback: Draw a basic table manually
-                console.log("AutoTable plugin not available, using basic table");
+                // Fallback: Draw a basic table manually                console.log("AutoTable plugin not available, using basic table");
                 const startY = 82;
                 const rowHeight = 10;
-                const colWidths = [25, 40, 30, 30, 35, 35, 20];
-                let xPos = 15;
+                // Adjusted column widths for better content display
+                // [Student ID, Student Name, Laboratory, Purpose, Start Time, End Time, Status]
+                const colWidths = [30, 55, 35, 35, 40, 40, 25];
+                let xPos = 10;
+                  // Draw headers with consistent styling
+                // Set up header styling (important to set styles completely before each use)
+                doc.setFillColor(53, 100, 128); // Blue background
                 
-                // Draw headers
-                doc.setFillColor(53, 100, 128);
-                doc.setTextColor(255, 255, 255);
+                // Draw header backgrounds first (separate from text to ensure proper layering)
+                let headerX = xPos;
+                for (let i = 0; i < headers.length; i++) {
+                    // Draw the filled rectangle (background)
+                    doc.rect(headerX, startY, colWidths[i], rowHeight, 'F');
+                    headerX += colWidths[i];
+                }
+                
+                // Now draw all header text on top of backgrounds
+                doc.setTextColor(255, 255, 255); // White text color
                 doc.setFontSize(8);
                 doc.setFont(undefined, 'bold');
                 
                 let currentX = xPos;
                 for (let i = 0; i < headers.length; i++) {
-                    doc.rect(currentX, startY, colWidths[i], rowHeight, 'F');
+                    // Draw the header text after all rectangles are drawn
                     doc.text(headers[i], currentX + 2, startY + 6);
                     currentX += colWidths[i];
                 }
                 
                 // Draw rows
+                // Reset text styling to default for row data
                 doc.setTextColor(0, 0, 0);
                 doc.setFont(undefined, 'normal');
-                
+                doc.setFontSize(8); // Ensure consistent font size for data
                 let currentY = startY + rowHeight;
-                for (let i = 0; i < Math.min(rows.length, 20); i++) { // Limit to 20 rows to prevent overflow
+                const pageHeight = doc.internal.pageSize.height;
+                const marginBottom = 20;
+                
+                // Draw all rows, adding new pages as needed                // Add footer function
+                function addFooter() {
+                    doc.setFontSize(8);
+                    doc.setTextColor(100, 100, 100);
+                    doc.setFont(undefined, 'normal');
+                    doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
+                    doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 10, {align: 'right'});
+                }
+                
+                // Add footer to first page
+                addFooter();
+                
+                for (let i = 0; i < rows.length; i++) {
+                    // Check if we need to create a new page
+                    if (currentY + rowHeight > pageHeight - marginBottom) {
+                        doc.addPage();
+                        // Reset the Y position to the top of the new page with some margin
+                        currentY = 20;                      // Redraw the headers on new page with consistent styling
+                        // Set fill color for header backgrounds
+                        doc.setFillColor(53, 100, 128);
+                        
+                        // First pass: draw all header backgrounds
+                        let headerBackgroundX = xPos;
+                        for (let j = 0; j < headers.length; j++) {
+                            // Draw the filled rectangle (background)
+                            doc.rect(headerBackgroundX, currentY, colWidths[j], rowHeight, 'F');
+                            headerBackgroundX += colWidths[j];
+                        }
+                        
+                        // Second pass: draw all header text on top of backgrounds
+                        doc.setTextColor(255, 255, 255); // Ensure white text color
+                        doc.setFontSize(8);
+                        doc.setFont(undefined, 'bold');
+                        
+                        let headerX = xPos;
+                        for (let j = 0; j < headers.length; j++) {
+                            // Draw the text after all rectangles are drawn
+                            doc.text(headers[j], headerX + 2, currentY + 6);
+                            headerX += colWidths[j];
+                        }
+                        
+                        // Move to the next row position after drawing headers
+                        currentY += rowHeight;
+                          // Reset text color for data rows
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFont(undefined, 'normal');
+                        
+                        // Add footer to the new page
+                        addFooter();
+                    }
+                    
                     currentX = xPos;
                     // Alternate row colors
                     if (i % 2 === 1) {
@@ -1357,26 +1441,30 @@ include('includes/header.php');
                             currentX += colWidths[j];
                         }
                     }
+                      // Ensure consistent styling for each row's text
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(8);
                     
                     currentX = xPos;
                     for (let j = 0; j < rows[i].length; j++) {
-                        doc.text(String(rows[i][j]).substring(0, 18), currentX + 2, currentY + 6); // Limit text length
+                        // Allow more text to be displayed by increasing substring limit
+                        doc.text(String(rows[i][j]).substring(0, 30), currentX + 2, currentY + 6);
                         currentX += colWidths[j];
                     }
                     currentY += rowHeight;
-                }
-                
-                // Add note if rows were truncated
-                if (rows.length > 20) {
-                    doc.text('Note: Only showing first 20 records due to PDF size limitations', xPos, currentY + 10);
-                }
+                }                // Add summary information at the end of the table
+                currentY += 10; 
+                doc.setFont(undefined, 'bold');
+                doc.text('Total Records: ' + rows.length, xPos, currentY);
+                doc.setFont(undefined, 'normal');
                 
                 // Add footer
                 doc.setFontSize(8);
                 doc.setTextColor(100, 100, 100);
                 doc.setFont(undefined, 'normal');
                 doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
-                doc.text('Page 1 of 1', 280, doc.internal.pageSize.height - 10);
+                doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 10, {align: 'right'});
             }
             
             // Directly trigger download using multiple methods for browser compatibility
