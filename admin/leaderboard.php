@@ -310,21 +310,30 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
-                        <span class="font-medium">Reservation</span>
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
-                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-book-open mr-3 text-lg"></i>
-                        <span class="font-medium">Lab Resources</span>
+                    <a href="lab_resources.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-book-open mr-3 text-lg"></i>
+                            <span class="font-medium">Lab Resources</span>
+                        </div>
                     </a>
                     <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-comments mr-3 text-lg"></i>
                         <span class="font-medium">Feedbacks</span>
                     </a>
-                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-trophy mr-3 text-lg"></i>
-                        <span class="font-medium">Leaderboard</span>
+                    <a href="leaderboard.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-trophy mr-3 text-lg"></i>
+                            <span class="font-medium">Leaderboard</span>
+                        </div>
                     </a>
                 </nav>                  
                 <div class="mt-1 border-t border-white-700 pt-2">
@@ -702,15 +711,6 @@ include('includes/header.php');
                                 </li>
                                 <li class="flex items-start">
                                     <i class="fas fa-trophy text-blue-400 mt-1 mr-2"></i>
-                                    <span>Points accumulate for rankings</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </main>
 
     </div>

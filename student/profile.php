@@ -10,6 +10,37 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// Improved referrer tracking that works from any page
+if (isset($_SERVER['HTTP_REFERER'])) {
+    $referer_url = $_SERVER['HTTP_REFERER'];
+    $refDomain = parse_url($referer_url, PHP_URL_HOST);
+    $currentDomain = $_SERVER['HTTP_HOST'];
+    $refPath = parse_url($referer_url, PHP_URL_PATH);
+    
+    // Only store internal referrers (same domain) and not self-referrals
+    if ($refDomain == $currentDomain && !strpos($refPath, 'profile.php')) {
+        $_SESSION['referrer'] = $referer_url;
+    }
+}
+
+// If coming back from edit mode, keep existing referrer
+if (isset($_GET['edit']) || isset($_POST['referrer'])) {
+    // Keep the existing referrer during edits
+    if (isset($_POST['referrer'])) {
+        $_SESSION['referrer'] = $_POST['referrer'];
+    }
+} else {
+    // If accessing directly and no referrer saved, default to dashboard
+    if (!isset($_SESSION['referrer'])) {
+        $_SESSION['referrer'] = 'dashboard.php';
+    }
+}
+
+// If form was submitted, preserve the referrer through the redirect
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // The rest of your logic will handle setting $_SESSION['referrer'] through the redirect
+}
+
 // Fetch user data
 $stmt = $conn->prepare("SELECT IDNO, LASTNAME, FIRSTNAME, USERNAME, COURSE, YEAR, SESSION, PROFILE_PIC FROM USERS WHERE USER_ID = ?");
 $stmt->bind_param("i", $user_id);
@@ -145,6 +176,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             // Update session variables with new info
             $_SESSION['username'] = $username;
+            
+            // Save referrer from form if available
+            if (isset($_POST['referrer']) && !empty($_POST['referrer'])) {
+                $_SESSION['referrer'] = $_POST['referrer'];
+            }
             
             // Redirect to profile page after successful update
             header("Location: profile.php");
@@ -316,7 +352,7 @@ include('includes/header.php');
                 </div>
                 
                 <div class="flex justify-between space-x-4">
-                    <a href="#" onclick="history.back(); return false;" class="flex-1 bg-secondary text-light py-3 px-6 rounded-lg text-center hover:bg-dark transition shadow-md flex items-center justify-center">
+                    <a href="<?php echo isset($_SESSION['referrer']) ? htmlspecialchars($_SESSION['referrer']) : 'dashboard.php'; ?>" class="flex-1 bg-secondary text-light py-3 px-6 rounded-lg text-center hover:bg-dark transition shadow-md flex items-center justify-center">
                         <i class="fas fa-arrow-left mr-2"></i> Back
                     </a>
                     <a href="profile.php?edit=true" class="flex-1 bg-white text-secondary py-3 px-6 rounded-lg text-center border-2 border-secondary hover:bg-secondary hover-text-white transition shadow-md flex items-center justify-center">
@@ -330,6 +366,9 @@ include('includes/header.php');
             <h2 class="text-2xl font-bold text-secondary mb-6 text-center">Edit Profile</h2>
             
             <form method="POST" enctype="multipart/form-data" id="profileForm">
+                <!-- Keep track of the referring page -->
+                <input type="hidden" name="referrer" value="<?php echo isset($_SESSION['referrer']) ? htmlspecialchars($_SESSION['referrer']) : 'dashboard.php'; ?>">
+                
                 <div class="text-center mb-8 relative">
                     <div class="inline-block">
                         <img src="<?php echo htmlspecialchars($profile_pic); ?>" 
@@ -444,7 +483,7 @@ include('includes/header.php');
                     </div>
                     
                     <div class="flex justify-between space-x-4 pt-6">
-                        <a href="#" onclick="confirmCancel(event)" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg text-center hover:bg-gray-300 transition shadow-md flex items-center justify-center">
+                        <a href="profile.php" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg text-center hover:bg-gray-300 transition shadow-md flex items-center justify-center">
                             <i class="fas fa-times mr-2"></i> Cancel
                         </a>
                         <button type="button" onclick="confirmSave()" class="flex-1 bg-secondary text-light py-3 px-6 rounded-lg text-center hover:bg-dark transition shadow-md flex items-center justify-center">

@@ -10,6 +10,33 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id']; 
 
+// Check if notifications table exists, create it if not
+$result = $conn->query("SHOW TABLES LIKE 'notifications'");
+if ($result->num_rows == 0) {
+    // Create notifications table
+    $sql = "CREATE TABLE `notifications` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `user_id` int(11) NOT NULL,
+        `title` varchar(255) NOT NULL,
+        `message` text NOT NULL,
+        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `is_read` tinyint(1) NOT NULL DEFAULT 0,
+        PRIMARY KEY (`id`),
+        KEY `user_id` (`user_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    
+    $conn->query($sql);
+    
+    // Create a welcome notification for the user
+    $title = "Welcome to Notifications!";
+    $message = "Your notification system is now set up. You'll receive updates about your reservations and activities here.";
+    
+    $stmt = $conn->prepare("INSERT INTO notifications (user_id, title, message, created_at, is_read) VALUES (?, ?, ?, NOW(), 0)");
+    $stmt->bind_param("iss", $user_id, $title, $message);
+    $stmt->execute();
+    $stmt->close();
+}
+
 // Fetch user details from database
 $stmt = $conn->prepare("SELECT USERNAME, PROFILE_PIC FROM USERS WHERE USER_ID = ?");
 $stmt->bind_param("i", $user_id);
@@ -28,30 +55,72 @@ $username = $user['USERNAME'];
 $default_pic = "images/snoopy.jpg";
 $profile_pic = !empty($user['PROFILE_PIC']) ? $user['PROFILE_PIC'] : $default_pic;
 
-// Mock data for notifications (this would come from a database in a real app)
-$notifications = [
-    [
-        'id' => 1,
-        'title' => 'Reservation Confirmed',
-        'message' => 'Your reservation for CCS Lab 1, PC-15 on May 20, 2024 at 9:00 AM has been confirmed.',
-        'date' => '2024-05-18 14:30:00',
-        'read' => false
-    ],
-    [
-        'id' => 2,
-        'title' => 'Lab Schedule Update',
-        'message' => 'CCS Lab 2 will be closed for maintenance on May 25, 2024. Please reschedule any reservations for that day.',
-        'date' => '2024-05-15 10:15:00',
-        'read' => true
-    ],
-    [
-        'id' => 3,
-        'title' => 'Session Reminder',
-        'message' => 'Your sit-in session is scheduled to begin in 30 minutes.',
-        'date' => '2024-05-10 08:30:00',
-        'read' => true
-    ],
-];
+// Check if notifications table exists
+$table_exists = false;
+$check_table = $conn->query("SHOW TABLES LIKE 'notifications'");
+if ($check_table->num_rows > 0) {
+    $table_exists = true;
+}
+
+// Handle mark as read functionality
+if ($table_exists) {
+    if (isset($_POST['mark_all_read'])) {
+        $update = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?");
+        $update->bind_param("i", $user_id);
+        $update->execute();
+        $update->close();
+        // Redirect to refresh the page
+        header("Location: notification.php");
+        exit();
+    }
+
+    if (isset($_POST['mark_read']) && isset($_POST['notification_id'])) {
+        $notification_id = $_POST['notification_id'];
+        $update = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
+        $update->bind_param("ii", $notification_id, $user_id);
+        $update->execute();
+        $update->close();
+        // Redirect to refresh the page
+        header("Location: notification.php");
+        exit();
+    }
+}
+
+// Fetch actual notifications from database
+$notifications = [];
+
+if ($table_exists) {
+    try {
+        $stmt = $conn->prepare("SELECT id, title, message, created_at, is_read FROM notifications WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $notifications[] = [
+                'id' => $row['id'],
+                'title' => $row['title'],
+                'message' => $row['message'],
+                'date' => $row['created_at'],
+                'read' => $row['is_read'] == 1
+            ];
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        // If there's an error, just continue with empty notifications
+    }
+} else {
+    // Temporary fallback notifications for development/testing
+    $notifications = [
+        [
+            'id' => 0,
+            'title' => 'System Setup',
+            'message' => 'The notification system is being set up. Real notifications will appear here once setup is complete.',
+            'date' => date('Y-m-d H:i:s'),
+            'read' => false
+        ]
+    ];
+}
 
 // Format date helper function
 function formatTimeAgo($datetime) {
@@ -98,9 +167,35 @@ include('includes/header.php');
                 <nav>
                     <ul class="flex flex-wrap justify-center space-x-6">
                         <li><a href="dashboard.php" class="text-white hover:text-primary transition">Home</a></li>
-                        <li><a href="notification.php" class="text-white hover:text-primary transition font-semibold border-b-2 border-primary pb-1">Notification</a></li>
+                        <li>
+                            <a href="notification.php" class="text-white hover:text-primary transition font-semibold border-b-2 border-primary pb-1 flex items-center">
+                                Notification
+                                <?php
+                                // Count unread notifications 
+                                $unread_count = 0;
+                                if ($table_exists) {
+                                    try {
+                                        $stmt = $conn->prepare("SELECT COUNT(*) as unread FROM notifications WHERE user_id = ? AND is_read = 0");
+                                        $stmt->bind_param("i", $user_id);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
+                                        $row = $result->fetch_assoc();
+                                        $unread_count = $row['unread'];
+                                        $stmt->close();
+                                        
+                                        if ($unread_count > 0) {
+                                            echo '<span class="ml-1.5 bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded-full">' . $unread_count . '</span>';
+                                        }
+                                    } catch (Exception $e) {
+                                        // Ignore errors
+                                    }
+                                }
+                                ?>
+                            </a>
+                        </li>
                         <li><a href="history.php" class="text-white hover:text-primary transition">History</a></li>
                         <li><a href="reservation.php" class="text-white hover:text-primary transition">Reservation</a></li>
+                        <li><a href="resources.php" class="text-white hover:text-primary transition">Resources</a></li>
                     </ul>
                 </nav>
                 
@@ -117,8 +212,20 @@ include('includes/header.php');
         <div class="container mx-auto max-w-4xl">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold text-secondary">Notifications</h1>
-                <button class="text-sm text-secondary hover:text-dark underline">Mark all as read</button>
+                <?php if ($table_exists && !empty($notifications)): ?>
+                <form method="POST" action="notification.php">
+                    <input type="hidden" name="mark_all_read" value="1">
+                    <button type="submit" class="text-sm text-secondary hover:text-dark underline">Mark all as read</button>
+                </form>
+                <?php endif; ?>
             </div>
+            
+            <?php if (!$table_exists): ?>
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4">
+                <p class="font-bold">Notice</p>
+                <p>The notification system is being set up. Please run the database setup script or contact the administrator.</p>
+            </div>
+            <?php endif; ?>
             
             <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-100">
                 <ul class="divide-y divide-gray-200">
@@ -136,7 +243,16 @@ include('includes/header.php');
                                     <div class="ml-3 flex-1">
                                         <div class="flex items-center justify-between">
                                             <p class="text-sm font-medium text-primary"><?php echo htmlspecialchars($notification['title']); ?></p>
-                                            <p class="text-xs text-gray-500"><?php echo formatTimeAgo($notification['date']); ?></p>
+                                            <div class="flex items-center">
+                                                <?php if ($table_exists && !$notification['read']): ?>
+                                                <form method="POST" action="notification.php" class="mr-2">
+                                                    <input type="hidden" name="notification_id" value="<?php echo $notification['id']; ?>">
+                                                    <input type="hidden" name="mark_read" value="1">
+                                                    <button type="submit" class="text-xs text-blue-500 hover:text-blue-700">Mark as read</button>
+                                                </form>
+                                                <?php endif; ?>
+                                                <p class="text-xs text-gray-500"><?php echo formatTimeAgo($notification['date']); ?></p>
+                                            </div>
                                         </div>
                                         <p class="text-sm text-gray-600 mt-1"><?php echo htmlspecialchars($notification['message']); ?></p>
                                     </div>

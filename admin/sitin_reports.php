@@ -373,13 +373,18 @@ include('includes/header.php');
                         <i class="fas fa-user-graduate mr-3 text-lg"></i>
                         <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="sitin.php" class="flex items-center px-3 py-3.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
-                        <span class="font-medium">Reservation</span>
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
                     <a href="lab_resources.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-book-open mr-3 text-lg"></i>
@@ -451,13 +456,18 @@ include('includes/header.php');
                         <i class="fas fa-user-graduate mr-3 text-lg"></i>
                         <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
-                        <span class="font-medium">Reservation</span>
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
                     <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-book-open mr-3 text-lg"></i>
@@ -1222,16 +1232,6 @@ include('includes/header.php');
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Network error. Please try again.');
-                refreshButton.disabled = false;
-                refreshButton.innerHTML = originalHtml;
-            });
-    });
-
-    // Add direct PDF download function that bypasses DataTables buttons
-    function generateDirectPDF(startDate, endDate) {
-        try {
-            // Show loading message
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50';
             loadingDiv.innerHTML = '<div class="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">' +

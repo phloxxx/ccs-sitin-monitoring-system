@@ -78,6 +78,7 @@ include('includes/header.php');
                         <li><a href="notification.php" class="text-white hover:text-primary transition">Notification</a></li>
                         <li><a href="history.php" class="text-white hover:text-primary transition font-semibold border-b-2 border-primary pb-1">History</a></li>
                         <li><a href="reservation.php" class="text-white hover:text-primary transition">Reservation</a></li>
+                        <li><a href="resources.php" class="text-white hover:text-primary transition">Resources</a></li>
                     </ul>
                 </nav>
                 

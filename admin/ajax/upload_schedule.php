@@ -2,120 +2,154 @@
 session_start();
 require_once('../../config/db.php');
 
-// Check if user is logged in as admin
+// Ensure admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit();
 }
 
-// Set response header to JSON
-header('Content-Type: application/json');
-
+// Check if SCHEDULE_UPLOADS table exists, create if not
 try {
-    // Check if file was uploaded
-    if (!isset($_FILES['schedule_image']) || $_FILES['schedule_image']['error'] !== UPLOAD_ERR_OK) {
-        throw new Exception('No file uploaded or upload error occurred');
-    }
-
-    $file = $_FILES['schedule_image'];
-    $fileName = $file['name'];
-    $fileTmpPath = $file['tmp_name'];
-    $fileSize = $file['size'];
-    $fileError = $file['error'];
+    // Check if table exists
+    $tableExistsQuery = "SHOW TABLES LIKE 'SCHEDULE_UPLOADS'";
+    $result = $conn->query($tableExistsQuery);
     
-    // Validate file size (max 2MB)
-    $maxSize = 2 * 1024 * 1024; // 2MB in bytes
-    if ($fileSize > $maxSize) {
-        throw new Exception('File size exceeds the 2MB limit');
-    }
-    
-    // Get file extension and validate file type
-    $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $allowedExtensions = ['jpg', 'jpeg', 'png'];
-    
-    if (!in_array($fileExt, $allowedExtensions)) {
-        throw new Exception('Invalid file type. Only JPG, JPEG, and PNG files are allowed');
-    }
-    
-    // Create uploads directory if it doesn't exist
-    $uploadDir = '../../uploads/';
-    if (!file_exists($uploadDir)) {
-        if (!mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Failed to create uploads directory');
-        }
-    }
-    
-    // Prepare file name
-    $newFileName = 'lab_schedule.' . $fileExt;
-    $uploadPath = $uploadDir . $newFileName;
-    
-    // Remove old schedule files if they exist
-    foreach ($allowedExtensions as $ext) {
-        $oldFile = $uploadDir . 'lab_schedule.' . $ext;
-        if (file_exists($oldFile) && $oldFile != $uploadPath) {
-            unlink($oldFile);
-        }
-    }
-    
-    // Move uploaded file to target location
-    if (!move_uploaded_file($fileTmpPath, $uploadPath)) {
-        throw new Exception('Failed to move uploaded file');
-    }
-    
-    // Update schedule title in database if provided
-    if (!empty($_POST['schedule_title'])) {
-        $scheduleTitle = $_POST['schedule_title'];
+    if ($result->num_rows == 0) {
+        // Table doesn't exist, create it
+        $createTableQuery = "CREATE TABLE SCHEDULE_UPLOADS (
+            UPLOAD_ID INT AUTO_INCREMENT PRIMARY KEY,
+            LAB_ID VARCHAR(10) NOT NULL,
+            TITLE VARCHAR(255) NOT NULL,
+            FILENAME VARCHAR(255) NOT NULL,
+            UPLOADED_BY INT NOT NULL,
+            UPLOAD_DATE DATETIME NOT NULL
+        )";
         
-        // Check if settings table exists and has schedule_title field
-        // If not, you can create it or use another table for storing settings
-        // For this example, we'll assume a SETTINGS table exists
-        try {
-            $stmt = $conn->prepare("SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'SETTINGS'");
-            $stmt->execute();
-            $tableExists = $stmt->fetch();
-            
-            if ($tableExists) {
-                // Update or insert the schedule title setting
-                $stmt = $conn->prepare("INSERT INTO SETTINGS (setting_key, setting_value, updated_at) 
-                                        VALUES ('schedule_title', ?, NOW()) 
-                                        ON DUPLICATE KEY UPDATE setting_value = ?, updated_at = NOW()");
-                $stmt->bind_param("ss", $scheduleTitle, $scheduleTitle);
-                $stmt->execute();
-            }
-        } catch (Exception $e) {
-            // If there's an error with the database, we'll just continue
-            // The file upload was successful, so we don't want to fail the operation
+        if (!$conn->query($createTableQuery)) {
+            throw new Exception("Failed to create SCHEDULE_UPLOADS table: " . $conn->error);
         }
     }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Database setup error: ' . $e->getMessage()]);
+    exit();
+}
+
+// Debug information
+$debug = [];
+
+// Check if file was uploaded
+if (!isset($_FILES['schedule_image']) || $_FILES['schedule_image']['error'] != UPLOAD_ERR_OK) {
+    $error = isset($_FILES['schedule_image']) ? $_FILES['schedule_image']['error'] : 'No file uploaded';
+    echo json_encode([
+        'success' => false, 
+        'message' => 'No file uploaded or error in upload. Error code: ' . $error
+    ]);
+    exit();
+}
+
+// Get lab ID from form
+$lab_id = isset($_POST['schedule_lab']) ? $_POST['schedule_lab'] : 'all';
+$title = isset($_POST['schedule_title']) ? $_POST['schedule_title'] : 'Lab Schedule';
+
+$debug['lab_id'] = $lab_id;
+$debug['title'] = $title;
+
+// Validate file type
+$allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+$fileType = $_FILES['schedule_image']['type'];
+$debug['fileType'] = $fileType;
+
+if (!in_array($fileType, $allowedTypes)) {
+    echo json_encode(['success' => false, 'message' => 'Only JPG and PNG files are allowed']);
+    exit();
+}
+
+// Validate file size (2MB max)
+$maxSize = 2 * 1024 * 1024; // 2MB in bytes
+if ($_FILES['schedule_image']['size'] > $maxSize) {
+    echo json_encode(['success' => false, 'message' => 'File size exceeds the 2MB limit']);
+    exit();
+}
+
+// Directory for lab schedules
+$uploadsDirectory = "../../uploads/lab_schedules/";
+$debug['uploadsDirectory'] = $uploadsDirectory;
+
+// Check if the directory exists, if not create it
+if (!file_exists($uploadsDirectory)) {
+    $dirCreated = mkdir($uploadsDirectory, 0777, true);
+    $debug['dirCreated'] = $dirCreated ? 'yes' : 'no';
+    if (!$dirCreated) {
+        echo json_encode(['success' => false, 'message' => 'Failed to create uploads directory']);
+        exit();
+    }
+}
+
+// Check if directory is writable
+$isWritable = is_writable($uploadsDirectory);
+$debug['isWritable'] = $isWritable ? 'yes' : 'no';
+if (!$isWritable) {
+    echo json_encode(['success' => false, 'message' => 'Uploads directory is not writable']);
+    exit();
+}
+
+// Set the destination file name based on the lab ID and file type
+$extension = ($fileType === 'image/png') ? 'png' : 'jpg';
+$destinationFile = $uploadsDirectory . $lab_id . "." . $extension;
+$debug['destinationFile'] = $destinationFile;
+
+// Delete any existing schedule files for this lab (both jpg and png)
+if (file_exists($uploadsDirectory . $lab_id . ".jpg")) {
+    unlink($uploadsDirectory . $lab_id . ".jpg");
+    $debug['deletedJpg'] = 'yes';
+}
+if (file_exists($uploadsDirectory . $lab_id . ".png")) {
+    unlink($uploadsDirectory . $lab_id . ".png");
+    $debug['deletedPng'] = 'yes';
+}
+
+// Move the uploaded file to the destination
+$moveSuccess = move_uploaded_file($_FILES['schedule_image']['tmp_name'], $destinationFile);
+$debug['moveSuccess'] = $moveSuccess ? 'yes' : 'no';
+
+// Set proper permissions on the file
+if ($moveSuccess) {
+    chmod($destinationFile, 0644);
+    $debug['chmod'] = 'applied';
     
-    // Log the upload action
-    $adminId = $_SESSION['admin_id'];
-    $username = $_SESSION['username'];
-    $action = "Lab schedule image uploaded by {$username} (ID: {$adminId})";
+    // Check if file exists after upload
+    $fileExists = file_exists($destinationFile);
+    $debug['fileExists'] = $fileExists ? 'yes' : 'no';
+    $debug['fileSize'] = $fileExists ? filesize($destinationFile) : 0;
     
+    // Log the upload in database
     try {
-        $stmt = $conn->prepare("INSERT INTO ADMIN_LOGS (admin_id, action, timestamp) VALUES (?, ?, NOW())");
-        $stmt->bind_param("is", $adminId, $action);
+        $stmt = $conn->prepare("INSERT INTO SCHEDULE_UPLOADS (LAB_ID, TITLE, FILENAME, UPLOADED_BY, UPLOAD_DATE) 
+                              VALUES (?, ?, ?, ?, NOW())");
+        $filename = $lab_id . "." . $extension;
+        $admin_id = $_SESSION['admin_id'];
+        $stmt->bind_param("sssi", $lab_id, $title, $filename, $admin_id);
         $stmt->execute();
+        $debug['dbInsert'] = 'success';
+        $stmt->close();
     } catch (Exception $e) {
-        // If logging fails, we'll just continue
-        // The file upload was successful, so we don't want to fail the operation
+        $debug['dbError'] = $e->getMessage();
+        // Continue even if logging fails
     }
     
-    // Return success response
     echo json_encode([
         'success' => true, 
-        'message' => 'Schedule uploaded successfully',
-        'file' => [
-            'name' => $newFileName,
-            'path' => substr($uploadPath, 3), // Remove the "../../" from the path
-            'updated' => date('F d, Y')
-        ]
+        'message' => 'Schedule uploaded successfully', 
+        'debug' => $debug,
+        'path' => '../uploads/lab_schedules/' . $filename,
+        'refreshUrl' => '../lab_resources.php?lab=' . $lab_id . '&t=' . time()
     ]);
-    
-} catch (Exception $e) {
-    // Return error response
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+} else {
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Failed to move uploaded file', 
+        'debug' => $debug
+    ]);
 }
 ?>

@@ -11,6 +11,19 @@ if (!isset($_SESSION['admin_id'])) {
 $admin_id = $_SESSION['admin_id'];
 $username = $_SESSION['username'];
 
+// Get count of pending reservations
+$pendingCount = 0;
+try {
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM RESERVATION WHERE STATUS = 'PENDING'");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $pendingCount = $result->fetch_assoc()['count'];
+    $stmt->close();
+} catch (Exception $e) {
+    // If error, use default value
+    $pendingCount = 0;
+}
+
 // Fetch laboratories
 $laboratories = [];
 try {
@@ -120,58 +133,66 @@ include('includes/header.php');
 <div class="flex h-screen bg-gray-100">
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
-        <div class="flex flex-col w-64 bg-secondary">
-                <!-- Added Logos -->
-                <div class="flex flex-col items-center pt-5 pb-3">
-                    <div class="relative w-16 h-16 mb-2">
+        <div class="flex flex-col w-64 bg-secondary">                
+            <!-- Added Logos -->                
+             <div class="flex flex-col items-center pt-5 pb-2">
+                    <div class="relative w-16 h-16 mb-1">
                         <!-- UC Logo -->
                         <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
                             <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
                         </div>
                         <!-- CCS Logo (smaller and positioned at the bottom right) -->
-                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-ful-l bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
                             <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
                         </div>
                     </div>
-                    <h1 class="text-white font-bold text-sm mt-1">CCS Sit-In</h1>
+                    <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
                     <p class="text-gray-300 text-xs">Monitoring System</p>
-                </div>
-                <div class="flex flex-col flex-grow px-4 py-2 overflow-hidden">
-                    <nav class="flex-1 space-y-2">
-                    <a href="dashboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-home mr-3"></i>
-                        <span>Home</span>
+                </div>                
+                <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
+                    <nav class="flex-1 space-y-1">
+                    <a href="dashboard.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-search mr-3"></i>
-                        <span>Search</span>
+                    <a href="search.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        <span>Students</span>
+                    <a href="students.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-desktop mr-3"></i>
-                        <span>Sit-in</span>
+                    <a href="sitin.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-4 py-3 text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        <span>Reservation</span>
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-3.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
-                    <a href="feedbacks.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-comments mr-3"></i>
-                        <span>Feedbacks</span>
+                    <a href="lab_resources.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="leaderboard.php" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-trophy mr-3"></i>
-                        <span>Leaderboard</span>
+                    <a href="feedbacks.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
-                </nav>
-                
-                <div class="mt-4">
-                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        <span>Logout</span>
+                    <a href="leaderboard.php" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
+                    </a>
+                </nav>                  
+                <div class="mt-3 border-t border-white-700 pt-2">
+                    <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-3.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Logout</span>
                     </a>
                 </div>
             </div>
@@ -179,58 +200,84 @@ include('includes/header.php');
     </div>
 
     <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
+    <div class="flex flex-col flex-1 overflow-hidden">        
         <!-- Top Navigation -->
-        <header class="bg-white shadow-sm">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
             <div class="flex items-center justify-between h-16 px-6">
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center">
-                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none">
+                    <button id="mobile-menu-button" class="text-gray-500 md:hidden focus:outline-none p-1 hover:bg-gray-100 rounded-md transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <h1 class="ml-4 text-xl font-semibold text-secondary">Manage Laboratory PCs</h1>
+                    <h1 class="ml-4 text-xl font-semibold text-secondary flex items-center">
+                        Sit-In Reports
+                    </h1>
                 </div>
                 
                 <!-- Admin Profile -->
                 <div class="flex items-center">
-                    <span class="mr-4 text-sm font-medium text-gray-700"><?php echo htmlspecialchars($username); ?></span>
-                    <button class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <span class="mr-3 text-sm font-medium text-gray-700 hidden sm:inline-block"><?php echo htmlspecialchars($username); ?></span>
+                    <div class="relative group">
+                        <button class="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors border-2 border-white shadow-sm">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                            <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                                Signed in as <span class="font-semibold"><?php echo htmlspecialchars($username); ?></span>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile Settings</a>
+                            <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Mobile Navigation -->
-            <div id="mobile-menu" class="hidden md:hidden px-4 py-2 bg-secondary">
-                <nav class="space-y-2">
-                    <a href="dashboard.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-home mr-3"></i>
-                        Home
+            </div>            
+              <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="hidden md:hidden px-4 py-3 bg-secondary">
+                <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-80px)]">
+                    <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-home mr-3 text-lg"></i>
+                        <span class="font-medium">Home</span>
                     </a>
-                    <a href="search.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-search mr-3"></i>
-                        Search
+                    <a href="search.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-search mr-3 text-lg"></i>
+                        <span class="font-medium">Search</span>
                     </a>
-                    <a href="students.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        Students
+                    <a href="students.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-user-graduate mr-3 text-lg"></i>
+                        <span class="font-medium">Students</span>
                     </a>
-                    <a href="sitin.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-desktop mr-3"></i>
-                        Sit-in
+                    <a href="sitin.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-desktop mr-3 text-lg"></i>
+                        <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="block px-4 py-2 text-white rounded-lg bg-primary bg-opacity-30 hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-calendar-alt mr-3"></i>
-                        Reservation
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
-                    <a href="feedbacks.php" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-comments mr-3"></i>
-                        Feedbacks
+                    <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-book-open mr-3 text-lg"></i>
+                        <span class="font-medium">Lab Resources</span>
                     </a>
-                    <a href="#" onclick="confirmLogout(event)" class="block px-4 py-2 text-white rounded-lg hover:bg-primary hover:bg-opacity-20">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        Logout
+                    <a href="feedbacks.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-comments mr-3 text-lg"></i>
+                        <span class="font-medium">Feedbacks</span>
                     </a>
+                    <a href="leaderboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-trophy mr-3 text-lg"></i>
+                        <span class="font-medium">Leaderboard</span>
+                    </a>
+                    
+                    <div class="border-t border-gray-700 mt-2 pt-2">
+                        <a href="#" onclick="confirmLogout(event)" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Logout</span>
+                        </a>
+                    </div>
                 </nav>
             </div>
         </header>
@@ -291,7 +338,7 @@ include('includes/header.php');
                                             <span class="font-medium text-green-600">
                                                 <?php 
                                                     $available_count = count(array_filter($pcs, function($pc) { 
-                                                        return strtoupper(trim($pc['STATUS'])) == 'AVAILABLE'; 
+                                                        return isset($pc['STATUS']) && strtoupper(trim($pc['STATUS'])) == 'AVAILABLE'; 
                                                     }));
                                                     echo $available_count; 
                                                 ?> PCs
@@ -299,26 +346,37 @@ include('includes/header.php');
                                         </div>
                                     </div>
                                     
-                                    <div class="grid grid-cols-2 gap-2 text-sm mb-4">
+                                    <div class="grid grid-cols-3 gap-10 text-sm mb-4">
                                         <div>
                                             <span class="text-gray-500">Reserved:</span>
                                             <span class="font-medium text-red-600">
                                                 <?php 
                                                     $reserved_count = count(array_filter($pcs, function($pc) { 
-                                                        return strtoupper(trim($pc['STATUS'])) == 'RESERVED'; 
+                                                        return isset($pc['STATUS']) && strtoupper(trim($pc['STATUS'])) == 'RESERVED'; 
                                                     }));
                                                     echo $reserved_count; 
                                                 ?> PCs
                                             </span>
                                         </div>
                                         <div>
-                                            <span class="text-gray-500">Maintenance:</span>
+                                            <span class="text-gray-500">Maintain:</span>
                                             <span class="font-medium text-yellow-600">
                                                 <?php 
                                                     $maintenance_count = count(array_filter($pcs, function($pc) { 
-                                                        return strtoupper(trim($pc['STATUS'])) == 'MAINTENANCE'; 
+                                                        return isset($pc['STATUS']) && strtoupper(trim($pc['STATUS'])) == 'MAINTENANCE'; 
                                                     }));
                                                     echo $maintenance_count; 
+                                                ?> PCs
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-500">In Use:</span>
+                                            <span class="font-medium text-blue-600">
+                                                <?php 
+                                                    $in_use_count = count(array_filter($pcs, function($pc) { 
+                                                        return isset($pc['STATUS']) && strtoupper(trim($pc['STATUS'])) == 'IN_USE'; 
+                                                    }));
+                                                    echo $in_use_count; 
                                                 ?> PCs
                                             </span>
                                         </div>
@@ -393,6 +451,7 @@ include('includes/header.php');
                                                     <select id="status-filter" class="text-sm border-0 focus:outline-none text-gray-500 bg-transparent">
                                                         <option value="all">All Status</option>
                                                         <option value="available">Available</option>
+                                                        <option value="in_use">In Use</option>
                                                         <option value="reserved">Reserved</option>
                                                         <option value="maintenance">Maintenance</option>
                                                     </select>
@@ -404,9 +463,9 @@ include('includes/header.php');
                                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="pc-grid">
                                                 <?php foreach ($pcs as $pc): 
                                                     $statusClass = '';
-                                                    $statusText = $pc['STATUS'];
+                                                    $statusText = isset($pc['STATUS']) ? $pc['STATUS'] : 'AVAILABLE';
                                                     
-                                                    switch(strtoupper(trim($pc['STATUS']))) {
+                                                    switch(strtoupper(trim($statusText))) {
                                                         case 'AVAILABLE':
                                                             $statusClass = 'bg-green-100 text-green-800 border-green-200';
                                                             break;
@@ -415,6 +474,9 @@ include('includes/header.php');
                                                             break;
                                                         case 'MAINTENANCE':
                                                             $statusClass = 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                                                            break;
+                                                        case 'IN_USE':
+                                                            $statusClass = 'bg-blue-100 text-blue-800 border-blue-200';
                                                             break;
                                                         default:
                                                             $statusClass = 'bg-gray-100 text-gray-800 border-gray-200';
@@ -438,7 +500,7 @@ include('includes/header.php');
                                                                     <button class="edit-pc-btn action-btn bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" 
                                                                             data-pc-id="<?php echo $pc['PC_ID']; ?>" 
                                                                             data-pc-number="<?php echo $pc['PC_NUMBER']; ?>" 
-                                                                            data-status="<?php echo $pc['STATUS']; ?>"
+                                                                            data-status="<?php echo $statusText; ?>"
                                                                             title="Edit PC">
                                                                         <i class="fas fa-edit"></i>
                                                                     </button>
@@ -538,6 +600,7 @@ include('includes/header.php');
                     <label for="pc-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select id="pc-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="AVAILABLE">Available</option>
+                        <option value="IN_USE">In Use</option>
                         <option value="RESERVED">Reserved</option>
                         <option value="MAINTENANCE">Maintenance</option>
                     </select>
@@ -559,6 +622,7 @@ include('includes/header.php');
                     <label for="bulk-pc-status" class="block text-sm font-medium text-gray-700 mb-1">Default Status</label>
                     <select id="bulk-pc-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="AVAILABLE">Available</option>
+                        <option value="IN_USE">In Use</option>
                         <option value="RESERVED">Reserved</option>
                         <option value="MAINTENANCE">Maintenance</option>
                     </select>
@@ -644,6 +708,7 @@ include('includes/header.php');
                     <label for="bulk-edit-status" class="block text-sm font-medium text-gray-700 mb-1">New Status</label>
                     <select id="bulk-edit-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="AVAILABLE">Available</option>
+                        <option value="IN_USE">In Use</option>
                         <option value="RESERVED">Reserved</option>
                         <option value="MAINTENANCE">Maintenance</option>
                     </select>
@@ -918,7 +983,7 @@ include('includes/header.php');
                     
                     data.pcs.forEach(pc => {
                         let statusClass = '';
-                        switch(pc.STATUS) {
+                        switch(pc.STATUS || 'AVAILABLE') {
                             case 'AVAILABLE':
                                 statusClass = 'text-green-600';
                                 break;
@@ -928,6 +993,11 @@ include('includes/header.php');
                             case 'MAINTENANCE':
                                 statusClass = 'text-yellow-600';
                                 break;
+                            case 'IN_USE':
+                                statusClass = 'text-blue-600';
+                                break;
+                            default:
+                                statusClass = 'text-gray-600';
                         }
                         
                         html += `
@@ -935,7 +1005,7 @@ include('includes/header.php');
                             <input type="checkbox" id="pc-check-${pc.PC_ID}" name="selected_pcs[]" value="${pc.PC_ID}" class="mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500">
                             <label for="pc-check-${pc.PC_ID}" class="flex justify-between w-full">
                                 <span>PC #${pc.PC_NUMBER}</span>
-                                <span class="${statusClass}">${pc.STATUS}</span>
+                                <span class="${statusClass}">${pc.STATUS || 'AVAILABLE'}</span>
                             </label>
                         </div>`;
                     });
@@ -1081,6 +1151,12 @@ include('includes/header.php');
                 return;
             }
             
+            // Check for valid count
+            if (count <= 0) {
+                alert("Please enter a valid number of PCs to add (greater than 0).");
+                return;
+            }
+            
             const formData = new FormData();
             formData.append('lab_id', labId);
             formData.append('count', count);
@@ -1097,6 +1173,7 @@ include('includes/header.php');
                     // Reload page to show changes
                     window.location.reload();
                 } else {
+                    // Show specific error message from server if available
                     alert(data.message || 'Error adding PCs. Please try again.');
                 }
             })
@@ -1237,4 +1314,4 @@ include('includes/header.php');
         transition: all 0.2s ease;
     }
     
-    .pc-card:hover { include('includes/footer.php'); ?>        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);    }</style><?php include('includes/footer.php'); ?>
+    .pc-card:hover { include('includes/footer.php'); ?>        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);    }</style><?php include('includes/footer.php'); ?>        .pc-card:hover { include('includes/footer.php'); ?>        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);    }</style><?php include('includes/footer.php'); ?>

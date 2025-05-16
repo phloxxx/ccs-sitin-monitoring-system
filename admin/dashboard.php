@@ -11,6 +11,18 @@ if (!isset($_SESSION['admin_id'])) {
 $admin_id = $_SESSION['admin_id'];
 $username = $_SESSION['username'];
 
+// Count pending reservations
+$pendingCount = 0;
+try {
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM RESERVATION WHERE STATUS = 'PENDING'");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $pendingCount = $result->fetch_assoc()['count'];
+    $stmt->close();
+} catch (Exception $e) {
+    // Handle error silently
+}
+
 // Initialize stats array
 $stats = [
     'total_students' => 0,
@@ -129,9 +141,14 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
-                        <span class="font-medium">Reservation</span>
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
                     <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-book-open mr-3 text-lg"></i>
@@ -208,9 +225,14 @@ include('includes/header.php');
                         <i class="fas fa-desktop mr-3 text-lg"></i>
                         <span class="font-medium">Sit-in</span>
                     </a>
-                    <a href="reservation.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-calendar-alt mr-3 text-lg"></i>
-                        <span class="font-medium">Reservation</span>
+                    <a href="reservation.php" class="flex items-center justify-between px-3 py-2.5 text-sm text-white bg-primary bg-opacity-30 rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Reservation</span>
+                        </div>
+                        <?php if ($pendingCount > 0): ?>
+                        <span class="bg-red-500 text-white text-xs rounded-full px-2 py-1 font-semibold"><?php echo $pendingCount; ?></span>
+                        <?php endif; ?>
                     </a>
                     <a href="lab_resources.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-book-open mr-3 text-lg"></i>

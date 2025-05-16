@@ -1,3 +1,22 @@
+<?php
+// Count pending reservations if not already set
+if (!isset($pendingCount)) {
+    $pendingCount = 0;
+    
+    // Check if database connection exists
+    if (isset($conn)) {
+        try {
+            $stmt = $conn->prepare("SELECT COUNT(*) as count FROM RESERVATION WHERE STATUS = 'PENDING'");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $pendingCount = $result->fetch_assoc()['count'];
+            $stmt->close();
+        } catch (Exception $e) {
+            // Silently fail - count will remain 0
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
