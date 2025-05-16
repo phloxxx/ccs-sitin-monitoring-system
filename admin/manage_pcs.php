@@ -288,9 +288,42 @@ include('includes/header.php');
                                         </div>
                                         <div>
                                             <span class="text-gray-500">Available:</span>
-                                            <span class="font-medium text-green-600"><?php echo count(array_filter($pcs, function($pc) { return $pc['STATUS'] == 'AVAILABLE'; })); ?> PCs</span>
+                                            <span class="font-medium text-green-600">
+                                                <?php 
+                                                    $available_count = count(array_filter($pcs, function($pc) { 
+                                                        return strtoupper(trim($pc['STATUS'])) == 'AVAILABLE'; 
+                                                    }));
+                                                    echo $available_count; 
+                                                ?> PCs
+                                            </span>
                                         </div>
                                     </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-2 text-sm mb-4">
+                                        <div>
+                                            <span class="text-gray-500">Reserved:</span>
+                                            <span class="font-medium text-red-600">
+                                                <?php 
+                                                    $reserved_count = count(array_filter($pcs, function($pc) { 
+                                                        return strtoupper(trim($pc['STATUS'])) == 'RESERVED'; 
+                                                    }));
+                                                    echo $reserved_count; 
+                                                ?> PCs
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-500">Maintenance:</span>
+                                            <span class="font-medium text-yellow-600">
+                                                <?php 
+                                                    $maintenance_count = count(array_filter($pcs, function($pc) { 
+                                                        return strtoupper(trim($pc['STATUS'])) == 'MAINTENANCE'; 
+                                                    }));
+                                                    echo $maintenance_count; 
+                                                ?> PCs
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="flex space-x-2">
                                         <button id="edit-lab-btn" data-lab-id="<?php echo $lab_details['LAB_ID']; ?>" class="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm flex items-center">
                                             <i class="fas fa-edit mr-1"></i>
@@ -360,7 +393,7 @@ include('includes/header.php');
                                                     <select id="status-filter" class="text-sm border-0 focus:outline-none text-gray-500 bg-transparent">
                                                         <option value="all">All Status</option>
                                                         <option value="available">Available</option>
-                                                        <option value="unavailable">Unavailable</option>
+                                                        <option value="reserved">Reserved</option>
                                                         <option value="maintenance">Maintenance</option>
                                                     </select>
                                                 </div>
@@ -373,11 +406,11 @@ include('includes/header.php');
                                                     $statusClass = '';
                                                     $statusText = $pc['STATUS'];
                                                     
-                                                    switch($pc['STATUS']) {
+                                                    switch(strtoupper(trim($pc['STATUS']))) {
                                                         case 'AVAILABLE':
                                                             $statusClass = 'bg-green-100 text-green-800 border-green-200';
                                                             break;
-                                                        case 'UNAVAILABLE':
+                                                        case 'RESERVED':
                                                             $statusClass = 'bg-red-100 text-red-800 border-red-200';
                                                             break;
                                                         case 'MAINTENANCE':
@@ -461,17 +494,12 @@ include('includes/header.php');
             
             <div class="mb-4">
                 <label for="lab-name" class="block text-sm font-medium text-gray-700 mb-1">Laboratory Name</label>
-                <input type="text" id="lab-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., CCS Laboratory 524" required>
+                <input type="text" id="lab-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Laboratory 524" required>
             </div>
             
             <div class="mb-4">
                 <label for="lab-capacity" class="block text-sm font-medium text-gray-700 mb-1">Capacity (Number of PCs)</label>
                 <input type="number" id="lab-capacity" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" min="1" placeholder="e.g., 30" required>
-            </div>
-            
-            <div class="mb-4">
-                <label for="lab-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                <input type="text" id="lab-location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 5th Floor, CCS Building">
             </div>
             
             <div class="mt-6 flex justify-end space-x-3">
@@ -510,7 +538,7 @@ include('includes/header.php');
                     <label for="pc-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select id="pc-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="AVAILABLE">Available</option>
-                        <option value="UNAVAILABLE">Unavailable</option>
+                        <option value="RESERVED">Reserved</option>
                         <option value="MAINTENANCE">Maintenance</option>
                     </select>
                 </div>
@@ -523,11 +551,6 @@ include('includes/header.php');
                 </div>
                 
                 <div class="mb-4">
-                    <label for="pc-prefix" class="block text-sm font-medium text-gray-700 mb-1">PC Name Prefix</label>
-                    <input type="text" id="pc-prefix" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., PC-" value="PC-">
-                </div>
-                
-                <div class="mb-4">
                     <label for="pc-start-number" class="block text-sm font-medium text-gray-700 mb-1">Starting Number</label>
                     <input type="number" id="pc-start-number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" min="1" value="1">
                 </div>
@@ -536,13 +559,13 @@ include('includes/header.php');
                     <label for="bulk-pc-status" class="block text-sm font-medium text-gray-700 mb-1">Default Status</label>
                     <select id="bulk-pc-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="AVAILABLE">Available</option>
-                        <option value="UNAVAILABLE">Unavailable</option>
+                        <option value="RESERVED">Reserved</option>
                         <option value="MAINTENANCE">Maintenance</option>
                     </select>
                 </div>
                 
                 <div class="p-3 bg-blue-50 rounded-md mb-4">
-                    <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-1"></i> This will create PCs with names like "<span id="pc-name-preview">PC-01, PC-02, ...</span>"</p>
+                    <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-1"></i> This will create multiple PCs numbered as "PC #1", "PC #2", etc.</p>
                 </div>
             </div>
             
@@ -621,7 +644,7 @@ include('includes/header.php');
                     <label for="bulk-edit-status" class="block text-sm font-medium text-gray-700 mb-1">New Status</label>
                     <select id="bulk-edit-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="AVAILABLE">Available</option>
-                        <option value="UNAVAILABLE">Unavailable</option>
+                        <option value="RESERVED">Reserved</option>
                         <option value="MAINTENANCE">Maintenance</option>
                     </select>
                 </div>
@@ -751,7 +774,6 @@ include('includes/header.php');
                     document.getElementById('lab-id').value = data.lab.LAB_ID;
                     document.getElementById('lab-name').value = data.lab.LAB_NAME;
                     document.getElementById('lab-capacity').value = data.lab.CAPACITY;
-                    document.getElementById('lab-location').value = data.lab.LOCATION || '';
                     modals.addLab.classList.remove('hidden');
                 } else {
                     alert('Error fetching laboratory details. Please try again.');
@@ -786,15 +808,17 @@ include('includes/header.php');
         document.getElementById('single-pc-fields').classList.add('hidden');
         document.getElementById('bulk-pc-fields').classList.remove('hidden');
         document.getElementById('pc-form').reset();
+        
+        // Make sure PC number field is enabled
+        const pcNumberField = document.getElementById('pc-number');
+        pcNumberField.disabled = false;
+        pcNumberField.classList.remove('bg-gray-100');
+        
         modals.pc.classList.remove('hidden');
         
         // Set default values
-        document.getElementById('pc-prefix').value = 'PC-';
         document.getElementById('pc-count').value = '1';
         document.getElementById('pc-start-number').value = '1';
-        
-        // Update preview
-        updatePcNamePreview();
     });
     
     // Initial Add PC Button (when lab has no PCs)
@@ -802,30 +826,14 @@ include('includes/header.php');
         document.getElementById('add-pc-btn').click();
     });
     
-    // PC Count, Prefix, and Start Number change events for preview
-    ['pc-count', 'pc-prefix', 'pc-start-number'].forEach(id => {
+    // PC Count and Start Number change events
+    ['pc-count', 'pc-start-number'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', updatePcNamePreview);
     });
     
-    // Function to update PC name preview
+    // Function to update PC name preview (removed since preview display was removed)
     function updatePcNamePreview() {
-        const prefix = document.getElementById('pc-prefix').value;
-        const startNumber = parseInt(document.getElementById('pc-start-number').value) || 1;
-        const count = parseInt(document.getElementById('pc-count').value) || 1;
-        
-        let preview = '';
-        if (count <= 3) {
-            for (let i = 0; i < count; i++) {
-                const pcNumber = startNumber + i;
-                preview += prefix + String(pcNumber).padStart(2, '0');
-                if (i < count - 1) preview += ', ';
-            }
-        } else {
-            preview += prefix + String(startNumber).padStart(2, '0') + ', ';
-            preview += prefix + String(startNumber + 1).padStart(2, '0') + ', ...';
-        }
-        
-        document.getElementById('pc-name-preview').textContent = preview;
+        // Preview functionality removed as it's no longer needed
     }
     
     // Edit PC Buttons
@@ -840,7 +848,13 @@ include('includes/header.php');
             document.getElementById('edit-mode').value = 'single';
             document.getElementById('single-pc-fields').classList.remove('hidden');
             document.getElementById('bulk-pc-fields').classList.add('hidden');
-            document.getElementById('pc-number').value = pcNumber;
+            
+            // Set PC number and make it editable
+            const pcNumberField = document.getElementById('pc-number');
+            pcNumberField.value = pcNumber;
+            pcNumberField.disabled = false; // Enable PC number field in edit mode
+            pcNumberField.classList.remove('bg-gray-100'); // Remove visual indication
+            
             document.getElementById('pc-status').value = status;
             
             modals.pc.classList.remove('hidden');
@@ -908,7 +922,7 @@ include('includes/header.php');
                             case 'AVAILABLE':
                                 statusClass = 'text-green-600';
                                 break;
-                            case 'UNAVAILABLE':
+                            case 'RESERVED':
                                 statusClass = 'text-red-600';
                                 break;
                             case 'MAINTENANCE':
@@ -990,13 +1004,11 @@ include('includes/header.php');
         const labId = document.getElementById('lab-id').value;
         const labName = document.getElementById('lab-name').value;
         const capacity = document.getElementById('lab-capacity').value;
-        const location = document.getElementById('lab-location').value;
         
         const formData = new FormData();
         formData.append('lab_id', labId);
         formData.append('lab_name', labName);
         formData.append('capacity', capacity);
-        formData.append('location', location);
         
         fetch('ajax/save_lab.php', {
             method: 'POST',
@@ -1056,14 +1068,22 @@ include('includes/header.php');
         } else {
             // Bulk PC add
             const count = parseInt(document.getElementById('pc-count').value) || 1;
-            const prefix = document.getElementById('pc-prefix').value;
             const startNumber = parseInt(document.getElementById('pc-start-number').value) || 1;
             const status = document.getElementById('bulk-pc-status').value;
+            
+            // Get lab capacity and current PC count
+            const labCapacity = <?php echo $lab_details ? $lab_details['CAPACITY'] : 0; ?>;
+            const currentPCCount = <?php echo count($pcs); ?>;
+            
+            // Check if adding these PCs would exceed capacity
+            if (currentPCCount + count > labCapacity) {
+                alert(`Cannot add ${count} PCs. This would exceed the laboratory capacity of ${labCapacity} PCs. Currently have ${currentPCCount} PCs.`);
+                return;
+            }
             
             const formData = new FormData();
             formData.append('lab_id', labId);
             formData.append('count', count);
-            formData.append('prefix', prefix);
             formData.append('start_number', startNumber);
             formData.append('status', status);
             
@@ -1213,6 +1233,8 @@ include('includes/header.php');
     .pc-card:hover {
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-</style>
-
-<?php include('includes/footer.php'); ?>
+    .pc-card {
+        transition: all 0.2s ease;
+    }
+    
+    .pc-card:hover { include('includes/footer.php'); ?>        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);    }</style><?php include('includes/footer.php'); ?>

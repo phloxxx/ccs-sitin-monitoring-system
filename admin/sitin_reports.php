@@ -1011,17 +1011,48 @@ include('includes/header.php');
                                             },
                                             didDrawPage: function(data) {
                                                 // Add logos on each page
-                                                doc.addImage(ucLogo, 'PNG', 40, 20, 50, 50);
-                                                doc.addImage(ccsLogo, 'PNG', doc.internal.pageSize.width - 90, 20, 50, 50);
+                                                try {
+                                                    if (ucLogoLoaded && ucLogo.complete) {
+                                                        const ucCanvas = document.createElement('canvas');
+                                                        const ucCtx = ucCanvas.getContext('2d');
+                                                        ucCanvas.width = ucLogo.width;
+                                                        ucCanvas.height = ucLogo.height;
+                                                        ucCtx.drawImage(ucLogo, 0, 0);
+                                                        const ucLogoDataUrl = ucCanvas.toDataURL('image/png');
+                                                        // Position UC logo to the left of the title text
+                                                        doc.addImage(ucLogoDataUrl, 'PNG', (doc.internal.pageSize.width / 2) - 75, 28, 13, 13);
+                                                    }
+                                                    
+                                                    if (ccsLogoLoaded && ccsLogo.complete) {
+                                                        const ccsCanvas = document.createElement('canvas');
+                                                        const ccsCtx = ccsCanvas.getContext('2d');
+                                                        ccsCanvas.width = ccsLogo.width;
+                                                        ccsCanvas.height = ccsLogo.height;
+                                                        ccsCtx.drawImage(ccsLogo, 0, 0);
+                                                        const ccsLogoDataUrl = ccsCanvas.toDataURL('image/png');
+                                                        // Position CCS logo to the right of the title text
+                                                        doc.addImage(ccsLogoDataUrl, 'PNG', (doc.internal.pageSize.width / 2) + 62, 28, 13, 13);
+                                                    }
+                                                } catch (logoError) {
+                                                    console.error("Error adding logos to PDF in header:", logoError);
+                                                }
                                                 
                                                 // Add headers on each page
+                                                doc.setFillColor(25, 64, 175); // Dark blue header background
+                                                doc.rect(0, 0, doc.internal.pageSize.width, 22, 'F');
+                                                
                                                 doc.setFontSize(16);
-                                                doc.setTextColor(0, 0, 0);
-                                                doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 40, { align: 'center' });
+                                                doc.setTextColor(255, 255, 255);
+                                                doc.setFont(undefined, 'bold');
+                                                doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 12, { align: 'center' });
+                                                
                                                 doc.setFontSize(12);
-                                                doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+                                                doc.setTextColor(0, 0, 0);
+                                                doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 28, { align: 'center' });
+                                                
                                                 doc.setFontSize(14);
-                                                doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 80, { align: 'center' });
+                                                doc.setFont(undefined, 'bold');
+                                                doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 36, { align: 'center' });
 
                                                 // Add page numbers
                                                 let pageCount = doc.internal.getNumberOfPages();
@@ -1098,7 +1129,6 @@ include('includes/header.php');
                                     }
                                 }).catch(error => {
                                     console.error('Error loading images:', error);
-                                    alert('Error loading images for PDF. Please try again.');
                                     const loadingElement = document.getElementById('pdf-loading');
                                     if (loadingElement) {
                                         loadingElement.remove();
@@ -1106,7 +1136,6 @@ include('includes/header.php');
                                 });
                             }).catch(error => {
                                 console.error('Error loading images:', error);
-                                alert('Error loading images for PDF. Please try again.');
                                 const loadingElement = document.getElementById('pdf-loading');
                                 if (loadingElement) {
                                     loadingElement.remove();
@@ -1212,177 +1241,325 @@ include('includes/header.php');
                                    '</div>';
             document.body.appendChild(loadingDiv);
             
-            // Initialize jsPDF without waiting for images
-            window.jsPDF = window.jspdf.jsPDF;
-            const doc = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm',
-                format: 'a4'
-            });
+            // Load the logos first, then proceed with PDF generation
+            const ucLogo = new Image();
+            const ccsLogo = new Image();
             
-            // Wait to ensure jspdf-autotable is fully loaded and attached to jsPDF
-            if (typeof doc.autoTable !== 'function') {
-                // Add the plugin manually if it's not automatically attached
-                if (window.jspdf && window.jspdf.jsPDF && typeof window.jspdf.jsPDF.API.autoTable === 'function') {
-                    window.jspdf.jsPDF.API.autoTable = window.jspdf.jsPDF.API.autoTable;
-                }
+            let ucLogoLoaded = false;
+            let ccsLogoLoaded = false;
+            
+            ucLogo.onload = function() {
+                ucLogoLoaded = true;
+                checkBothLogosLoaded();
+            };
+            
+            ccsLogo.onload = function() {
+                ccsLogoLoaded = true;
+                checkBothLogosLoaded();
+            };
+            
+            // Set error handlers for image loading
+            ucLogo.onerror = function() {
+                console.error("Failed to load UC logo");
+                ucLogoLoaded = true; // Consider it "loaded" to proceed
+                checkBothLogosLoaded();
+            };
+            
+            ccsLogo.onerror = function() {
+                console.error("Failed to load CCS logo");
+                ccsLogoLoaded = true; // Consider it "loaded" to proceed
+                checkBothLogosLoaded();
+            };
+            
+            // Set the image sources - use absolute URLs to ensure they load
+            ucLogo.src = '../student/images/uc_logo.png';
+            ccsLogo.src = '../student/images/ccs_logo.png';
+            
+            function checkBothLogosLoaded() {
+                if (!ucLogoLoaded || !ccsLogoLoaded) return;
+                
+                // Both logos loaded (or failed to load), proceed with PDF generation
+                generatePDFWithLogos();
             }
             
-            // Check if autoTable is available, if not use a simpler approach
-            const hasAutoTable = typeof doc.autoTable === 'function';
-              // Add a header with school logo background color bar
-            doc.setFillColor(25, 64, 175); // Dark blue header background
-            doc.rect(0, 0, doc.internal.pageSize.width, 22, 'F');
-            
-            // Add title with improved styling
-            doc.setTextColor(255, 255, 255); // White text for header
-            doc.setFontSize(20);
-            doc.setFont(undefined, 'bold');
-            doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 12, { align: 'center' });
-            
-            // Add subtitle with improved styling
-            doc.setTextColor(0, 0, 0); // Reset text color to black
-            doc.setFontSize(14);
-            doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 28, { align: 'center' });
-            
-            // Add system name with decorative underline
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 36, { align: 'center' });
-            
-            // Add decorative underline
-            doc.setDrawColor(25, 64, 175); // Dark blue line
-            doc.setLineWidth(0.5);
-            const textWidth = doc.getTextWidth('CCS SITIN MONITORING SYSTEM');
-            doc.line(
-                (doc.internal.pageSize.width / 2) - (textWidth / 2), 38,
-                (doc.internal.pageSize.width / 2) + (textWidth / 2), 38
-            );
-            
-            // Add report title with improved styling
-            doc.setFontSize(16);
-            doc.setTextColor(25, 64, 175); // Blue text for report title
-            doc.text('Sit-In Report', doc.internal.pageSize.width / 2, 46, { align: 'center' });
-            
-            // Add report metadata with better spacing and styling
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0); // Reset to black
-            doc.setFont(undefined, 'normal');
-            let labFilter = $('#report-lab option:selected').text();
-            let purposeFilter = $('#report-purpose').val() || 'All Purposes';
-            
-            doc.text('Period: ' + startDate + ' to ' + endDate, doc.internal.pageSize.width / 2, 53, { align: 'center' });
-            doc.text('Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, doc.internal.pageSize.width / 2, 58, { align: 'center' });
-            doc.text('Total Records: ' + reportData.length, doc.internal.pageSize.width / 2, 50, { align: 'center' });
-            
-            // Add summary statistics
-            let activeCount = reportData.filter(session => session.STATUS === 'ACTIVE').length;
-            let completedCount = reportData.filter(session => session.STATUS === 'COMPLETED').length;
-            
-            let uniqueStudents = new Set();
-            reportData.forEach(session => uniqueStudents.add(session.IDNO));
-            
-            // Draw statistics box
-            doc.setDrawColor(100, 100, 100);
-            doc.setFillColor(240, 240, 240);
-            doc.roundedRect(90, 53, 120, 25, 2, 2, 'FD');
-            
-            doc.setFontSize(9);
-            doc.setFont(undefined, 'bold');
-            doc.text('Summary Statistics', doc.internal.pageSize.width / 2, 58, { align: 'center' });
-            
-            doc.setFont(undefined, 'normal');
-            doc.text('Unique Students: ' + uniqueStudents.size, 100, 64);
-            doc.text('Active Sessions: ' + activeCount, 100, 69);
-            doc.text('Completed Sessions: ' + completedCount, 100, 74);
-            
-            // Get table data
-            const headers = [];
-            const rows = [];
-            
-            // Extract headers
-            $('#reportTable thead th').each(function() {
-                headers.push($(this).text());
-            });
-            
-            // Extract data
-            $('#reportTable tbody tr').each(function() {
-                const row = [];
-                $(this).find('td').each(function() {
-                    row.push($(this).text());
+            function generatePDFWithLogos() {
+                // Initialize jsPDF
+                window.jsPDF = window.jspdf.jsPDF;
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
                 });
-                rows.push(row);
-            });
-            
-            // Generate table in PDF
-            if (hasAutoTable) {
-                // Use autoTable if available
-                doc.autoTable({
-                    head: [headers],
-                    body: rows,
-                    startY: 82,
-                    theme: 'grid',
-                    styles: { fontSize: 8 },                    headStyles: {
-                        fillColor: [53, 100, 128],     // Blue background for all headers
-                        textColor: [255, 255, 255],    // White text for all headers
-                        fontStyle: 'bold',
-                        fontSize: 8                    // Consistent font size
-                    },
-                    alternateRowStyles: {
-                        fillColor: [245, 247, 250]
-                    },
-                    didDrawPage: function(data) {
-                        // Add footer
+                
+                // Wait to ensure jspdf-autotable is fully loaded and attached to jsPDF
+                if (typeof doc.autoTable !== 'function') {
+                    // Add the plugin manually if it's not automatically attached
+                    if (window.jspdf && window.jspdf.jsPDF && typeof window.jspdf.jsPDF.API.autoTable === 'function') {
+                        window.jspdf.jsPDF.API.autoTable = window.jspdf.jsPDF.API.autoTable;
+                    }
+                }
+                
+                // Check if autoTable is available, if not use a simpler approach
+                const hasAutoTable = typeof doc.autoTable === 'function';
+                
+                // Add a header with school logo background color bar
+                doc.setFillColor(25, 64, 175); // Dark blue header background
+                doc.rect(0, 0, doc.internal.pageSize.width, 22, 'F');
+                
+                // Add logos if they were successfully loaded
+                try {
+                    if (ucLogoLoaded && ucLogo.complete) {
+                        const ucCanvas = document.createElement('canvas');
+                        const ucCtx = ucCanvas.getContext('2d');
+                        ucCanvas.width = ucLogo.width;
+                        ucCanvas.height = ucLogo.height;
+                        ucCtx.drawImage(ucLogo, 0, 0);
+                        const ucLogoDataUrl = ucCanvas.toDataURL('image/png');
+                        // Position UC logo to the left of the title text
+                        doc.addImage(ucLogoDataUrl, 'PNG', (doc.internal.pageSize.width / 2) - 75, 28, 13, 13);
+                    }
+                    
+                    if (ccsLogoLoaded && ccsLogo.complete) {
+                        const ccsCanvas = document.createElement('canvas');
+                        const ccsCtx = ccsCanvas.getContext('2d');
+                        ccsCanvas.width = ccsLogo.width;
+                        ccsCanvas.height = ccsLogo.height;
+                        ccsCtx.drawImage(ccsLogo, 0, 0);
+                        const ccsLogoDataUrl = ccsCanvas.toDataURL('image/png');
+                        // Position CCS logo to the right of the title text
+                        doc.addImage(ccsLogoDataUrl, 'PNG', (doc.internal.pageSize.width / 2) + 62, 28, 13, 13);
+                    }
+                } catch (logoError) {
+                    console.error("Error adding logos to PDF:", logoError);
+                    // Continue without logos if there's an error
+                }
+                
+                // Add title with improved styling
+                doc.setTextColor(255, 255, 255); // White text for header
+                doc.setFontSize(20);
+                doc.setFont(undefined, 'bold');
+                doc.text('UNIVERSITY OF CEBU', doc.internal.pageSize.width / 2, 12, { align: 'center' });
+                
+                // Add subtitle with improved styling
+                doc.setTextColor(0, 0, 0); // Reset text color to black
+                doc.setFontSize(14);
+                doc.text('College of Computer Studies', doc.internal.pageSize.width / 2, 28, { align: 'center' });
+                
+                // Add system name with logos on both sides
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('CCS SITIN MONITORING SYSTEM', doc.internal.pageSize.width / 2, 36, { align: 'center' });
+                
+                // Add decorative underline
+                doc.setDrawColor(25, 64, 175); // Dark blue line
+                doc.setLineWidth(0.5);
+                const textWidth = doc.getTextWidth('CCS SITIN MONITORING SYSTEM');
+                doc.line(
+                    (doc.internal.pageSize.width / 2) - (textWidth / 2), 38,
+                    (doc.internal.pageSize.width / 2) + (textWidth / 2), 38
+                );
+                
+                // Add report title with improved styling
+                doc.setFontSize(16);
+                doc.setTextColor(25, 64, 175); // Blue text for report title
+                doc.text('Sit-In Report', doc.internal.pageSize.width / 2, 46, { align: 'center' });
+                
+                // Add report metadata with better spacing and styling
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0); // Reset to black
+                doc.setFont(undefined, 'normal');
+                let labFilter = $('#report-lab option:selected').text();
+                let purposeFilter = $('#report-purpose').val() || 'All Purposes';
+                
+                doc.text('Period: ' + startDate + ' to ' + endDate, doc.internal.pageSize.width / 2, 53, { align: 'center' });
+                doc.text('Lab: ' + labFilter + ' | Purpose: ' + purposeFilter, doc.internal.pageSize.width / 2, 58, { align: 'center' });
+                doc.text('Total Records: ' + reportData.length, doc.internal.pageSize.width / 2, 50, { align: 'center' });
+                
+                // Add summary statistics
+                let activeCount = reportData.filter(session => session.STATUS === 'ACTIVE').length;
+                let completedCount = reportData.filter(session => session.STATUS === 'COMPLETED').length;
+                
+                let uniqueStudents = new Set();
+                reportData.forEach(session => uniqueStudents.add(session.IDNO));
+                
+                // Draw statistics box
+                doc.setDrawColor(100, 100, 100);
+                doc.setFillColor(240, 240, 240);
+                doc.roundedRect(90, 53, 120, 25, 2, 2, 'FD');
+                
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'bold');
+                doc.text('Summary Statistics', doc.internal.pageSize.width / 2, 58, { align: 'center' });
+                
+                doc.setFont(undefined, 'normal');
+                doc.text('Unique Students: ' + uniqueStudents.size, 100, 64);
+                doc.text('Active Sessions: ' + activeCount, 100, 69);
+                doc.text('Completed Sessions: ' + completedCount, 100, 74);
+                
+                // Get table data
+                const headers = [];
+                const rows = [];
+                
+                // Extract headers
+                $('#reportTable thead th').each(function() {
+                    headers.push($(this).text());
+                });
+                
+                // Extract data
+                $('#reportTable tbody tr').each(function() {
+                    const row = [];
+                    $(this).find('td').each(function() {
+                        row.push($(this).text());
+                    });
+                    rows.push(row);
+                });
+                
+                // Generate table in PDF
+                if (hasAutoTable) {
+                    // Use autoTable if available
+                    doc.autoTable({
+                        head: [headers],
+                        body: rows,
+                        startY: 82,
+                        theme: 'grid',
+                        styles: { fontSize: 8 },                    headStyles: {
+                            fillColor: [53, 100, 128],     // Blue background for all headers
+                            textColor: [255, 255, 255],    // White text for all headers
+                            fontStyle: 'bold',
+                            fontSize: 8                    // Consistent font size
+                        },
+                        alternateRowStyles: {
+                            fillColor: [245, 247, 250]
+                        },
+                        didDrawPage: function(data) {
+                            // Add footer
+                            doc.setFontSize(8);
+                            doc.setTextColor(100, 100, 100);
+                            doc.setFont(undefined, 'normal');
+                            doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
+                            doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 10, {align: 'right'});
+                        }
+                    });
+                } else {
+                    // Fallback: Draw a basic table manually                console.log("AutoTable plugin not available, using basic table");
+                    const startY = 82;
+                    const rowHeight = 10;
+                    // Adjusted column widths for better content display
+                    // [Student ID, Student Name, Laboratory, Purpose, Start Time, End Time, Status]
+                    const colWidths = [30, 55, 35, 35, 40, 40, 25];
+                    let xPos = 10;
+                      // Draw headers with consistent styling
+                    // Set up header styling (important to set styles completely before each use)
+                    doc.setFillColor(53, 100, 128); // Blue background
+                    
+                    // Draw header backgrounds first (separate from text to ensure proper layering)
+                    let headerX = xPos;
+                    for (let i = 0; i < headers.length; i++) {
+                        // Draw the filled rectangle (background)
+                        doc.rect(headerX, startY, colWidths[i], rowHeight, 'F');
+                        headerX += colWidths[i];
+                    }
+                    
+                    // Now draw all header text on top of backgrounds
+                    doc.setTextColor(255, 255, 255); // White text color
+                    doc.setFontSize(8);
+                    doc.setFont(undefined, 'bold');
+                    
+                    let currentX = xPos;
+                    for (let i = 0; i < headers.length; i++) {
+                        // Draw the header text after all rectangles are drawn
+                        doc.text(headers[i], currentX + 2, startY + 6);
+                        currentX += colWidths[i];
+                    }
+                    
+                    // Draw rows
+                    // Reset text styling to default for row data
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(8); // Ensure consistent font size for data
+                    let currentY = startY + rowHeight;
+                    const pageHeight = doc.internal.pageSize.height;
+                    const marginBottom = 20;
+                    
+                    // Draw all rows, adding new pages as needed                // Add footer function
+                    function addFooter() {
                         doc.setFontSize(8);
                         doc.setTextColor(100, 100, 100);
                         doc.setFont(undefined, 'normal');
                         doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
-                        doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), 280, doc.internal.pageSize.height - 10);
+                        doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 10, {align: 'right'});
                     }
-                });
-            } else {
-                // Fallback: Draw a basic table manually                console.log("AutoTable plugin not available, using basic table");
-                const startY = 82;
-                const rowHeight = 10;
-                // Adjusted column widths for better content display
-                // [Student ID, Student Name, Laboratory, Purpose, Start Time, End Time, Status]
-                const colWidths = [30, 55, 35, 35, 40, 40, 25];
-                let xPos = 10;
-                  // Draw headers with consistent styling
-                // Set up header styling (important to set styles completely before each use)
-                doc.setFillColor(53, 100, 128); // Blue background
-                
-                // Draw header backgrounds first (separate from text to ensure proper layering)
-                let headerX = xPos;
-                for (let i = 0; i < headers.length; i++) {
-                    // Draw the filled rectangle (background)
-                    doc.rect(headerX, startY, colWidths[i], rowHeight, 'F');
-                    headerX += colWidths[i];
-                }
-                
-                // Now draw all header text on top of backgrounds
-                doc.setTextColor(255, 255, 255); // White text color
-                doc.setFontSize(8);
-                doc.setFont(undefined, 'bold');
-                
-                let currentX = xPos;
-                for (let i = 0; i < headers.length; i++) {
-                    // Draw the header text after all rectangles are drawn
-                    doc.text(headers[i], currentX + 2, startY + 6);
-                    currentX += colWidths[i];
-                }
-                
-                // Draw rows
-                // Reset text styling to default for row data
-                doc.setTextColor(0, 0, 0);
-                doc.setFont(undefined, 'normal');
-                doc.setFontSize(8); // Ensure consistent font size for data
-                let currentY = startY + rowHeight;
-                const pageHeight = doc.internal.pageSize.height;
-                const marginBottom = 20;
-                
-                // Draw all rows, adding new pages as needed                // Add footer function
-                function addFooter() {
+                    
+                    // Add footer to first page
+                    addFooter();
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        // Check if we need to create a new page
+                        if (currentY + rowHeight > pageHeight - marginBottom) {
+                            doc.addPage();
+                            // Reset the Y position to the top of the new page with some margin
+                            currentY = 20;                      // Redraw the headers on new page with consistent styling
+                            // Set fill color for header backgrounds
+                            doc.setFillColor(53, 100, 128);
+                            
+                            // First pass: draw all header backgrounds
+                            let headerBackgroundX = xPos;
+                            for (let j = 0; j < headers.length; j++) {
+                                // Draw the filled rectangle (background)
+                                doc.rect(headerBackgroundX, currentY, colWidths[j], rowHeight, 'F');
+                                headerBackgroundX += colWidths[j];
+                            }
+                            
+                            // Second pass: draw all header text on top of backgrounds
+                            doc.setTextColor(255, 255, 255); // Ensure white text color
+                            doc.setFontSize(8);
+                            doc.setFont(undefined, 'bold');
+                            
+                            let headerX = xPos;
+                            for (let j = 0; j < headers.length; j++) {
+                                // Draw the text after all rectangles are drawn
+                                doc.text(headers[j], headerX + 2, currentY + 6);
+                                headerX += colWidths[j];
+                            }
+                            
+                            // Move to the next row position after drawing headers
+                            currentY += rowHeight;
+                              // Reset text color for data rows
+                            doc.setTextColor(0, 0, 0);
+                            doc.setFont(undefined, 'normal');
+                            
+                            // Add footer to the new page
+                            addFooter();
+                        }
+                        
+                        currentX = xPos;
+                        // Alternate row colors
+                        if (i % 2 === 1) {
+                            doc.setFillColor(245, 247, 250);
+                            for (let j = 0; j < headers.length; j++) {
+                                doc.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
+                                currentX += colWidths[j];
+                            }
+                        }
+                          // Ensure consistent styling for each row's text
+                        doc.setTextColor(0, 0, 0);
+                        doc.setFont(undefined, 'normal');
+                        doc.setFontSize(8);
+                        
+                        currentX = xPos;
+                        for (let j = 0; j < rows[i].length; j++) {
+                            // Allow more text to be displayed by increasing substring limit
+                            doc.text(String(rows[i][j]).substring(0, 30), currentX + 2, currentY + 6);
+                            currentX += colWidths[j];
+                        }
+                        currentY += rowHeight;
+                    }                // Add summary information at the end of the table
+                    currentY += 10; 
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Total Records: ' + rows.length, xPos, currentY);
+                    doc.setFont(undefined, 'normal');
+                    
+                    // Add footer
                     doc.setFontSize(8);
                     doc.setTextColor(100, 100, 100);
                     doc.setFont(undefined, 'normal');
@@ -1390,116 +1567,40 @@ include('includes/header.php');
                     doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 10, {align: 'right'});
                 }
                 
-                // Add footer to first page
-                addFooter();
-                
-                for (let i = 0; i < rows.length; i++) {
-                    // Check if we need to create a new page
-                    if (currentY + rowHeight > pageHeight - marginBottom) {
-                        doc.addPage();
-                        // Reset the Y position to the top of the new page with some margin
-                        currentY = 20;                      // Redraw the headers on new page with consistent styling
-                        // Set fill color for header backgrounds
-                        doc.setFillColor(53, 100, 128);
-                        
-                        // First pass: draw all header backgrounds
-                        let headerBackgroundX = xPos;
-                        for (let j = 0; j < headers.length; j++) {
-                            // Draw the filled rectangle (background)
-                            doc.rect(headerBackgroundX, currentY, colWidths[j], rowHeight, 'F');
-                            headerBackgroundX += colWidths[j];
-                        }
-                        
-                        // Second pass: draw all header text on top of backgrounds
-                        doc.setTextColor(255, 255, 255); // Ensure white text color
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'bold');
-                        
-                        let headerX = xPos;
-                        for (let j = 0; j < headers.length; j++) {
-                            // Draw the text after all rectangles are drawn
-                            doc.text(headers[j], headerX + 2, currentY + 6);
-                            headerX += colWidths[j];
-                        }
-                        
-                        // Move to the next row position after drawing headers
-                        currentY += rowHeight;
-                          // Reset text color for data rows
-                        doc.setTextColor(0, 0, 0);
-                        doc.setFont(undefined, 'normal');
-                        
-                        // Add footer to the new page
-                        addFooter();
-                    }
-                    
-                    currentX = xPos;
-                    // Alternate row colors
-                    if (i % 2 === 1) {
-                        doc.setFillColor(245, 247, 250);
-                        for (let j = 0; j < headers.length; j++) {
-                            doc.rect(currentX, currentY, colWidths[j], rowHeight, 'F');
-                            currentX += colWidths[j];
-                        }
-                    }
-                      // Ensure consistent styling for each row's text
-                    doc.setTextColor(0, 0, 0);
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(8);
-                    
-                    currentX = xPos;
-                    for (let j = 0; j < rows[i].length; j++) {
-                        // Allow more text to be displayed by increasing substring limit
-                        doc.text(String(rows[i][j]).substring(0, 30), currentX + 2, currentY + 6);
-                        currentX += colWidths[j];
-                    }
-                    currentY += rowHeight;
-                }                // Add summary information at the end of the table
-                currentY += 10; 
-                doc.setFont(undefined, 'bold');
-                doc.text('Total Records: ' + rows.length, xPos, currentY);
-                doc.setFont(undefined, 'normal');
-                
-                // Add footer
-                doc.setFontSize(8);
-                doc.setTextColor(100, 100, 100);
-                doc.setFont(undefined, 'normal');
-                doc.text('Generated by: <?php echo htmlspecialchars($username); ?> | ' + new Date().toLocaleString(), 15, doc.internal.pageSize.height - 10);
-                doc.text('Page ' + doc.internal.getCurrentPageInfo().pageNumber + ' of ' + doc.internal.getNumberOfPages(), doc.internal.pageSize.width - 15, doc.internal.pageSize.height - 10, {align: 'right'});
-            }
-            
-            // Directly trigger download using multiple methods for browser compatibility
-            setTimeout(function() {
-                try {
-                    // Method 1: Standard save
-                    doc.save('Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf');
-                } catch (e) {
-                    console.error('Standard save failed:', e);
+                // Directly trigger download using multiple methods for browser compatibility
+                setTimeout(function() {
                     try {
-                        // Method 2: Using FileSaver.js
-                        const blob = doc.output('blob');
-                        window.saveAs(blob, 'Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf');
-                    } catch (e2) {
-                        console.error('FileSaver failed:', e2);
+                        // Method 1: Standard save
+                        doc.save('Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf');
+                    } catch (e) {
+                        console.error('Standard save failed:', e);
                         try {
-                            // Method 3: Direct download link
-                            const pdfData = doc.output('datauristring');
-                            const link = document.createElement('a');
-                            link.href = pdfData;
-                            link.download = 'Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf';
-                            link.click();
-                        } catch (e3) {
-                            console.error('Link method failed:', e3);
-                            // Method 4: Open in new window as last resort
-                            const pdfDataUri = doc.output('datauristring');
-                            window.open(pdfDataUri);
+                            // Method 2: Using FileSaver.js
+                            const blob = doc.output('blob');
+                            window.saveAs(blob, 'Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf');
+                        } catch (e2) {
+                            console.error('FileSaver failed:', e2);
+                            try {
+                                // Method 3: Direct download link
+                                const pdfData = doc.output('datauristring');
+                                const link = document.createElement('a');
+                                link.href = pdfData;
+                                link.download = 'Sit-In_Report_' + startDate + '_to_' + endDate + '.pdf';
+                                link.click();
+                            } catch (e3) {
+                                console.error('Link method failed:', e3);
+                                // Method 4: Open in new window as last resort
+                                const pdfDataUri = doc.output('datauristring');
+                                window.open(pdfDataUri);
+                            }
                         }
                     }
-                }
+                    
+                    // Remove loading message
+                    document.body.removeChild(loadingDiv);
+                }, 1000); // Small delay to ensure PDF generation is complete
                 
-                // Remove loading message
-                document.body.removeChild(loadingDiv);
-            }, 1000); // Small delay to ensure PDF generation is complete
-            
+            }
         } catch (error) {
             console.error('Error generating PDF:', error);
             alert('Error generating PDF: ' + error.message);

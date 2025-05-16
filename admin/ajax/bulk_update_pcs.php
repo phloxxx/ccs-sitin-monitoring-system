@@ -2,129 +2,97 @@
 session_start();
 require_once('../../config/db.php');
 
-// Check if user is logged in as admin
+// Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit();
 }
 
-// Set response header to JSON
-header('Content-Type: application/json');
+// Get action type and PCs
+$action = isset($_POST['action']) ? $_POST['action'] : '';
+$pcsJson = isset($_POST['pcs']) ? $_POST['pcs'] : '[]';
+$pcs = json_decode($pcsJson, true);
 
-// Check if required data is present
-if (!isset($_POST['action']) || trim($_POST['action']) === '') {
-    echo json_encode(['success' => false, 'message' => 'Action is required']);
-    exit();
-}
-
-if (!isset($_POST['pcs']) || trim($_POST['pcs']) === '') {
+// Validate
+if (empty($pcs) || !is_array($pcs)) {
     echo json_encode(['success' => false, 'message' => 'No PCs selected']);
     exit();
 }
 
+if (!in_array($action, ['status', 'delete'])) {
+    echo json_encode(['success' => false, 'message' => 'Invalid action']);
+    exit();
+}
+
+// Start transaction
+$conn->begin_transaction();
+
 try {
-    $action = trim($_POST['action']);
-    $pcs = json_decode($_POST['pcs'], true);
-    
-    if (!is_array($pcs) || empty($pcs)) {
-        echo json_encode(['success' => false, 'message' => 'No PCs selected']);
-        exit();
-    }
-    
-    // Sanitize PC IDs
-    $pc_ids = array_map('intval', $pcs);
-    
-    // Start transaction
-    $conn->begin_transaction();
-    
-    if ($action === 'status') {
+    $success = true;
+    $message = '';
+      if ($action === 'status') {
         // Update status action
+        $status = isset($_POST['status']) ? trim(strtoupper($_POST['status'])) : '';
         
-        if (!isset($_POST['status']) || trim($_POST['status']) === '') {
-            $conn->rollback();
-            echo json_encode(['success' => false, 'message' => 'Status is required for this action']);
-            exit();
+        // Validate status values
+        if (!in_array($status, ['AVAILABLE', 'RESERVED', 'MAINTENANCE'])) {
+            throw new Exception('Invalid status value');
         }
         
-        $status = trim($_POST['status']);
-        
-        // Valid statuses
-        $validStatuses = ['AVAILABLE', 'UNAVAILABLE', 'MAINTENANCE'];
-        if (!in_array($status, $validStatuses)) {
-            $conn->rollback();
-            echo json_encode(['success' => false, 'message' => 'Invalid status value']);
-            exit();
+        if (empty($status)) {
+            throw new Exception('No status specified');
         }
         
-        // Prepare comma-separated list of PC IDs for IN clause
-        $pc_ids_str = implode(',', $pc_ids);
+        // Prepare statement to update status
+        $stmt = $conn->prepare("UPDATE PC SET STATUS = ? WHERE PC_ID = ?");
+        $stmt->bind_param("si", $status, $pcId);
         
-        // Update status
-        $stmt = $conn->prepare("UPDATE PC SET STATUS = ? WHERE PC_ID IN ($pc_ids_str)");
-        $stmt->bind_param("s", $status);
-        $stmt->execute();
+        // Update each PC
+        $updatedCount = 0;
+        foreach ($pcs as $pcId) {
+            $pcId = intval($pcId); // Ensure PC_ID is an integer
+            if ($pcId > 0) {
+                $stmt->execute();
+                if ($stmt->affected_rows > 0) {
+                    $updatedCount++;
+                }
+            }
+        }
         
-        $affected_rows = $stmt->affected_rows;
+        $stmt->close();
+        $message = "$updatedCount PC(s) updated successfully";
         
-        // Log the action
-        $admin_id = $_SESSION['admin_id'];
-        $action_log = "Bulk updated status to '$status' for " . count($pc_ids) . " PCs (IDs: $pc_ids_str)";
-        $log_stmt = $conn->prepare("INSERT INTO ADMIN_LOGS (admin_id, action, timestamp) VALUES (?, ?, NOW())");
-        $log_stmt->bind_param("is", $admin_id, $action_log);
-        $log_stmt->execute();
-        
-        $conn->commit();
-        echo json_encode([
-            'success' => true, 
-            'message' => "Status updated for $affected_rows PCs",
-            'affected_rows' => $affected_rows
-        ]);
-        
-    } elseif ($action === 'delete') {
+    } else if ($action === 'delete') {
         // Delete action
+        $stmt = $conn->prepare("DELETE FROM PC WHERE PC_ID = ?");
+        $stmt->bind_param("i", $pcId);
         
-        // Prepare comma-separated list of PC IDs for IN clause
-        $pc_ids_str = implode(',', $pc_ids);
-        
-        // Get PC numbers for logging
-        $pc_names = [];
-        $stmt = $conn->prepare("SELECT PC_NUMBER FROM PC WHERE PC_ID IN ($pc_ids_str)");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-            $pc_names[] = "PC #" . $row['PC_NUMBER'];
+        // Delete each PC
+        $deletedCount = 0;
+        foreach ($pcs as $pcId) {
+            $pcId = intval($pcId); // Ensure PC_ID is an integer
+            if ($pcId > 0) {
+                $stmt->execute();
+                if ($stmt->affected_rows > 0) {
+                    $deletedCount++;
+                }
+            }
         }
         
-        // Delete PCs
-        $stmt = $conn->prepare("DELETE FROM PC WHERE PC_ID IN ($pc_ids_str)");
-        $stmt->execute();
-        
-        $affected_rows = $stmt->affected_rows;
-        
-        // Log the action
-        $admin_id = $_SESSION['admin_id'];
-        $pc_names_str = implode(", ", $pc_names);
-        $action_log = "Bulk deleted " . count($pc_ids) . " PCs (Names: $pc_names_str)";
-        $log_stmt = $conn->prepare("INSERT INTO ADMIN_LOGS (admin_id, action, timestamp) VALUES (?, ?, NOW())");
-        $log_stmt->bind_param("is", $admin_id, $action_log);
-        $log_stmt->execute();
-        
-        $conn->commit();
-        echo json_encode([
-            'success' => true, 
-            'message' => "Deleted $affected_rows PCs",
-            'affected_rows' => $affected_rows
-        ]);
-        
-    } else {
-        $conn->rollback();
-        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+        $stmt->close();
+        $message = "$deletedCount PC(s) deleted successfully";
     }
+    
+    // Commit transaction if we got here
+    $conn->commit();
+    
+    echo json_encode(['success' => true, 'message' => $message]);
     
 } catch (Exception $e) {
-    if ($conn->inTransaction()) {
-        $conn->rollback();
-    }
+    // Roll back on error
+    $conn->rollback();
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
+
+$conn->close();
+?>

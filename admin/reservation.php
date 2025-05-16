@@ -42,30 +42,31 @@ try {
 $currentDate = date('Y-m-d');
 
 $pageTitle = "Reservation Management";
-$bodyClass = "bg-light font-poppins";
+$bodyClass = "bg-gray-50 font-poppins";
 include('includes/header.php');
 ?>
 
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen bg-gray-50">
     <!-- Sidebar -->
     <div class="hidden md:flex md:flex-shrink-0">
-        <div class="flex flex-col w-64 bg-secondary">
-                <!-- Added Logos -->                <div class="flex flex-col items-center pt-5 pb-2">
-                    <div class="relative w-16 h-16 mb-1">
-                        <!-- UC Logo -->
-                        <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
-                            <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
-                        </div>
-                        <!-- CCS Logo (smaller and positioned at the bottom right) -->
-                        <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
-                            <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
-                        </div>
+        <div class="flex flex-col w-64 bg-secondary shadow-lg">
+            <!-- Added Logos -->                
+            <div class="flex flex-col items-center pt-5 pb-2">
+                <div class="relative w-16 h-16 mb-1">
+                    <!-- UC Logo -->
+                    <div class="absolute inset-0 rounded-full bg-white shadow-md overflow-hidden flex items-center justify-center">
+                        <img src="../student/images/uc_logo.png" alt="University of Cebu Logo" class="h-13 w-13 object-contain">
                     </div>
-                    <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
-                    <p class="text-gray-300 text-xs">Monitoring System</p>
-                </div>                
-                <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
-                    <nav class="flex-1 space-y-1">
+                    <!-- CCS Logo (smaller and positioned at the bottom right) -->
+                    <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-white shadow-md border-2 border-white overflow-hidden flex items-center justify-center">
+                        <img src="../student/images/ccs_logo.png" alt="CCS Logo" class="h-7 w-7 object-contain">
+                    </div>
+                </div>
+                <h1 class="text-white font-bold text-sm">CCS Sit-In</h1>
+                <p class="text-gray-300 text-xs">Monitoring System</p>
+            </div>                
+            <div class="flex flex-col flex-grow px-4 py-3 overflow-hidden">
+                <nav class="flex-1 space-y-1">
                     <a href="dashboard.php" class="flex items-center px-3 py-2.5 text-sm text-white rounded-lg hover:bg-primary hover:bg-opacity-20 transition-colors">
                         <i class="fas fa-home mr-3 text-lg"></i>
                         <span class="font-medium">Home</span>
@@ -189,269 +190,275 @@ include('includes/header.php');
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto p-8 bg-gray-50">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Computer Control Panel -->                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                    <div class="bg-white border-b border-gray-100 px-5 py-4 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold flex items-center text-gray-800">
-                            <i class="fas fa-desktop text-blue-500 mr-3"></i> Computer Status
-                        </h3>
-                        <a href="manage_pcs.php" class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-sm flex items-center hover:bg-blue-100 transition-colors">
-                            <i class="fas fa-cog mr-2"></i> Configure
-                        </a>
-                    </div>
-                    
-                    <div class="p-5">                        <div class="mb-5">
-                            <label for="lab-select" class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                <i class="fas fa-building text-blue-500 mr-2"></i>
-                                Select Laboratory
-                            </label>
-                            <div class="relative">
-                                <select id="lab-select" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none pl-10 text-sm transition-shadow duration-150">
-                                    <?php foreach ($laboratories as $lab): ?>
-                                        <option value="<?php echo $lab['LAB_ID']; ?>"><?php echo htmlspecialchars($lab['LAB_NAME']); ?> (<?php echo $lab['CAPACITY']; ?> PCs)</option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-building text-blue-500"></i>
-                                </div>
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-chevron-down text-blue-500"></i>
-                                </div>
-                            </div>
+        <main class="flex-1 overflow-y-auto p-5 bg-gray-50">
+            <!-- Dashboard Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-6">
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Total Laboratories</p>
+                            <h3 class="text-2xl font-bold text-gray-800"><?php echo count($laboratories); ?></h3>
                         </div>
-                        
-                        <div>                            <div class="h-64 overflow-y-auto pr-2 custom-scrollbar">
-                                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3" id="pc-grid">
-                                    <!-- PC Grid will be populated dynamically with more spacing -->
-                                    <?php 
-                                    // Sample grid for demonstration
-                                    for ($i = 1; $i <= 20; $i++): 
-                                        $pcId = sprintf("PC-%02d", $i);
-                                        
-                                        // Randomly assign statuses for demonstration
-                                        $statuses = ['available', 'reserved', 'maintenance'];
-                                        $status = $statuses[array_rand($statuses)];
-                                        
-                                        $statusClass = '';
-                                        $statusText = '';
-                                        $icon = 'fa-desktop';
-                                        $bgColor = '';
-                                        $ringColor = '';
-                                        
-                                        switch($status) {
-                                            case 'available':
-                                                $statusClass = 'text-green-600';
-                                                $statusText = 'Available';
-                                                $bgColor = 'bg-green-50';
-                                                $ringColor = 'ring-green-200';
-                                                break;
-                                            case 'reserved':
-                                                $statusClass = 'text-blue-600';
-                                                $statusText = 'Reserved';
-                                                $icon = 'fa-user-clock';
-                                                $bgColor = 'bg-blue-50';
-                                                $ringColor = 'ring-blue-200';
-                                                break;
-                                            case 'maintenance':
-                                                $statusClass = 'text-yellow-600';
-                                                $statusText = 'Maintenance';
-                                                $icon = 'fa-tools';
-                                                $bgColor = 'bg-yellow-50';
-                                                $ringColor = 'ring-yellow-200';
-                                                break;
-                                        }
-                                    ?>
-                                    <div class="pc-item <?php echo $bgColor; ?> <?php echo $statusClass; ?> ring-1 <?php echo $ringColor; ?> rounded-xl p-3 text-center cursor-pointer hover:shadow-md transition-all transform hover:-translate-y-1 hover:ring-2">
-                                        <div class="w-8 h-8 mx-auto mb-1 flex items-center justify-center">
-                                            <i class="fas <?php echo $icon; ?> text-lg"></i>
-                                        </div>
-                                        <div class="text-sm font-medium"><?php echo $pcId; ?></div>
-                                        <div class="text-xs mt-0.5 font-medium"><?php echo $statusText; ?></div>
-                                    </div>
-                                    <?php endfor; ?>
-                                </div>
-                            </div>
+                        <div class="bg-blue-100 p-3 rounded-full text-blue-500">
+                            <i class="fas fa-building text-xl"></i>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Reservation Requests Panel -->                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                    <div class="bg-white border-b border-gray-100 px-5 py-4 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold flex items-center text-gray-800">
-                            <i class="fas fa-clock text-green-500 mr-3"></i> Pending Requests
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-green-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Available PCs</p>
+                            <h3 class="text-2xl font-bold text-gray-800">45</h3>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full text-green-500">
+                            <i class="fas fa-desktop text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-amber-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Reserved PCs</p>
+                            <h3 class="text-2xl font-bold text-gray-800">23</h3>
+                        </div>
+                        <div class="bg-amber-100 p-3 rounded-full text-amber-500">
+                            <i class="fas fa-user-clock text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-purple-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-500">Pending Requests</p>
+                            <h3 class="text-2xl font-bold text-gray-800"><?php echo $pendingCount; ?></h3>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full text-purple-500">
+                            <i class="fas fa-clock text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 lg:col-span-5">
+                    <div class="bg-white px-5 py-4 border-b border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-desktop text-blue-500 mr-2"></i> Computer Lab Status
                         </h3>
-                        <div class="bg-green-50 text-green-600 px-3 py-1.5 rounded-lg text-sm flex items-center">
-                            <i class="fas fa-bell mr-2"></i> Pending: <?php echo $pendingCount; ?>
+                    </div>
+                    
+                    <!-- Rest of Computer Lab Status panel content remains the same -->
+                    <div class="p-5">
+                        <div class="mb-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <label for="lab-select" class="block text-sm font-medium text-gray-700">
+                                    Select Laboratory:
+                                </label>
+                                <a href="manage_pcs.php" class="text-blue-600 text-xs font-medium hover:underline">
+                                    <i class="fas fa-cog mr-1"></i> Configure
+                                </a>
+                            </div>
+                            <div class="relative">
+                                <select id="lab-select" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none text-sm transition-shadow duration-150">
+                                    <?php foreach ($laboratories as $lab): ?>
+                                        <option value="<?php echo $lab['LAB_ID']; ?>"><?php echo htmlspecialchars($lab['LAB_NAME']); ?> (<?php echo $lab['CAPACITY']; ?> PCs)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-sm font-medium text-gray-500">Lab 524 - PC Status</h4>
+                            <div class="flex items-center space-x-3">
+                                <div class="flex items-center">
+                                    <span class="h-3 w-3 rounded-full bg-green-500 mr-1.5"></span>
+                                    <span class="text-xs text-gray-600">Available</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="h-3 w-3 rounded-full bg-amber-500 mr-1.5"></span>
+                                    <span class="text-xs text-gray-600">Reserved</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-5 gap-2 h-48 overflow-y-auto custom-scrollbar">
+                            <?php 
+                            // Sample grid showing PC status
+                            for ($i = 1; $i <= 25; $i++): 
+                                $pcId = sprintf("%02d", $i);
+                                
+                                // Randomly assign statuses for demonstration
+                                $statusClass = $i % 3 == 0 ? 'bg-amber-100 text-amber-600 ring-amber-200' : 'bg-green-100 text-green-600 ring-green-200';
+                            ?>
+                                <div class="pc-item text-center p-2 rounded-lg ring-1 cursor-pointer hover:shadow-md transition-all <?php echo $statusClass; ?>">
+                                    <div class="text-xs font-medium mb-1"><?php echo $pcId; ?></div>
+                                    <div class="text-[10px]"><?php echo $i % 3 == 0 ? 'Reserved' : 'Available'; ?></div>
+                                </div>
+                            <?php endfor; ?>
+                        </div>
+                        
+                        <div class="mt-4 flex justify-center">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-sync-alt mr-2"></i> Refresh Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pending Requests Panel - Adjusted to 7/12 columns -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 lg:col-span-7">
+                    <div class="bg-white px-5 py-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-clock text-purple-500 mr-2"></i> Pending Requests
+                        </h3>
+                        <div class="bg-purple-100 text-purple-600 px-2.5 py-1 rounded-lg text-xs font-medium">
+                            <?php echo $pendingCount; ?> Pending
                         </div>
                     </div>
                     
-                    <div class="p-5 h-[500px] overflow-y-auto">
+                    <!-- Rest of Pending Requests panel content remains the same -->
+                    <div class="p-4">
                         <?php if ($pendingCount > 0): ?>
-                            <!-- Reservation requests will be displayed here -->
-                            <div class="w-full space-y-4">                                <!-- Sample requests for demonstration -->
-                                <div class="border border-gray-100 rounded-xl p-5 hover:bg-gray-50 transition-colors shadow-sm">
-                                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
-                                        <div class="flex items-center">
-                                            <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mr-3">
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex items-start gap-4">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
                                                 <i class="fas fa-user-graduate"></i>
                                             </div>
-                                            <div>
-                                                <div class="font-medium text-gray-800">John Doe</div>
-                                                <div class="text-sm text-gray-500 mt-0.5">Student ID: 21100123</div>
+                                        </div>
+                                        <div class="flex-grow">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-medium text-gray-800">John Doe</h4>
+                                                    <p class="text-xs text-gray-500">Student ID: 21100123</p>
+                                                </div>
+                                                <div class="text-xs bg-blue-100 text-blue-600 px-2.5 py-1 rounded-md">
+                                                    Today, 10:30 AM
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex flex-wrap gap-2 mt-3">
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-desktop mr-1.5 text-blue-500"></i> PC-05
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-clock mr-1.5 text-green-500"></i> 2 hours
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-building mr-1.5 text-amber-500"></i> Lab 524
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="mt-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                                                Purpose: Java Programming for OOP class
+                                            </div>
+                                            
+                                            <div class="mt-3 flex items-center gap-3">
+                                                <button class="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1.5 rounded flex items-center">
+                                                    <i class="fas fa-check mr-1.5"></i> Approve
+                                                </button>
+                                                <button class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded flex items-center">
+                                                    <i class="fas fa-times mr-1.5"></i> Reject
+                                                </button>
+                                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-3 py-1.5 rounded flex items-center ml-auto">
+                                                    <i class="fas fa-eye mr-1.5"></i> Details
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="text-sm bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="far fa-clock mr-2"></i>
-                                            Today, 10:30 AM
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-wrap gap-2 mb-4">
-                                        <div class="text-sm bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fas fa-desktop mr-2"></i> PC-05
-                                        </div>
-                                        <div class="text-sm bg-green-50 text-green-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fas fa-clock mr-2"></i> 2 hours
-                                        </div>
-                                        <div class="text-sm bg-yellow-50 text-yellow-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fas fa-building mr-2"></i> Lab 524
-                                        </div>
-                                    </div>
-                                    <div class="text-sm text-gray-600 mb-5 bg-gray-50 p-4 rounded-lg border-l-2 border-green-300 line-clamp-2 overflow-hidden">
-                                        <i class="fas fa-quote-left text-gray-400 mr-2"></i>
-                                        Purpose: Java Programming for OOP class
-                                        <i class="fas fa-quote-right text-gray-400 ml-2"></i>
-                                    </div>
-                                    <div class="flex space-x-3">
-                                        <button class="bg-green-50 hover:bg-green-100 text-green-600 px-4 py-2.5 rounded-lg flex items-center transition-colors font-medium text-sm">
-                                            <i class="fas fa-check mr-2"></i> Approve
-                                        </button>
-                                        <button class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-lg flex items-center transition-colors font-medium text-sm">
-                                            <i class="fas fa-times mr-2"></i> Reject
-                                        </button>
                                     </div>
                                 </div>
-                                  <div class="border border-gray-100 rounded-xl p-5 hover:bg-gray-50 transition-colors shadow-sm">
-                                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
-                                        <div class="flex items-center">
-                                            <div class="w-10 h-10 bg-purple-50 rounded-full flex items-center justify-center text-purple-500 mr-3">
+                                
+                                <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex items-start gap-4">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500">
                                                 <i class="fas fa-user-graduate"></i>
                                             </div>
-                                            <div>
-                                                <div class="font-medium text-gray-800">Jane Smith</div>
-                                                <div class="text-sm text-gray-500 mt-0.5">Student ID: 21100456</div>
+                                        </div>
+                                        <div class="flex-grow">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-medium text-gray-800">Jane Smith</h4>
+                                                    <p class="text-xs text-gray-500">Student ID: 21100456</p>
+                                                </div>
+                                                <div class="text-xs bg-blue-100 text-blue-600 px-2.5 py-1 rounded-md">
+                                                    Today, 11:15 AM
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex flex-wrap gap-2 mt-3">
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-desktop mr-1.5 text-blue-500"></i> PC-12
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-clock mr-1.5 text-green-500"></i> 3 hours
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                                    <i class="fas fa-building mr-1.5 text-amber-500"></i> Lab 524
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="mt-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                                                Purpose: C# Programming for final project
+                                            </div>
+                                            
+                                            <div class="mt-3 flex items-center gap-3">
+                                                <button class="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1.5 rounded flex items-center">
+                                                    <i class="fas fa-check mr-1.5"></i> Approve
+                                                </button>
+                                                <button class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded flex items-center">
+                                                    <i class="fas fa-times mr-1.5"></i> Reject
+                                                </button>
+                                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-3 py-1.5 rounded flex items-center ml-auto">
+                                                    <i class="fas fa-eye mr-1.5"></i> Details
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="text-sm bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="far fa-clock mr-2"></i>
-                                            Today, 11:15 AM
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-wrap gap-2 mb-4">
-                                        <div class="text-sm bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fas fa-desktop mr-2"></i> PC-12
-                                        </div>
-                                        <div class="text-sm bg-green-50 text-green-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fas fa-clock mr-2"></i> 3 hours
-                                        </div>
-                                        <div class="text-sm bg-yellow-50 text-yellow-600 px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fas fa-building mr-2"></i> Lab 524
-                                        </div>
-                                    </div>
-                                    <div class="text-sm text-gray-600 mb-5 bg-gray-50 p-4 rounded-lg border-l-2 border-purple-300 line-clamp-2 overflow-hidden">
-                                        <i class="fas fa-quote-left text-gray-400 mr-2"></i>
-                                        Purpose: C# Programming for final project
-                                        <i class="fas fa-quote-right text-gray-400 ml-2"></i>
-                                    </div>
-                                    <div class="flex space-x-3">
-                                        <button class="bg-green-50 hover:bg-green-100 text-green-600 px-4 py-2.5 rounded-lg flex items-center transition-colors font-medium text-sm">
-                                            <i class="fas fa-check mr-2"></i> Approve
-                                        </button>
-                                        <button class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-lg flex items-center transition-colors font-medium text-sm">
-                                            <i class="fas fa-times mr-2"></i> Reject
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                         <?php else: ?>
-                            <div class="text-center py-10">
-                                <div class="bg-blue-100 inline-block p-6 rounded-full mb-4">
-                                    <i class="fas fa-clipboard-check text-4xl text-blue-500"></i>
+                            <div class="text-center py-8">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4">
+                                    <i class="fas fa-check-circle text-3xl"></i>
                                 </div>
-                                <h4 class="text-xl font-medium text-secondary mb-2">All Caught Up!</h4>
-                                <p class="text-base text-gray-500 max-w-sm mx-auto">No pending reservation requests at the moment. New requests will appear here.</p>
+                                <h3 class="text-lg font-medium text-gray-800 mb-2">All Caught Up!</h3>
+                                <p class="text-sm text-gray-500 max-w-sm mx-auto">No pending reservation requests at the moment.</p>
                             </div>
                         <?php endif; ?>
                     </div>
                 </div>
                 
-                <!-- Activity Logs Panel -->                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 flex flex-col">
-                    <div class="bg-white border-b border-gray-100 px-5 py-4 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold flex items-center text-gray-800">
-                            <i class="fas fa-history text-purple-500 mr-3"></i> Reservation History
+                <!-- Reservation Schedule Panel - Full width -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 lg:col-span-12">
+                    <div class="bg-white px-5 py-4 border-b border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-calendar-alt text-indigo-500 mr-2"></i> Today's Reservation Schedule
                         </h3>
-                        <button class="bg-purple-50 text-purple-600 px-3 py-1.5 rounded-lg text-sm flex items-center hover:bg-purple-100 transition-colors">
-                            <i class="fas fa-filter mr-2"></i> Filter
-                        </button>
                     </div>
                     
-                    <div class="p-5 overflow-y-auto flex-grow">
-                        <div class="flex items-center justify-between mb-4">
-                            <h4 class="text-sm font-medium text-gray-700 flex items-center">
-                                <i class="fas fa-calendar-alt mr-2 text-purple-500"></i> Recent Activity
-                            </h4>
-                            <div class="text-sm text-white bg-purple-500 px-3 py-1 rounded-md">Today</div>
-                        </div>
-                        
-                        <div class="space-y-5 relative">
-                            <!-- Timeline Line -->
-                            <div class="absolute left-4 top-4 bottom-0 w-0.5 bg-gray-200"></div>
-                            
-                            <!-- Timeline Items -->
-                            <div class="flex items-start relative">
-                                <div class="bg-green-500 rounded-full h-8 w-8 flex items-center justify-center text-white z-10 shadow-sm">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="ml-5 bg-white rounded-md border border-gray-200 p-3 flex-1 shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-medium text-green-700">Reservation Approved</span>
-                                        <span class="text-sm text-gray-500">10:45 AM</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600 line-clamp-2">Approved Mark Johnson's reservation for PC-08 in Lab 524</p>
-                                </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex gap-2">
+                                <button class="bg-indigo-500 hover:bg-indigo-600 text-white text-xs px-3 py-1.5 rounded">
+                                    Today
+                                </button>
                             </div>
-                            
-                            <div class="flex items-start relative">
-                                <div class="bg-red-500 rounded-full h-8 w-8 flex items-center justify-center text-white z-10 shadow-sm">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                                <div class="ml-5 bg-white rounded-md border border-gray-200 p-3 flex-1 shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-medium text-red-700">Reservation Rejected</span>
-                                        <span class="text-sm text-gray-500">10:30 AM</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600 line-clamp-2">Rejected Sarah Lee's reservation for PC-03 in Lab 522 (Scheduling conflict)</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-start relative">
-                                <div class="bg-blue-500 rounded-full h-8 w-8 flex items-center justify-center text-white z-10 shadow-sm">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div class="ml-5 bg-white rounded-md border border-gray-200 p-3 flex-1 shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-medium text-blue-700">New Reservation</span>
-                                        <span class="text-sm text-gray-500">9:15 AM</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600 line-clamp-2">John Doe requested PC-05 in Lab 524 for 2 hours</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-6 text-center">
                             <a href="reservation_logs.php" class="text-white bg-purple-500 hover:bg-purple-600 transition-colors px-5 py-2 rounded text-sm font-medium inline-flex items-center shadow-sm">
                                 <i class="fas fa-list mr-2"></i> View Complete History
                             </a>
+                        </div>
+                        
+                        <!-- You can add more reservation schedule content here -->
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <p class="text-gray-500">No reservations scheduled for today.</p>
                         </div>
                     </div>
                 </div>

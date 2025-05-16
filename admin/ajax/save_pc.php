@@ -2,47 +2,38 @@
 session_start();
 require_once('../../config/db.php');
 
-// Check if user is logged in as admin
+// Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
-    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit();
 }
 
-// Set response header to JSON
-header('Content-Type: application/json');
+// Get form data
+$pc_id = isset($_POST['pc_id']) ? intval($_POST['pc_id']) : 0;
+$lab_id = isset($_POST['lab_id']) ? intval($_POST['lab_id']) : 0;
+$pc_number = isset($_POST['pc_number']) ? intval($_POST['pc_number']) : 0;
+$status = isset($_POST['status']) ? trim(strtoupper($_POST['status'])) : 'AVAILABLE';
 
-// Check if required data is present
-if (!isset($_POST['lab_id']) || !is_numeric($_POST['lab_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Laboratory ID is required']);
+// Validate status values
+if (!in_array($status, ['AVAILABLE', 'RESERVED', 'MAINTENANCE'])) {
+    $status = 'AVAILABLE'; // Default to AVAILABLE if invalid
+}
+
+// Validate
+if ($lab_id <= 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid laboratory']);
     exit();
 }
 
-if (!isset($_POST['pc_number']) || !is_numeric($_POST['pc_number']) || intval($_POST['pc_number']) < 1) {
-    echo json_encode(['success' => false, 'message' => 'Valid PC number is required']);
+if ($pc_number <= 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid PC number']);
     exit();
 }
 
-if (!isset($_POST['status'])) {
-    echo json_encode(['success' => false, 'message' => 'PC status is required']);
-    exit();
-}
-
-// Valid statuses
-$validStatuses = ['AVAILABLE', 'UNAVAILABLE', 'MAINTENANCE'];
-if (!in_array($_POST['status'], $validStatuses)) {
-    echo json_encode(['success' => false, 'message' => 'Invalid status value']);
-    exit();
-}
-
-try {
-    $pc_id = isset($_POST['pc_id']) ? intval($_POST['pc_id']) : 0;
-    $lab_id = intval($_POST['lab_id']);
-    $pc_number = intval($_POST['pc_number']);
-    $status = $_POST['status'];
-    
-    // Check if lab exists
-    $stmt = $conn->prepare("SELECT LAB_ID FROM LABORATORY WHERE LAB_ID = ?");
+// If adding a new PC, check if the lab has capacity
+if ($pc_id <= 0) {
+    // Check laboratory capacity
+    $stmt = $conn->prepare("SELECT CAPACITY FROM LABORATORY WHERE LAB_ID = ?");
     $stmt->bind_param("i", $lab_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -52,44 +43,65 @@ try {
         exit();
     }
     
-    // Check for duplicate PC number in the same lab
-    $stmt = $conn->prepare("SELECT PC_ID FROM PC WHERE PC_NUMBER = ? AND LAB_ID = ? AND PC_ID != ?");
-    $stmt->bind_param("iii", $pc_number, $lab_id, $pc_id);
+    $lab = $result->fetch_assoc();
+    $capacity = $lab['CAPACITY'];
+    $stmt->close();
+    
+    // Get current PC count in this lab
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM PC WHERE LAB_ID = ?");
+    $stmt->bind_param("i", $lab_id);
     $stmt->execute();
     $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $currentCount = $row['count'];
+    $stmt->close();
     
-    if ($result->num_rows > 0) {
-        echo json_encode(['success' => false, 'message' => 'A PC with this number already exists in this laboratory']);
+    // Check if adding this PC would exceed capacity
+    if ($currentCount >= $capacity) {
+        echo json_encode([
+            'success' => false, 
+            'message' => "Cannot add more PCs. The laboratory capacity is {$capacity} PCs and currently has {$currentCount} PCs."
+        ]);
         exit();
     }
-    
-    // If pc_id is 0, insert new PC, otherwise update existing
-    if ($pc_id === 0) {
-        $stmt = $conn->prepare("INSERT INTO PC (LAB_ID, PC_NUMBER, STATUS) VALUES (?, ?, ?)");
-        $stmt->bind_param("iis", $lab_id, $pc_number, $status);
-        $stmt->execute();
-        $pc_id = $conn->insert_id;
-        $message = 'PC created successfully';
-    } else {
-        $stmt = $conn->prepare("UPDATE PC SET LAB_ID = ?, PC_NUMBER = ?, STATUS = ? WHERE PC_ID = ?");
-        $stmt->bind_param("iisi", $lab_id, $pc_number, $status, $pc_id);
-        $stmt->execute();
-        $message = 'PC updated successfully';
-    }
-    
-    // Log the action
-    $admin_id = $_SESSION['admin_id'];
-    $action = $pc_id === 0 ? "Created new PC: $pc_number in Lab ID: $lab_id" : "Updated PC: $pc_number (Status: $status)";
-    $stmt = $conn->prepare("INSERT INTO ADMIN_LOGS (admin_id, action, timestamp) VALUES (?, ?, NOW())");
-    $stmt->bind_param("is", $admin_id, $action);
-    $stmt->execute();
-    
-    echo json_encode([
-        'success' => true, 
-        'message' => $message,
-        'pc_id' => $pc_id
-    ]);
-    
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
+
+// Check for duplicate PC numbers in the same lab (except for the current PC being edited)
+$sql = "SELECT COUNT(*) as count FROM PC WHERE LAB_ID = ? AND PC_NUMBER = ? AND PC_ID != ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("iii", $lab_id, $pc_number, $pc_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+if ($row['count'] > 0) {
+    echo json_encode(['success' => false, 'message' => 'A PC with this number already exists in this laboratory']);
+    exit();
+}
+
+if ($pc_id > 0) {
+    // Update existing PC
+    $sql = "UPDATE PC SET LAB_ID = ?, PC_NUMBER = ?, STATUS = ? WHERE PC_ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iisi", $lab_id, $pc_number, $status, $pc_id);
+} else {
+    // Insert new PC
+    $sql = "INSERT INTO PC (LAB_ID, PC_NUMBER, STATUS) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iis", $lab_id, $pc_number, $status);
+}
+
+$success = $stmt->execute();
+
+if ($success) {
+    if ($pc_id <= 0) {
+        $pc_id = $conn->insert_id;
+    }
+    echo json_encode(['success' => true, 'pc_id' => $pc_id]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
+}
+
+$stmt->close();
+$conn->close();
+?>
