@@ -710,7 +710,6 @@ include('includes/header.php');
                                     <span>Every 3 points = 1 extra session</span>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-trophy text-blue-400 mt-1 mr-2"></i>
 </main>
 
     </div>

@@ -706,6 +706,17 @@ function getFileIcon($ext) {
 <script>
     // Mobile menu toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    
+    // Confirmation logout dialog functionality
+    function confirmLogout(event) {
+        event.preventDefault();
         document.getElementById('confirmation-dialog').classList.remove('hidden');
     }
     
